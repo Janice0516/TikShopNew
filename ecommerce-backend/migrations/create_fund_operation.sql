@@ -1,0 +1,25 @@
+-- Create fund_operation table
+CREATE TABLE `fund_operation` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `merchant_id` bigint NOT NULL COMMENT '商户ID',
+  `operation_type` tinyint NOT NULL COMMENT '操作类型 1充值 2提现 3冻结 4解冻 5扣款 6退款',
+  `amount` decimal(10,2) NOT NULL COMMENT '操作金额',
+  `balance_before` decimal(10,2) NOT NULL COMMENT '操作前余额',
+  `balance_after` decimal(10,2) NOT NULL COMMENT '操作后余额',
+  `frozen_before` decimal(10,2) NOT NULL COMMENT '操作前冻结金额',
+  `frozen_after` decimal(10,2) NOT NULL COMMENT '操作后冻结金额',
+  `admin_id` bigint DEFAULT NULL COMMENT '操作管理员ID',
+  `admin_name` varchar(50) DEFAULT NULL COMMENT '操作管理员姓名',
+  `reason` varchar(500) DEFAULT NULL COMMENT '操作原因',
+  `remark` varchar(500) DEFAULT NULL COMMENT '备注',
+  `order_id` bigint DEFAULT NULL COMMENT '关联订单ID',
+  `withdrawal_id` bigint DEFAULT NULL COMMENT '关联提现ID',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  KEY `idx_merchant_id` (`merchant_id`),
+  KEY `idx_operation_type` (`operation_type`),
+  KEY `idx_admin_id` (`admin_id`),
+  KEY `idx_create_time` (`create_time`),
+  CONSTRAINT `fk_fund_operation_merchant_id` FOREIGN KEY (`merchant_id`) REFERENCES `merchant` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='资金操作记录表';
