@@ -48,7 +48,7 @@ import { FundManagementModule } from './modules/fund-management/fund-management.
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
-        type: 'mysql',
+        type: configService.get('database.type') || 'postgres',
         host: configService.get('database.host'),
         port: configService.get('database.port'),
         username: configService.get('database.username'),
@@ -58,8 +58,13 @@ import { FundManagementModule } from './modules/fund-management/fund-management.
         autoLoadEntities: true,
         synchronize: false, // 生产环境必须为false
         logging: process.env.NODE_ENV === 'development',
-        timezone: '+08:00',
-        charset: 'utf8mb4',
+        ssl: configService.get('database.ssl'),
+        extra: {
+          // PostgreSQL特定配置
+          max: 20,
+          idleTimeoutMillis: 30000,
+          connectionTimeoutMillis: 2000,
+        },
       }),
     }),
 
