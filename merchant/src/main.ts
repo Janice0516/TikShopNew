@@ -39,5 +39,5 @@ app.mount('#app')
 import { watch } from 'vue'
 watch(() => i18n.global.locale.value, (newLocale) => {
   // 动态更新Element Plus语言
-  ElementPlus.locale(elementLocales[newLocale])
+  ;(ElementPlus as any).locale(elementLocales[newLocale])
 })

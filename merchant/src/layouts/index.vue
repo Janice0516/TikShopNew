@@ -23,7 +23,7 @@
             <el-icon v-if="route.meta?.icon">
               <component :is="route.meta.icon" />
             </el-icon>
-            <span>{{ $t(route.meta?.title || '') }}</span>
+            <span>{{ $t(route.meta?.title as string || '') }}</span>
           </el-menu-item>
 
           <!-- 子菜单 -->
@@ -35,7 +35,7 @@
               <el-icon v-if="route.meta?.icon">
                 <component :is="route.meta.icon" />
               </el-icon>
-              <span>{{ $t(route.meta?.title || '') }}</span>
+              <span>{{ $t(route.meta?.title as string || '') }}</span>
             </template>
             <el-menu-item
               v-for="child in route.children"
