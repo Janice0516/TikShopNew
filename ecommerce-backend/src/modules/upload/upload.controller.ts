@@ -59,7 +59,7 @@ export class UploadController {
       },
     }),
   )
-  uploadImage(@UploadedFile() file: Express.Multer.File) {
+  uploadImage(@UploadedFile() file: any) {
     if (!file) {
       throw new HttpException('请选择文件', HttpStatus.BAD_REQUEST);
     }
@@ -102,7 +102,7 @@ export class UploadController {
       },
     }),
   )
-  uploadImages(@UploadedFiles() files: Express.Multer.File[]) {
+  uploadImages(@UploadedFiles() files: any[]) {
     if (!files || files.length === 0) {
       throw new HttpException('请选择文件', HttpStatus.BAD_REQUEST);
     }

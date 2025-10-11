@@ -22,7 +22,8 @@
       "@/common/*": ["src/common/*"],
       "@/modules/*": ["src/modules/*"],
       "@/config/*": ["src/config/*"]
-    }
+    },
+    "typeRoots": ["./node_modules/@types", "./src/types"]
   }
 }
 
