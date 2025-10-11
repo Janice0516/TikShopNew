@@ -16,6 +16,7 @@ declare module '@/api/user' {
   export const updateUserStatus: any
   export const login: any
   export const getUserInfo: any
+  export const testConnection: any
   export interface LoginForm {
     username: string
     password: string
