@@ -180,16 +180,16 @@ const withdrawalRecords = ref([])
 // 账户信息
 const availableBalance = ref(5000.00) // 可提现余额
 const frozenAmount = ref(1000.00) // 冻结金额
-const minWithdrawalAmount = 100 // 最小提现金额
+const minWithdrawalAmount = ref(100) // 最小提现金额
 
 // 获取商户余额信息
 const getBalanceInfo = async () => {
   try {
-    await getMerchantBalance()
+    const res = await getMerchantBalance()
     if (res.data && res.data.data) {
       availableBalance.value = res.data.data.availableBalance || 0
       frozenAmount.value = res.data.data.frozenBalance || 0
-      minWithdrawalAmount = res.data.data.minWithdrawalAmount || 100
+      minWithdrawalAmount.value = res.data.data.minWithdrawalAmount || 100
     }
   } catch (error) {
     console.error('获取余额信息失败:', error)
@@ -310,7 +310,7 @@ const getWithdrawalRecords = async () => {
       pageSize: pagination.pageSize
     }
 
-    await getMerchantWithdrawals(params)
+    const res = await getMerchantWithdrawals(params)
     
     if (res.data && res.data.data) {
       withdrawalRecords.value = res.data.data.list || []

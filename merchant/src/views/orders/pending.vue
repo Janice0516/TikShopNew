@@ -189,7 +189,7 @@ const handleSearch = async () => {
       status: 'pending'
     }
     
-    await getMerchantOrders(params)
+    const res = await getMerchantOrders(params)
     
     if (res.data && res.data.data) {
       orderList.value = res.data.data.list || []

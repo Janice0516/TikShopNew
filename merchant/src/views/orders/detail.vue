@@ -300,7 +300,7 @@ const loadOrderDetail = async () => {
   try {
     loading.value = true
     const orderId = route.params.id as string
-    await getOrderDetail(parseInt(orderId))
+    const res = await getOrderDetail(parseInt(orderId))
     orderDetail.value = res.data
   } catch (error) {
     console.error('Failed to load order detail:', error)

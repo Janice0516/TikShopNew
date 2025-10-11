@@ -423,7 +423,7 @@ const announcementRules = {
 // 加载店铺信息
 const loadShopInfo = async () => {
   try {
-    await getShopInfo()
+    const res = await getShopInfo()
     
     if (res.data && res.data.data) {
       shopInfo.value = res.data.data.shopInfo || shopInfo.value
@@ -501,7 +501,7 @@ const saveShopInfo = async () => {
     if (valid) {
       saving.value = true
       try {
-        await updateShopInfo(shopForm)
+        const res = await updateShopInfo(shopForm)
         
         if (res.data && res.data.data) {
           Object.assign(shopInfo.value, res.data.data)
@@ -587,7 +587,7 @@ const saveAnnouncement = async () => {
     if (valid) {
       saving.value = true
       try {
-        await updateShopAnnouncement(announcementForm)
+        const res = await updateShopAnnouncement(announcementForm)
         
         if (res.data && res.data.data) {
           shopInfo.value.announcement = res.data.data.announcement
