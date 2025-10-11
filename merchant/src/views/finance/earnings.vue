@@ -257,7 +257,7 @@ const handleRefresh = () => {
 // 加载统计数据
 const loadStats = async () => {
   try {
-    await getFinanceStats()
+    const res = await getFinanceStats()
     
     if (res.data && res.data.data) {
       stats.value = res.data.data.stats || stats.value
@@ -306,7 +306,7 @@ const handleSearch = async () => {
       type: searchForm.type
     }
     
-    await getFundFlow(params)
+    const res = await getFundFlow(params)
     
     if (res.data && res.data.data) {
       flowList.value = res.data.data.list || []

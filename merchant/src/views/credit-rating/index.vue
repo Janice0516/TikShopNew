@@ -190,7 +190,7 @@ const levelGuide = ref([
 // 获取当前信用评级
 const loadCurrentRating = async () => {
   try {
-    await getMerchantCurrentRating()
+    const res = await getMerchantCurrentRating()
     if (res.data && res.data.data) {
       currentRating.value = res.data.data
     } else {
@@ -211,7 +211,7 @@ const loadHistory = async () => {
       pageSize: pagination.pageSize
     }
     
-    await getMerchantRatingHistory(params)
+    const res = await getMerchantRatingHistory(params)
     if (res.data && res.data.data) {
       historyData.value = res.data.data.list || []
       pagination.total = res.data.data.total || 0

@@ -215,8 +215,8 @@ const withdrawalRules = {
         const amount = parseFloat(value)
         if (isNaN(amount) || amount <= 0) {
           callback(new Error('提现金额必须大于0'))
-        } else if (amount < minWithdrawalAmount) {
-          callback(new Error(`提现金额不能少于${minWithdrawalAmount}元`))
+        } else if (amount < minWithdrawalAmount.value) {
+          callback(new Error(`提现金额不能少于${minWithdrawalAmount.value}元`))
         } else if (amount > availableBalance.value) {
           callback(new Error('提现金额不能超过可提现余额'))
         } else {

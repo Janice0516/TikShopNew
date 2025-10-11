@@ -299,7 +299,7 @@ const handleSearch = async () => {
       pageSize: pagination.pageSize
     }
     
-    await getWithdrawHistory(params)
+    const res = await getWithdrawHistory(params)
     
     if (res.data && res.data.data) {
       withdrawList.value = res.data.data.list || []

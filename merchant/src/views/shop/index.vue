@@ -552,7 +552,7 @@ const saveEditForm = async () => {
     if (valid) {
       saving.value = true
       try {
-        await updateShopInfo(editForm)
+        const res = await updateShopInfo(editForm)
         
         if (res.data && res.data.data) {
           Object.assign(shopInfo.value, res.data.data)
