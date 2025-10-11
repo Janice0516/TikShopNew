@@ -109,7 +109,7 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { ElMessage, FormInstance, FormRules } from 'element-plus'
+import { ElMessage, type FormInstance, type FormRules } from 'element-plus'
 import { Plus } from '@element-plus/icons-vue'
 import { getCategoryList, createProduct, updateProduct, getProductDetail } from '@/api/product'
 import { useUserStore } from '@/stores/user'

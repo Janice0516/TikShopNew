@@ -199,11 +199,8 @@ import { getWithdrawalList, updateWithdrawalStatus } from '@/api/withdrawal'
 
 // 响应式数据
 const loading = ref(false)
-const tableData = ref([])
-const detailDialogVisible = ref(false)
-const processDialogVisible = ref(false)
-const processDialogTitle = ref('')
-const currentWithdrawal = ref(null)
+const tableData = ref<any[]>([])
+const currentWithdrawal = ref<any>(null)
 const processFormRef = ref<FormInstance>()
 
 // 查询表单
@@ -385,7 +382,7 @@ const getStatusText = (status: number) => {
 
 // 获取状态类型
 const getStatusType = (status: number) => {
-  const typeMap = {
+  const typeMap: { [key: number]: string } = {
     0: 'warning',
     1: 'success',
     2: 'danger',

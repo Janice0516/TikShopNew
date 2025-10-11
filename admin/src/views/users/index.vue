@@ -222,10 +222,10 @@ import { getUserList, updateUserStatus } from '@/api/user'
 
 // 响应式数据
 const loading = ref(false)
-const tableData = ref([])
+const tableData = ref<any[]>([])
 const selectedRows = ref([])
 const detailDialogVisible = ref(false)
-const currentUser = ref(null)
+const currentUser = ref<any>(null)
 
 // 查询表单
 const queryForm = reactive({

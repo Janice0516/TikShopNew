@@ -195,7 +195,7 @@
 
 <script setup lang="ts">
 import { ref, reactive, onMounted } from 'vue'
-import { ElMessage, ElMessageBox } from 'element-plus'
+import { ElMessage } from 'element-plus'
 import { User, Plus } from '@element-plus/icons-vue'
 
 const activeTab = ref('profile')
@@ -292,7 +292,7 @@ const passwordRules = {
   confirmPassword: [
     { required: true, message: 'Please confirm password', trigger: 'blur' },
     {
-      validator: (rule: any, value: string, callback: Function) => {
+      validator: (_rule: any, value: string, callback: Function) => {
         if (value !== passwordForm.newPassword) {
           callback(new Error('Passwords do not match'))
         } else {
@@ -424,7 +424,7 @@ const changeAvatar = () => {
 }
 
 // 头像上传成功
-const handleAvatarSuccess = (response: any, file: any) => {
+const handleAvatarSuccess = (_response: any, file: any) => {
   avatarUrl.value = URL.createObjectURL(file.raw)
 }
 
