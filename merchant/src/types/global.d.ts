@@ -7,18 +7,28 @@ declare module '@/utils/request' {
 declare module '@/api/merchant' {
   export const login: any
   export const getProfile: any
+  export const getMerchantInfo: any
+  export interface LoginForm {
+    username: string
+    password: string
+  }
 }
 
 declare module '@/api/order' {
   export const getMerchantOrders: any
   export const getOrderDetail: any
   export const shipOrder: any
+  export const getOrderStats: any
 }
 
 declare module '@/api/product' {
   export const getProducts: any
   export const getMerchantProducts: any
   export const getCategories: any
+  export const updateProductPrice: any
+  export const toggleProductStatus: any
+  export const getPlatformProducts: any
+  export const selectProduct: any
 }
 
 declare module '@/api/finance' {
@@ -38,6 +48,7 @@ declare module '@/api/shop' {
 declare module '@/api/withdrawal' {
   export const getMerchantBalance: any
   export const getMerchantWithdrawals: any
+  export const createWithdrawal: any
 }
 
 declare module '@/api/credit-rating' {
@@ -56,6 +67,8 @@ declare module '@/components/LanguageSwitcher.vue' {
 
 declare module '@/i18n' {
   export const i18n: any
+  export const languages: any
+  export const setLanguage: any
 }
 
 declare module '@/views/login/index.vue' {

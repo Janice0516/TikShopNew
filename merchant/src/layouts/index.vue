@@ -42,7 +42,7 @@
               :key="child.path"
               :index="route.path + '/' + child.path"
             >
-              {{ $t(child.meta?.title || '') }}
+              {{ $t(child.meta?.title as string || '') }}
             </el-menu-item>
           </el-sub-menu>
         </template>
