@@ -126,7 +126,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted, onBeforeUnmount, shallowRef, nextTick } from 'vue'
+import { ref, reactive, onMounted, onBeforeUnmount, shallowRef, nextTick, watch } from 'vue'
 import { ElMessage } from 'element-plus'
 import { Picture, Link, Grid, Delete, View, Check } from '@element-plus/icons-vue'
 import { Editor, Toolbar } from '@wangeditor/editor-for-vue'

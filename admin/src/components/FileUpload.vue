@@ -131,7 +131,7 @@ const props = withDefaults(defineProps<Props>(), {
   uploadTip: 'Support JPG/PNG files, max 2MB each',
   showTip: true,
   maxSize: 2,
-  allowedTypes: ['image/jpeg', 'image/png', 'image/gif'],
+  allowedTypes: ['image/jpeg', 'image/png', 'image/gif'] as string[],
   businessType: 'general'
 })
 

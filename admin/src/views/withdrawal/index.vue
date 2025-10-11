@@ -200,6 +200,9 @@ import { getWithdrawalList, updateWithdrawalStatus } from '@/api/withdrawal'
 // 响应式数据
 const loading = ref(false)
 const tableData = ref<any[]>([])
+const detailDialogVisible = ref(false)
+const processDialogVisible = ref(false)
+const processDialogTitle = ref('')
 const currentWithdrawal = ref<any>(null)
 const processFormRef = ref<FormInstance>()
 

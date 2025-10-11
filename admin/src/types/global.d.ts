@@ -14,6 +14,12 @@ declare module '@/api/user' {
   export const getUserList: any
   export const getUserDetail: any
   export const updateUserStatus: any
+  export const login: any
+  export const getUserInfo: any
+  export interface LoginForm {
+    username: string
+    password: string
+  }
 }
 
 declare module '@/api/order' {
@@ -27,11 +33,15 @@ declare module '@/api/product' {
   export const getProductDetail: any
   export const updateProductStatus: any
   export const createProduct: any
+  export const getCategoryList: any
+  export const updateProduct: any
+  export const deleteProduct: any
 }
 
 declare module '@/api/recharge' {
   export const getRechargeList: any
   export const auditRecharge: any
+  export const getRechargeStats: any
 }
 
 declare module '@/api/withdrawal' {
@@ -44,6 +54,37 @@ declare module '@/api/credit-rating' {
   export const calculateMerchantRating: any
   export const getCreditRatingStats: any
   export const recalculateAllMerchantRatings: any
+  export const createCreditRating: any
+  export const updateCreditRating: any
+  export const deleteCreditRating: any
+  export const getCreditRatingDetail: any
+}
+
+declare module '@/api/category' {
+  export const getCategoryList: any
+  export const createCategory: any
+  export const updateCategory: any
+  export const deleteCategory: any
+}
+
+declare module '@/api/fund-management' {
+  export const getFundOperations: any
+  export const createFundOperation: any
+}
+
+declare module '@/api/merchant' {
+  export const getMerchantList: any
+  export const getMerchantDetail: any
+  export const updateMerchantStatus: any
+}
+
+declare module '@/utils/format' {
+  export const formatCurrency: any
+  export const formatDate: any
+}
+
+declare module '@/router' {
+  export const router: any
 }
 
 declare module '@/stores/user' {
@@ -108,4 +149,24 @@ declare module '@/views/profile/index.vue' {
 declare module '@/views/credit-rating/index.vue' {
   const CreditRatingView: any
   export default CreditRatingView
+}
+
+declare module '@/views/categories/index.vue' {
+  const CategoriesView: any
+  export default CategoriesView
+}
+
+declare module '@/views/fund-management/index.vue' {
+  const FundManagementView: any
+  export default FundManagementView
+}
+
+declare module '@/components/FileUpload.vue' {
+  const FileUpload: any
+  export default FileUpload
+}
+
+declare module '@/components/RichTextEditor.vue' {
+  const RichTextEditor: any
+  export default RichTextEditor
 }
