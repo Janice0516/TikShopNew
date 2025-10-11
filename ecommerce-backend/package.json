@@ -19,7 +19,9 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "test:unit": "jest --testPathPattern=spec.ts",
-    "test:integration": "jest --testPathPattern=e2e"
+    "test:integration": "jest --testPathPattern=e2e",
+    "test:db": "node test-db-connection.js",
+    "init:db": "node init-database.js"
   },
   "dependencies": {
     "@nestjs/cache-manager": "^3.0.1",
