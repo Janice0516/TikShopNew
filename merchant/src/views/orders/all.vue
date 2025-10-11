@@ -496,20 +496,6 @@ const handleSearch = async () => {
   } finally {
     loading.value = false
   }
-
-    // 实际API调用
-    // const res = await getOrderList({
-    //   page: pagination.page,
-    //   pageSize: pagination.pageSize,
-    //   ...searchForm
-    // })
-    // orderList.value = res.list
-    // pagination.total = res.total
-  } catch (error) {
-    console.error('Failed to fetch orders:', error)
-  } finally {
-    loading.value = false
-  }
 }
 
 // 重置
