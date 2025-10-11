@@ -2,7 +2,7 @@ import request from '@/utils/request'
 import { mockApi } from '@/utils/mockApi'
 
 // 是否使用虚拟数据
-const USE_MOCK_DATA = true
+const USE_MOCK_DATA = false
 
 export interface LoginForm {
   phone: string
