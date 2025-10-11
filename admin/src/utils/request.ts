@@ -5,7 +5,7 @@ import router from '@/router'
 
 // 创建axios实例
 const service = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api',
+  baseURL: import.meta.env.VITE_API_BASE_URL || 'https://tiktokshop-api.onrender.com/api',
   timeout: 15000
 })
 

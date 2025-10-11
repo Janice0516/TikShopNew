@@ -1,7 +1,7 @@
 import { ref } from 'vue'
 
 // 创建请求实例
-const baseURL = 'https://tiktokshop-api.loca.lt/api'
+const baseURL = 'https://tiktokshop-api.onrender.com/api'
 
 // 请求拦截器
 const request = (options: any) => {
