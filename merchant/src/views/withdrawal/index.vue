@@ -185,7 +185,7 @@ const minWithdrawalAmount = 100 // 最小提现金额
 // 获取商户余额信息
 const getBalanceInfo = async () => {
   try {
-    const res = await getMerchantBalance()
+    await getMerchantBalance()
     if (res.data && res.data.data) {
       availableBalance.value = res.data.data.availableBalance || 0
       frozenAmount.value = res.data.data.frozenBalance || 0
@@ -269,7 +269,7 @@ const handleSubmit = async () => {
 
     submitting.value = true
     
-    const res = await createWithdrawal({
+    await createWithdrawal({
       withdrawalAmount: parseFloat(withdrawalForm.withdrawalAmount),
       bankName: withdrawalForm.bankName,
       bankAccount: withdrawalForm.bankAccount,
@@ -310,7 +310,7 @@ const getWithdrawalRecords = async () => {
       pageSize: pagination.pageSize
     }
 
-    const res = await getMerchantWithdrawals(params)
+    await getMerchantWithdrawals(params)
     
     if (res.data && res.data.data) {
       withdrawalRecords.value = res.data.data.list || []

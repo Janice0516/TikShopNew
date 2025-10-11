@@ -299,7 +299,7 @@ const handleSearch = async () => {
       pageSize: pagination.pageSize
     }
     
-    const res = await getWithdrawHistory(params)
+    await getWithdrawHistory(params)
     
     if (res.data && res.data.data) {
       withdrawList.value = res.data.data.list || []
@@ -351,9 +351,9 @@ const handleWithdraw = async () => {
         ElMessage.success(t('finance.withdrawSubmitted'))
         handleReset()
         handleSearch()
-      } catch (error: any) {
+      } catch (error: unknown) {
         if (error !== 'cancel') {
-          ElMessage.error(error.message || t('message.operationFailed'))
+          ElMessage.error((error as Error).message || t('message.operationFailed'))
         }
       } finally {
         submitting.value = false

@@ -264,7 +264,7 @@ const handleSearch = async () => {
     console.log('开始获取商品列表，参数:', params)
     
     // 调用真实API
-    const res = await getPlatformProducts(params)
+    await getPlatformProducts(params)
     console.log('商品API响应:', res)
     
     if (res && res.data && res.data.list) {
@@ -338,7 +338,7 @@ const loadCategories = async () => {
   try {
     console.log('开始加载分类...')
     // 调用真实API
-    const res = await getCategories()
+    await getCategories()
     console.log('分类API响应:', res)
     
     if (res && res.data && res.data.data) {

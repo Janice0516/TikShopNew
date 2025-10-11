@@ -361,7 +361,7 @@ const passwordRules: FormRules = {
   confirmPassword: [
     { required: true, message: () => t('validation.required'), trigger: 'blur' },
     {
-      validator: (rule, value, callback) => {
+      validator: (_rule, value, callback) => {
         if (value !== passwordForm.newPassword) {
           callback(new Error(t('validation.passwordMismatch')))
         } else {

@@ -296,7 +296,7 @@ const handleSearch = async () => {
     console.log('商家商品列表API调用参数:', params);
     
     // 调用真实API
-    const res = await getMerchantProducts(params)
+    await getMerchantProducts(params)
     console.log('商家商品列表API响应:', res);
     
     productList.value = res.data.list || []

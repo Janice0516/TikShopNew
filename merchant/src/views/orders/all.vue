@@ -453,7 +453,7 @@ const handleRefresh = () => {
 const loadStats = async () => {
   try {
     // 实际API调用
-    const res = await getMerchantOrders({ page: 1, pageSize: 1000 })
+    await getMerchantOrders({ page: 1, pageSize: 1000 })
     if (res.data && res.data.data) {
       const orders = res.data.data.list || []
       stats.value = {
@@ -486,7 +486,7 @@ const handleSearch = async () => {
       customerName: searchForm.customerName
     }
     
-    const res = await getMerchantOrders(params)
+    await getMerchantOrders(params)
     
     if (res.data && res.data.data) {
       orderList.value = res.data.data.list || []
