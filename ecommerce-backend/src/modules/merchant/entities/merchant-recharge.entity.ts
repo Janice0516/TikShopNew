@@ -50,12 +50,12 @@ export class MerchantRecharge {
   @Column({ name: 'audit_reason', type: 'text', nullable: true })
   auditReason: string;
 
-  @Column({ name: 'audit_time', type: 'datetime', nullable: true })
+  @Column({ name: 'audit_time', type: 'timestamp', nullable: true })
   auditTime: Date;
 
-  @CreateDateColumn({ name: 'created_at', type: 'datetime' })
+  @CreateDateColumn({ name: 'created_at', type: 'timestamp' })
   createdAt: Date;
 
-  @UpdateDateColumn({ name: 'updated_at', type: 'datetime' })
+  @UpdateDateColumn({ name: 'updated_at', type: 'timestamp' })
   updatedAt: Date;
 }

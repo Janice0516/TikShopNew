@@ -68,22 +68,22 @@ export class Order {
   @Column({ name: 'pay_type', type: 'smallint', nullable: true, comment: '1微信 2支付宝' })
   payType: number;
 
-  @Column({ name: 'pay_time', type: 'datetime', nullable: true })
+  @Column({ name: 'pay_time', type: 'timestamp', nullable: true })
   payTime: Date;
 
   @Column({ name: 'transaction_id', length: 100, nullable: true })
   transactionId: string;
 
-  @Column({ name: 'ship_time', type: 'datetime', nullable: true })
+  @Column({ name: 'ship_time', type: 'timestamp', nullable: true })
   shipTime: Date;
 
-  @Column({ name: 'receive_time', type: 'datetime', nullable: true })
+  @Column({ name: 'receive_time', type: 'timestamp', nullable: true })
   receiveTime: Date;
 
-  @Column({ name: 'finish_time', type: 'datetime', nullable: true })
+  @Column({ name: 'finish_time', type: 'timestamp', nullable: true })
   finishTime: Date;
 
-  @Column({ name: 'cancel_time', type: 'datetime', nullable: true })
+  @Column({ name: 'cancel_time', type: 'timestamp', nullable: true })
   cancelTime: Date;
 
   @Column({ name: 'cancel_reason', length: 255, nullable: true })
@@ -95,10 +95,10 @@ export class Order {
   @Column({ length: 500, nullable: true })
   remark: string;
 
-  @CreateDateColumn({ name: 'create_time', type: 'datetime' })
+  @CreateDateColumn({ name: 'create_time', type: 'timestamp' })
   createTime: Date;
 
-  @UpdateDateColumn({ name: 'update_time', type: 'datetime' })
+  @UpdateDateColumn({ name: 'update_time', type: 'timestamp' })
   updateTime: Date;
 }
 

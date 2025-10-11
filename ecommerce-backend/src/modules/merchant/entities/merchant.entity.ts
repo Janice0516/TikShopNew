@@ -70,10 +70,10 @@ export class Merchant {
   @Column({ name: 'total_withdraw', type: 'decimal', precision: 10, scale: 2, default: 0 })
   totalWithdraw: number;
 
-  @CreateDateColumn({ name: 'create_time', type: 'datetime' })
+  @CreateDateColumn({ name: 'create_time', type: 'timestamp' })
   createTime: Date;
 
-  @UpdateDateColumn({ name: 'update_time', type: 'datetime' })
+  @UpdateDateColumn({ name: 'update_time', type: 'timestamp' })
   updateTime: Date;
 }
 

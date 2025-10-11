@@ -45,9 +45,9 @@ export class MerchantCreditRating {
   @Column({ name: 'status', type: 'smallint', default: 1, comment: '状态 0无效 1有效' })
   status: number;
 
-  @CreateDateColumn({ name: 'create_time', type: 'datetime' })
+  @CreateDateColumn({ name: 'create_time', type: 'timestamp' })
   createTime: Date;
 
-  @UpdateDateColumn({ name: 'update_time', type: 'datetime' })
+  @UpdateDateColumn({ name: 'update_time', type: 'timestamp' })
   updateTime: Date;
 }

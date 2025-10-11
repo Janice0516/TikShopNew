@@ -29,9 +29,9 @@ export class Category {
   @Column({ type: 'smallint', default: 1, comment: '状态 1启用 0禁用' })
   status: number;
 
-  @CreateDateColumn({ name: 'create_time', type: 'datetime' })
+  @CreateDateColumn({ name: 'create_time', type: 'timestamp' })
   createTime: Date;
 
-  @UpdateDateColumn({ name: 'update_time', type: 'datetime' })
+  @UpdateDateColumn({ name: 'update_time', type: 'timestamp' })
   updateTime: Date;
 }

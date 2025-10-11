@@ -57,9 +57,9 @@ export class FundOperation {
   @Column({ name: 'withdrawal_id', type: 'bigint', nullable: true, comment: '关联提现ID' })
   withdrawalId: number;
 
-  @CreateDateColumn({ name: 'create_time', type: 'datetime' })
+  @CreateDateColumn({ name: 'create_time', type: 'timestamp' })
   createTime: Date;
 
-  @UpdateDateColumn({ name: 'update_time', type: 'datetime' })
+  @UpdateDateColumn({ name: 'update_time', type: 'timestamp' })
   updateTime: Date;
 }

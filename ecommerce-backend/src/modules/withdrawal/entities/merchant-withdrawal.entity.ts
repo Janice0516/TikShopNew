@@ -45,12 +45,12 @@ export class MerchantWithdrawal {
   @Column({ name: 'processed_by', type: 'bigint', nullable: true })
   processedBy: number;
 
-  @Column({ name: 'processed_at', type: 'datetime', nullable: true })
+  @Column({ name: 'processed_at', type: 'timestamp', nullable: true })
   processedAt: Date;
 
-  @CreateDateColumn({ name: 'create_time', type: 'datetime' })
+  @CreateDateColumn({ name: 'create_time', type: 'timestamp' })
   createTime: Date;
 
-  @UpdateDateColumn({ name: 'update_time', type: 'datetime' })
+  @UpdateDateColumn({ name: 'update_time', type: 'timestamp' })
   updateTime: Date;
 }

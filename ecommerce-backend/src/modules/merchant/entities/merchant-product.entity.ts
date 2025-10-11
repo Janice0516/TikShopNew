@@ -33,10 +33,10 @@ export class MerchantProduct {
   @Column({ type: 'int', default: 0, comment: '销量' })
   sales: number;
 
-  @CreateDateColumn({ name: 'create_time', type: 'datetime' })
+  @CreateDateColumn({ name: 'create_time', type: 'timestamp' })
   createTime: Date;
 
-  @UpdateDateColumn({ name: 'update_time', type: 'datetime' })
+  @UpdateDateColumn({ name: 'update_time', type: 'timestamp' })
   updateTime: Date;
 
   // 关联关系

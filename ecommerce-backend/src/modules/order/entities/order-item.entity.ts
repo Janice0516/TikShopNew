@@ -40,7 +40,7 @@ export class OrderItem {
   @Column({ name: 'total_price', type: 'decimal', precision: 10, scale: 2 })
   totalPrice: number;
 
-  @CreateDateColumn({ name: 'create_time', type: 'datetime' })
+  @CreateDateColumn({ name: 'create_time', type: 'timestamp' })
   createTime: Date;
 }
 

@@ -31,13 +31,13 @@ export class User {
   @Column({ type: 'smallint', default: 1, comment: '状态 1正常 0禁用' })
   status: number;
 
-  @Column({ type: 'datetime', nullable: true })
+  @Column({ type: 'timestamp', nullable: true })
   lastLoginTime: Date;
 
-  @CreateDateColumn({ type: 'datetime', name: 'create_time' })
+  @CreateDateColumn({ type: 'timestamp', name: 'create_time' })
   createTime: Date;
 
-  @UpdateDateColumn({ type: 'datetime', name: 'update_time' })
+  @UpdateDateColumn({ type: 'timestamp', name: 'update_time' })
   updateTime: Date;
 }
 

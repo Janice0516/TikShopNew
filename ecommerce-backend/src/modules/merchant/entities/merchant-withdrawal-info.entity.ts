@@ -78,10 +78,10 @@ export class MerchantWithdrawalInfo {
   @Column({ name: 'verification_remark', length: 500, nullable: true, comment: '验证备注' })
   verificationRemark: string;
 
-  @CreateDateColumn({ name: 'created_at', type: 'datetime' })
+  @CreateDateColumn({ name: 'created_at', type: 'timestamp' })
   createdAt: Date;
 
-  @UpdateDateColumn({ name: 'updated_at', type: 'datetime' })
+  @UpdateDateColumn({ name: 'updated_at', type: 'timestamp' })
   updatedAt: Date;
 }
 
