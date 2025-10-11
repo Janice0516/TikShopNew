@@ -65,26 +65,39 @@ declare module '@/api/category' {
   export const createCategory: any
   export const updateCategory: any
   export const deleteCategory: any
+  export const getCategoryTree: any
+  export const updateCategoryStatus: any
 }
 
 declare module '@/api/fund-management' {
   export const getFundOperations: any
   export const createFundOperation: any
+  export const increaseFund: any
+  export const freezeFund: any
+  export const unfreezeFund: any
+  export const deductFund: any
+  export const refundFund: any
+  export const getFundOperationList: any
 }
 
 declare module '@/api/merchant' {
   export const getMerchantList: any
   export const getMerchantDetail: any
   export const updateMerchantStatus: any
+  export const auditMerchant: any
+  export const updateMerchant: any
+  export const resetMerchantPassword: any
 }
 
 declare module '@/utils/format' {
   export const formatCurrency: any
   export const formatDate: any
+  export const formatTime: any
 }
 
 declare module '@/router' {
   export const router: any
+  export const push: any
 }
 
 declare module '@/stores/user' {
