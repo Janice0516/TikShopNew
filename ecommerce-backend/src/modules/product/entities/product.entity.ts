@@ -47,7 +47,7 @@ export class Product {
   @Column({ type: 'text', nullable: true, comment: '商品详情富文本' })
   description: string;
 
-  @Column({ type: 'tinyint', default: 1, comment: '状态 1上架 0下架' })
+  @Column({ type: 'smallint', default: 1, comment: '状态 1上架 0下架' })
   status: number;
 
   @Column({ type: 'int', default: 0 })

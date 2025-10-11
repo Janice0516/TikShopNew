@@ -21,7 +21,7 @@ export class MerchantCreditRating {
   @JoinColumn({ name: 'merchant_id' })
   merchant: Merchant;
 
-  @Column({ name: 'rating', type: 'tinyint', comment: '信用评级 1-5星' })
+  @Column({ name: 'rating', type: 'smallint', comment: '信用评级 1-5星' })
   rating: number;
 
   @Column({ name: 'score', type: 'decimal', precision: 5, scale: 2, comment: '信用分数 0-100' })
@@ -42,7 +42,7 @@ export class MerchantCreditRating {
   @Column({ name: 'evaluation_reason', type: 'text', nullable: true, comment: '评级原因' })
   evaluationReason: string;
 
-  @Column({ name: 'status', type: 'tinyint', default: 1, comment: '状态 0无效 1有效' })
+  @Column({ name: 'status', type: 'smallint', default: 1, comment: '状态 0无效 1有效' })
   status: number;
 
   @CreateDateColumn({ name: 'create_time', type: 'datetime' })

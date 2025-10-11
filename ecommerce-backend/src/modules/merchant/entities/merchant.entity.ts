@@ -40,7 +40,7 @@ export class Merchant {
   @Column({ name: 'id_card_back', length: 255, nullable: true })
   idCardBack: string;
 
-  @Column({ type: 'tinyint', default: 0, comment: '状态 0待审核 1已通过 2已拒绝 3已禁用' })
+  @Column({ type: 'smallint', default: 0, comment: '状态 0待审核 1已通过 2已拒绝 3已禁用' })
   status: number;
 
   @Column({ name: 'reject_reason', length: 255, nullable: true })

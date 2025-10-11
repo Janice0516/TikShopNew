@@ -25,10 +25,10 @@ export class User {
   @Column({ length: 255, nullable: true })
   avatar: string;
 
-  @Column({ type: 'tinyint', default: 0, comment: '性别 0未知 1男 2女' })
+  @Column({ type: 'smallint', default: 0, comment: '性别 0未知 1男 2女' })
   gender: number;
 
-  @Column({ type: 'tinyint', default: 1, comment: '状态 1正常 0禁用' })
+  @Column({ type: 'smallint', default: 1, comment: '状态 1正常 0禁用' })
   status: number;
 
   @Column({ type: 'datetime', nullable: true })

@@ -26,7 +26,7 @@ export class Cart {
   @Column({ type: 'int', default: 1 })
   quantity: number;
 
-  @Column({ type: 'tinyint', default: 1, comment: '是否选中 1是 0否' })
+  @Column({ type: 'smallint', default: 1, comment: '是否选中 1是 0否' })
   selected: number;
 
   @CreateDateColumn({ name: 'create_time', type: 'datetime' })

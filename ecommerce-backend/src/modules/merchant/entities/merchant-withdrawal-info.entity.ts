@@ -21,7 +21,7 @@ export class MerchantWithdrawalInfo {
   @JoinColumn({ name: 'merchant_id' })
   merchant: Merchant;
 
-  @Column({ name: 'withdrawal_type', type: 'tinyint', comment: '提款方式 1银行转账 2电子钱包 3现金提取' })
+  @Column({ name: 'withdrawal_type', type: 'smallint', comment: '提款方式 1银行转账 2电子钱包 3现金提取' })
   withdrawalType: number;
 
   @Column({ name: 'bank_name', length: 100, nullable: true, comment: '银行名称' })
@@ -72,7 +72,7 @@ export class MerchantWithdrawalInfo {
   @Column({ name: 'is_verified', type: 'boolean', default: false, comment: '是否已验证' })
   isVerified: boolean;
 
-  @Column({ name: 'verification_status', type: 'tinyint', default: 0, comment: '验证状态 0待验证 1验证中 2验证通过 3验证失败' })
+  @Column({ name: 'verification_status', type: 'smallint', default: 0, comment: '验证状态 0待验证 1验证中 2验证通过 3验证失败' })
   verificationStatus: number;
 
   @Column({ name: 'verification_remark', length: 500, nullable: true, comment: '验证备注' })

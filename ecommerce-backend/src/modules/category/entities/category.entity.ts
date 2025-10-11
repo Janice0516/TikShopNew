@@ -17,7 +17,7 @@ export class Category {
   @Column({ length: 50 })
   name: string;
 
-  @Column({ type: 'tinyint', default: 1, comment: '层级 1一级 2二级 3三级' })
+  @Column({ type: 'smallint', default: 1, comment: '层级 1一级 2二级 3三级' })
   level: number;
 
   @Column({ type: 'int', default: 0 })
@@ -26,7 +26,7 @@ export class Category {
   @Column({ length: 255, nullable: true })
   icon: string;
 
-  @Column({ type: 'tinyint', default: 1, comment: '状态 1启用 0禁用' })
+  @Column({ type: 'smallint', default: 1, comment: '状态 1启用 0禁用' })
   status: number;
 
   @CreateDateColumn({ name: 'create_time', type: 'datetime' })

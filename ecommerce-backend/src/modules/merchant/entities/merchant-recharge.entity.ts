@@ -35,7 +35,7 @@ export class MerchantRecharge {
 
   @Column({ 
     name: 'status', 
-    type: 'tinyint', 
+    type: 'smallint', 
     default: 0,
     comment: '状态 0待审核 1审核通过 2审核拒绝'
   })

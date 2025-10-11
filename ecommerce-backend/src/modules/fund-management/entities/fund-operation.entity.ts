@@ -21,7 +21,7 @@ export class FundOperation {
   @JoinColumn({ name: 'merchant_id' })
   merchant: Merchant;
 
-  @Column({ name: 'operation_type', type: 'tinyint', comment: '操作类型 1充值 2提现 3冻结 4解冻 5扣款 6退款' })
+  @Column({ name: 'operation_type', type: 'smallint', comment: '操作类型 1充值 2提现 3冻结 4解冻 5扣款 6退款' })
   operationType: number;
 
   @Column({ name: 'amount', type: 'decimal', precision: 10, scale: 2, comment: '操作金额' })

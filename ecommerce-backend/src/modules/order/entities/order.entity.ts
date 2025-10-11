@@ -59,13 +59,13 @@ export class Order {
   @Column({ name: 'receiver_address', length: 255 })
   receiverAddress: string;
 
-  @Column({ name: 'order_status', type: 'tinyint', default: 1, comment: '1待付款 2待发货 3待收货 4已完成 5已取消' })
+  @Column({ name: 'order_status', type: 'smallint', default: 1, comment: '1待付款 2待发货 3待收货 4已完成 5已取消' })
   orderStatus: number;
 
-  @Column({ name: 'pay_status', type: 'tinyint', default: 0, comment: '0未支付 1已支付 2已退款' })
+  @Column({ name: 'pay_status', type: 'smallint', default: 0, comment: '0未支付 1已支付 2已退款' })
   payStatus: number;
 
-  @Column({ name: 'pay_type', type: 'tinyint', nullable: true, comment: '1微信 2支付宝' })
+  @Column({ name: 'pay_type', type: 'smallint', nullable: true, comment: '1微信 2支付宝' })
   payType: number;
 
   @Column({ name: 'pay_time', type: 'datetime', nullable: true })

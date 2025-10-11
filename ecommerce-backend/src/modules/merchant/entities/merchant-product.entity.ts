@@ -27,7 +27,7 @@ export class MerchantProduct {
   @Column({ name: 'profit_margin', type: 'decimal', precision: 10, scale: 2, nullable: true })
   profitMargin: number;
 
-  @Column({ type: 'tinyint', default: 1, comment: '状态 1上架 0下架' })
+  @Column({ type: 'smallint', default: 1, comment: '状态 1上架 0下架' })
   status: number;
 
   @Column({ type: 'int', default: 0, comment: '销量' })

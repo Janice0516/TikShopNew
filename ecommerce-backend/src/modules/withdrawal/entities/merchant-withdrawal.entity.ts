@@ -33,7 +33,7 @@ export class MerchantWithdrawal {
   @Column({ name: 'account_holder', length: 50 })
   accountHolder: string;
 
-  @Column({ name: 'status', type: 'tinyint', default: 0, comment: '状态 0待审核 1已通过 2已拒绝 3已打款' })
+  @Column({ name: 'status', type: 'smallint', default: 0, comment: '状态 0待审核 1已通过 2已拒绝 3已打款' })
   status: number;
 
   @Column({ name: 'remark', length: 500, nullable: true })
