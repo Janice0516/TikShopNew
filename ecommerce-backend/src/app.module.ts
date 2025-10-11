@@ -13,11 +13,17 @@ import jwtConfig from './config/jwt.config';
 import { User } from './modules/user/entities/user.entity';
 import { Admin } from './modules/admin/entities/admin.entity';
 import { Category } from './modules/category/entities/category.entity';
+import { Merchant } from './modules/merchant/entities/merchant.entity';
+import { MerchantProduct } from './modules/merchant/entities/merchant-product.entity';
+import { MerchantRecharge } from './modules/merchant/entities/merchant-recharge.entity';
+import { MerchantWithdrawalInfo } from './modules/merchant/entities/merchant-withdrawal-info.entity';
+import { Product } from './modules/product/entities/product.entity';
+import { Order } from './modules/order/entities/order.entity';
+import { OrderItem } from './modules/order/entities/order-item.entity';
+import { Cart } from './modules/cart/entities/cart.entity';
 import { MerchantWithdrawal } from './modules/withdrawal/entities/merchant-withdrawal.entity';
 import { MerchantCreditRating } from './modules/credit-rating/entities/merchant-credit-rating.entity';
 import { FundOperation } from './modules/fund-management/entities/fund-operation.entity';
-import { MerchantWithdrawalInfo } from './modules/merchant/entities/merchant-withdrawal-info.entity';
-import { MerchantRecharge } from './modules/merchant/entities/merchant-recharge.entity';
 
 // 模块
 import { UserModule } from './modules/user/user.module';
@@ -55,7 +61,22 @@ import { FundManagementModule } from './modules/fund-management/fund-management.
           username: configService.get('database.username'),
           password: configService.get('database.password'),
           database: configService.get('database.database'),
-          entities: [User, Admin, Category, MerchantWithdrawal, MerchantCreditRating, FundOperation, MerchantWithdrawalInfo, MerchantRecharge],
+          entities: [
+            User, 
+            Admin, 
+            Category, 
+            Merchant, 
+            MerchantProduct, 
+            MerchantRecharge, 
+            MerchantWithdrawalInfo, 
+            Product, 
+            Order, 
+            OrderItem, 
+            Cart, 
+            MerchantWithdrawal, 
+            MerchantCreditRating, 
+            FundOperation
+          ],
           autoLoadEntities: true,
           synchronize: false, // 生产环境必须为false
           logging: process.env.NODE_ENV === 'development',
