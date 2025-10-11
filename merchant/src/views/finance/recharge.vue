@@ -138,7 +138,7 @@ const rechargeRules: FormRules = {
   amount: [
     { required: true, message: () => t('recharge.amountRequired'), trigger: 'blur' },
     { 
-      validator: (rule, value, callback) => {
+      validator: (_rule, value, callback) => {
         if (value && parseFloat(value) < 1) {
           callback(new Error(t('recharge.amountMin')))
         } else {
@@ -199,7 +199,7 @@ const handleRecharge = async () => {
     if (valid) {
       loading.value = true
       try {
-        const result = await rechargeAccount({
+        await rechargeAccount({
           amount: parseFloat(rechargeForm.amount),
           paymentMethod: rechargeForm.paymentMethod,
           remark: rechargeForm.remark

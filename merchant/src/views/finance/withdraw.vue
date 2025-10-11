@@ -194,7 +194,7 @@
 import { ref, reactive, computed, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { useI18n } from 'vue-i18n'
-import { applyWithdraw, getWithdrawHistory } from '@/api/finance'
+import { getWithdrawHistory } from '@/api/finance'
 
 const { t } = useI18n()
 
@@ -204,7 +204,7 @@ const withdrawFormRef = ref()
 
 const availableBalance = ref('2,456.78')
 const frozenAmount = ref('123.45')
-const minWithdrawAmount = 50.00
+const minWithdrawAmount = ref(50.00)
 
 const withdrawForm = reactive({
   amount: 0,
@@ -216,7 +216,7 @@ const withdrawForm = reactive({
 const withdrawRules = {
   amount: [
     { required: true, message: () => t('validation.required'), trigger: 'blur' },
-    { type: 'number', min: minWithdrawAmount, message: () => t('finance.minimumWithdraw') + ` $${minWithdrawAmount}`, trigger: 'blur' }
+    { type: 'number', min: minWithdrawAmount.value, message: () => t('finance.minimumWithdraw') + ` $${minWithdrawAmount.value}`, trigger: 'blur' }
   ],
   bankName: [
     { required: true, message: () => t('validation.required'), trigger: 'blur' }

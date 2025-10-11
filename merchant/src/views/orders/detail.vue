@@ -252,7 +252,7 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted, computed } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { ElMessage, ElMessageBox, FormInstance, FormRules } from 'element-plus'
+import { ElMessage, ElMessageBox, type FormInstance, type FormRules } from 'element-plus'
 import { ArrowLeft, User, Phone, Location } from '@element-plus/icons-vue'
 import { getOrderDetail, shipOrder } from '@/api/order'
 import { useI18n } from 'vue-i18n'

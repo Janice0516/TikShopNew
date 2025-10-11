@@ -380,6 +380,7 @@
 import { ref, reactive, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { useI18n } from 'vue-i18n'
+import { getMerchantOrders } from '@/api/order'
 
 const { t } = useI18n()
 
@@ -451,19 +452,25 @@ const handleRefresh = () => {
 // 加载统计数据
 const loadStats = async () => {
   try {
-    // 模拟数据
-    stats.value = {
-      total: mockOrders.length,
-      pending: mockOrders.filter(order => order.status === 'pending').length,
-      shipped: mockOrders.filter(order => order.status === 'shipped').length,
-      completed: mockOrders.filter(order => order.status === 'completed').length
-    }
-
     // 实际API调用
-    // const res = await getOrderStats()
-    // stats.value = res.stats
+    const res = await getMerchantOrders({ page: 1, pageSize: 1000 })
+    if (res.data && res.data.data) {
+      const orders = res.data.data.list || []
+      stats.value = {
+        total: orders.length,
+        pending: orders.filter((order: any) => order.status === 'pending').length,
+        shipped: orders.filter((order: any) => order.status === 'shipped').length,
+        completed: orders.filter((order: any) => order.status === 'completed').length
+      }
+    }
   } catch (error) {
     console.error('Failed to load stats:', error)
+    stats.value = {
+      total: 0,
+      pending: 0,
+      shipped: 0,
+      completed: 0
+    }
   }
 }
 
