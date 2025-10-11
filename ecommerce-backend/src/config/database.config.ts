@@ -13,6 +13,14 @@ export default registerAs('database', () => {
       password: process.env.DB_PASSWORD || '',
       database: process.env.DB_DATABASE || 'tiktokshop',
       ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+      connectTimeoutMS: 60000,
+      acquireTimeoutMS: 60000,
+      timeout: 60000,
+      extra: {
+        max: 20,
+        idleTimeoutMillis: 30000,
+        connectionTimeoutMillis: 60000,
+      },
     };
   } else {
     return {
