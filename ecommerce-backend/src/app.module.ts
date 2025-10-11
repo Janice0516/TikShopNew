@@ -47,25 +47,40 @@ import { FundManagementModule } from './modules/fund-management/fund-management.
     // 数据库模块
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
-        type: configService.get('database.type') || 'postgres',
-        host: configService.get('database.host'),
-        port: configService.get('database.port'),
-        username: configService.get('database.username'),
-        password: configService.get('database.password'),
-        database: configService.get('database.database'),
-        entities: [User, Admin, Category, MerchantWithdrawal, MerchantCreditRating, FundOperation, MerchantWithdrawalInfo, MerchantRecharge],
-        autoLoadEntities: true,
-        synchronize: false, // 生产环境必须为false
-        logging: process.env.NODE_ENV === 'development',
-        ssl: configService.get('database.ssl'),
-        extra: {
-          // PostgreSQL特定配置
-          max: 20,
-          idleTimeoutMillis: 30000,
-          connectionTimeoutMillis: 2000,
-        },
-      }),
+      useFactory: (configService: ConfigService) => {
+        const dbType = configService.get('database.type') || 'postgres';
+        const baseConfig = {
+          host: configService.get('database.host'),
+          port: configService.get('database.port'),
+          username: configService.get('database.username'),
+          password: configService.get('database.password'),
+          database: configService.get('database.database'),
+          entities: [User, Admin, Category, MerchantWithdrawal, MerchantCreditRating, FundOperation, MerchantWithdrawalInfo, MerchantRecharge],
+          autoLoadEntities: true,
+          synchronize: false, // 生产环境必须为false
+          logging: process.env.NODE_ENV === 'development',
+        };
+
+        if (dbType === 'postgres') {
+          return {
+            ...baseConfig,
+            type: 'postgres' as const,
+            ssl: configService.get('database.ssl'),
+            extra: {
+              max: 20,
+              idleTimeoutMillis: 30000,
+              connectionTimeoutMillis: 2000,
+            },
+          };
+        } else {
+          return {
+            ...baseConfig,
+            type: 'mysql' as const,
+            timezone: '+08:00',
+            charset: 'utf8mb4',
+          };
+        }
+      },
     }),
 
     // 定时任务模块
