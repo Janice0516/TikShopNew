@@ -6,7 +6,7 @@ import router from '@/router'
 // 创建axios实例
 const service = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || 'https://tiktokshop-api.onrender.com/api',
-  timeout: 15000
+  timeout: 30000  // 增加到30秒
 })
 
 // 请求拦截器
@@ -73,7 +73,9 @@ service.interceptors.response.use(
           ElMessage.error(data?.message || '请求失败')
       }
     } else if (error.code === 'ECONNABORTED') {
-      ElMessage.error('请求超时')
+      ElMessage.error('请求超时，请检查网络连接或稍后重试')
+    } else if (error.code === 'NETWORK_ERROR') {
+      ElMessage.error('网络连接失败，请检查网络设置')
     } else {
       ElMessage.error('网络错误，请检查网络连接')
     }

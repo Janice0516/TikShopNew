@@ -1,11 +1,21 @@
 import request from '@/utils/request'
 
+// 测试API连接
+export const testConnection = () => {
+  return request({
+    url: '/test/status',
+    method: 'GET',
+    timeout: 10000
+  })
+}
+
 // 管理员登录
 export const login = (data: any) => {
   return request({
     url: '/admin/login',
     method: 'POST',
-    data
+    data,
+    timeout: 30000  // 增加超时时间
   })
 }
 

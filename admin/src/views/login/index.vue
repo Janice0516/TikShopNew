@@ -62,10 +62,11 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
+import { reactive, ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage, FormInstance, FormRules } from 'element-plus'
 import { useUserStore } from '@/stores/user'
+import { testConnection } from '@/api/user'
 
 const router = useRouter()
 const userStore = useUserStore()
@@ -88,6 +89,16 @@ const showPassword = () => {
   passwordType.value = passwordType.value === 'password' ? 'text' : 'password'
 }
 
+// 测试API连接
+const testApiConnection = async () => {
+  try {
+    await testConnection()
+    ElMessage.success('API连接正常')
+  } catch (error: any) {
+    ElMessage.error(`API连接失败: ${error.message}`)
+  }
+}
+
 const handleLogin = async () => {
   if (!loginFormRef.value) return
 
@@ -95,18 +106,34 @@ const handleLogin = async () => {
     if (valid) {
       loading.value = true
       try {
+        // 先测试连接
+        await testConnection()
+        
+        // 执行登录
         const result = await userStore.login(loginForm)
         ElMessage.success('登录成功')
         // 使用replace而不是push，避免返回按钮问题
         await router.replace('/')
       } catch (error: any) {
-        ElMessage.error(error.message || '登录失败')
+        console.error('登录错误:', error)
+        if (error.code === 'ECONNABORTED') {
+          ElMessage.error('登录超时，请检查网络连接或稍后重试')
+        } else if (error.message?.includes('timeout')) {
+          ElMessage.error('请求超时，请检查网络连接')
+        } else {
+          ElMessage.error(error.message || '登录失败')
+        }
       } finally {
         loading.value = false
       }
     }
   })
 }
+
+// 页面加载时测试连接
+onMounted(() => {
+  testApiConnection()
+})
 </script>
 
 <style scoped>
