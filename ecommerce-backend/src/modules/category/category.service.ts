@@ -30,7 +30,7 @@ export class CategoryService {
 
     // 检查同级分类名称是否重复
     const existingCategory = await this.categoryRepository.findOne({
-      where: { parentId, name },
+      where: { parentId: String(parentId), name },
     });
     if (existingCategory) {
       throw new BadRequestException('同级分类名称已存在');
