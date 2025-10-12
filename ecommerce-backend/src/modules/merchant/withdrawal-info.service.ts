@@ -29,7 +29,7 @@ export class WithdrawalInfoService {
     }
 
     const withdrawalInfo = this.withdrawalInfoRepository.create({
-      merchantId,
+      merchantId: String(merchantId),
       ...createWithdrawalInfoDto,
     });
 
@@ -47,7 +47,7 @@ export class WithdrawalInfoService {
    */
   async getWithdrawalInfoList(merchantId: number) {
     const list = await this.withdrawalInfoRepository.find({
-      where: { merchantId },
+      where: { merchantId: String(merchantId) },
       order: { isDefault: 'DESC', createdAt: 'DESC' },
     });
 

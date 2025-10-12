@@ -86,8 +86,8 @@ export class ProductService {
   /**
    * 查询商品详情
    */
-  async findOne(id: number) {
-    const product = await this.productRepository.findOne({ where: { id: String(id) } });
+  async findOne(id: string) {
+    const product = await this.productRepository.findOne({ where: { id } });
 
     if (!product) {
       throw new HttpException('商品不存在', HttpStatus.NOT_FOUND);
@@ -108,7 +108,7 @@ export class ProductService {
    * 更新商品
    */
   async update(id: number, updateProductDto: UpdateProductDto) {
-    await this.findOne(id); // 检查商品是否存在
+    await this.findOne(String(id)); // 检查商品是否存在
 
     // 如果更新了分类，验证分类是否存在
     if (updateProductDto.categoryId) {
@@ -125,14 +125,14 @@ export class ProductService {
       categoryId: updateProductDto.categoryId ? String(updateProductDto.categoryId) : undefined,
     };
     await this.productRepository.update(String(id), updateData);
-    return await this.findOne(id);
+    return await this.findOne(String(id));
   }
 
   /**
    * 删除商品（软删除）
    */
   async remove(id: number) {
-    await this.findOne(id);
+    await this.findOne(String(id));
     await this.productRepository.update(id, { status: 0 });
     return { message: '删除成功' };
   }
@@ -141,7 +141,7 @@ export class ProductService {
    * 上架/下架商品
    */
   async updateStatus(id: number, status: number) {
-    await this.findOne(id);
+    await this.findOne(String(id));
     
     if (![0, 1].includes(status)) {
       throw new HttpException('状态值错误', HttpStatus.BAD_REQUEST);

@@ -80,7 +80,7 @@ export class ProductController {
     @Param('id') id: string,
     @Body('quantity') quantity: number,
   ) {
-    return this.productService.updateStock(+id, quantity);
+    return this.productService.updateStock(id, quantity);
   }
 }
 
