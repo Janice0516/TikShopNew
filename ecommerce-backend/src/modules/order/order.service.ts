@@ -246,7 +246,7 @@ export class OrderService {
 
     // 恢复库存
     for (const item of order.items) {
-      await this.productService.updateStock(item.productId, item.quantity);
+      await this.productService.updateStock(String(item.productId), item.quantity);
     }
 
     return { message: '订单已取消' };

@@ -23,7 +23,7 @@ export class WithdrawalInfoService {
     // 如果设置为默认，先取消其他默认设置
     if (isDefault) {
       await this.withdrawalInfoRepository.update(
-        { merchantId, isDefault: true },
+        { merchantId: String(merchantId), isDefault: true },
         { isDefault: false }
       );
     }
@@ -63,7 +63,7 @@ export class WithdrawalInfoService {
    */
   async getWithdrawalInfoDetail(id: number, merchantId: number) {
     const withdrawalInfo = await this.withdrawalInfoRepository.findOne({
-      where: { id, merchantId },
+      where: { id: String(id), merchantId: String(merchantId) },
     });
 
     if (!withdrawalInfo) {
@@ -82,7 +82,7 @@ export class WithdrawalInfoService {
    */
   async updateWithdrawalInfo(id: number, merchantId: number, updateWithdrawalInfoDto: UpdateWithdrawalInfoDto) {
     const withdrawalInfo = await this.withdrawalInfoRepository.findOne({
-      where: { id, merchantId },
+      where: { id: String(id), merchantId: String(merchantId) },
     });
 
     if (!withdrawalInfo) {
@@ -94,7 +94,7 @@ export class WithdrawalInfoService {
     // 如果设置为默认，先取消其他默认设置
     if (isDefault) {
       await this.withdrawalInfoRepository.update(
-        { merchantId, isDefault: true },
+        { merchantId: String(merchantId), isDefault: true },
         { isDefault: false }
       );
     }
@@ -121,7 +121,7 @@ export class WithdrawalInfoService {
    */
   async deleteWithdrawalInfo(id: number, merchantId: number) {
     const withdrawalInfo = await this.withdrawalInfoRepository.findOne({
-      where: { id, merchantId },
+      where: { id: String(id), merchantId: String(merchantId) },
     });
 
     if (!withdrawalInfo) {
@@ -143,7 +143,7 @@ export class WithdrawalInfoService {
     const { id } = setDefaultDto;
 
     const withdrawalInfo = await this.withdrawalInfoRepository.findOne({
-      where: { id, merchantId },
+      where: { id: String(id), merchantId: String(merchantId) },
     });
 
     if (!withdrawalInfo) {
@@ -152,7 +152,7 @@ export class WithdrawalInfoService {
 
     // 先取消所有默认设置
     await this.withdrawalInfoRepository.update(
-      { merchantId, isDefault: true },
+      { merchantId: String(merchantId), isDefault: true },
       { isDefault: false }
     );
 

@@ -154,7 +154,7 @@ export class ProductService {
   /**
    * 更新库存
    */
-  async updateStock(id: number, quantity: number) {
+  async updateStock(id: string, quantity: number) {
     const product = await this.findOne(id);
 
     const newStock = product.stock + quantity;
