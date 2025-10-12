@@ -16,7 +16,7 @@ import { UpdateCategoryDto } from './dto/update-category.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @ApiTags('分类管理')
-@Controller('categories')
+@Controller('category')
 @UseGuards(JwtAuthGuard)
 @ApiBearerAuth()
 export class CategoryController {
