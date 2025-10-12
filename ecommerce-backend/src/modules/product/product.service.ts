@@ -44,7 +44,7 @@ export class ProductService {
    * 查询商品列表（分页、筛选、搜索）
    */
   async findAll(queryDto: QueryProductDto) {
-    const { page, pageSize, categoryId, keyword, status } = queryDto;
+    const { page = 1, pageSize = 10, categoryId, keyword, status } = queryDto;
 
     const queryBuilder = this.productRepository.createQueryBuilder('product');
 
