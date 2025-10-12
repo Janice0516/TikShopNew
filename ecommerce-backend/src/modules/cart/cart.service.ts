@@ -20,7 +20,7 @@ export class CartService {
     const { productId, skuId, quantity } = addCartDto;
 
     // 验证商品是否存在
-    const product = await this.productService.findOne(productId);
+    const product = await this.productService.findOne(String(productId));
     if (product.status !== 1) {
       throw new HttpException('商品已下架', HttpStatus.BAD_REQUEST);
     }
@@ -114,7 +114,7 @@ export class CartService {
     }
 
     // 验证库存
-    const product = await this.productService.findOne(cart.productId);
+    const product = await this.productService.findOne(String(cart.productId));
     if (quantity > product.stock) {
       throw new HttpException('库存不足', HttpStatus.BAD_REQUEST);
     }
