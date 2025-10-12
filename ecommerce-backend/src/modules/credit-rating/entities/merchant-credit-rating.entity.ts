@@ -12,10 +12,10 @@ import { Merchant } from '../../merchant/entities/merchant.entity';
 @Entity('merchant_credit_rating')
 export class MerchantCreditRating {
   @PrimaryGeneratedColumn('increment', { type: 'bigint' })
-  id: number;
+  id: string;
 
   @Column({ name: 'merchant_id', type: 'bigint' })
-  merchantId: number;
+  merchantId: string;
 
   @ManyToOne(() => Merchant)
   @JoinColumn({ name: 'merchant_id' })
@@ -37,7 +37,7 @@ export class MerchantCreditRating {
   validUntil: Date;
 
   @Column({ name: 'evaluator_id', type: 'bigint', comment: '评估人ID' })
-  evaluatorId: number;
+  evaluatorId: string;
 
   @Column({ name: 'evaluation_reason', type: 'text', nullable: true, comment: '评级原因' })
   evaluationReason: string;

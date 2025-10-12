@@ -302,7 +302,7 @@ export class MerchantService {
   /**
    * 生成JWT Token
    */
-  private generateToken(merchantId: number): string {
+  private generateToken(merchantId: string): string {
     const payload = { merchantId: merchantId, type: 'merchant' };
     return this.jwtService.sign(payload);
   }

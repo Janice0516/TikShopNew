@@ -28,7 +28,7 @@ export class FundManagementService {
   async increaseFund(adminId: number, adminName: string, increaseFundDto: IncreaseFundDto) {
     const { merchantId, amount, reason, remark } = increaseFundDto;
 
-    const merchant = await this.merchantRepository.findOne({ where: { id: merchantId } });
+    const merchant = await this.merchantRepository.findOne({ where: { id: String(merchantId) } });
     if (!merchant) {
       throw new NotFoundException('商户不存在');
     }
@@ -70,7 +70,7 @@ export class FundManagementService {
   async freezeFund(adminId: number, adminName: string, freezeFundDto: FreezeFundDto) {
     const { merchantId, amount, reason, remark } = freezeFundDto;
 
-    const merchant = await this.merchantRepository.findOne({ where: { id: merchantId } });
+    const merchant = await this.merchantRepository.findOne({ where: { id: String(merchantId) } });
     if (!merchant) {
       throw new NotFoundException('商户不存在');
     }
@@ -129,7 +129,7 @@ export class FundManagementService {
   async unfreezeFund(adminId: number, adminName: string, unfreezeFundDto: UnfreezeFundDto) {
     const { merchantId, amount, reason, remark } = unfreezeFundDto;
 
-    const merchant = await this.merchantRepository.findOne({ where: { id: merchantId } });
+    const merchant = await this.merchantRepository.findOne({ where: { id: String(merchantId) } });
     if (!merchant) {
       throw new NotFoundException('商户不存在');
     }
@@ -188,7 +188,7 @@ export class FundManagementService {
   async deductFund(adminId: number, adminName: string, deductFundDto: DeductFundDto) {
     const { merchantId, amount, reason, remark } = deductFundDto;
 
-    const merchant = await this.merchantRepository.findOne({ where: { id: merchantId } });
+    const merchant = await this.merchantRepository.findOne({ where: { id: String(merchantId) } });
     if (!merchant) {
       throw new NotFoundException('商户不存在');
     }
@@ -246,7 +246,7 @@ export class FundManagementService {
   async refundFund(adminId: number, adminName: string, refundFundDto: RefundFundDto) {
     const { merchantId, amount, reason, orderId, remark } = refundFundDto;
 
-    const merchant = await this.merchantRepository.findOne({ where: { id: merchantId } });
+    const merchant = await this.merchantRepository.findOne({ where: { id: String(merchantId) } });
     if (!merchant) {
       throw new NotFoundException('商户不存在');
     }
@@ -309,7 +309,7 @@ export class FundManagementService {
     }
 
     return {
-      merchantId: merchant.id,
+      merchantId: Number(merchant.id),
       merchantName: merchant.merchantName,
       availableBalance: parseFloat((merchant.balance - merchant.frozenAmount).toFixed(2)),
       frozenAmount: parseFloat(merchant.frozenAmount.toFixed(2)),

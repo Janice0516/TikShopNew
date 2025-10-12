@@ -60,7 +60,7 @@ export class CreditRatingService {
   async calculateMerchantRating(merchantId: number, evaluatorId: number) {
     // 获取商户信息
     const merchant = await this.merchantRepository.findOne({
-      where: { id: merchantId }
+      where: { id: String(merchantId) }
     });
 
     if (!merchant) {
@@ -330,7 +330,7 @@ export class CreditRatingService {
     const results = [];
     for (const merchant of merchants) {
       try {
-        const result = await this.calculateMerchantRating(merchant.id, evaluatorId);
+        const result = await this.calculateMerchantRating(Number(merchant.id), evaluatorId);
         results.push({
           merchantId: merchant.id,
           merchantName: merchant.merchantName,

@@ -33,6 +33,7 @@ export class ProductService {
 
     const product = this.productRepository.create({
       ...createProductDto,
+      categoryId: String(createProductDto.categoryId),
       productNo,
       status: 1,
     });
@@ -119,7 +120,11 @@ export class ProductService {
       }
     }
 
-    await this.productRepository.update(id, updateProductDto);
+    const updateData = {
+      ...updateProductDto,
+      categoryId: updateProductDto.categoryId ? String(updateProductDto.categoryId) : undefined,
+    };
+    await this.productRepository.update(String(id), updateData);
     return await this.findOne(id);
   }
 
@@ -184,7 +189,7 @@ export class ProductService {
    * 增加销量
    */
   async increaseSales(id: number, quantity: number) {
-    await this.productRepository.increment({ id }, 'sales', quantity);
+    await this.productRepository.increment({ id: String(id) }, 'sales', quantity);
     return { message: '销量更新成功' };
   }
 

@@ -20,7 +20,7 @@ export class MerchantProductService {
 
     // 检查商品是否存在
     const product = await this.productRepository.findOne({
-      where: { id: productId }
+      where: { id: String(productId) }
     });
 
     if (!product) {

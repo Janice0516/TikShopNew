@@ -12,10 +12,10 @@ import { Merchant } from './merchant.entity';
 @Entity('merchant_recharge')
 export class MerchantRecharge {
   @PrimaryGeneratedColumn('increment', { type: 'bigint' })
-  id: number;
+  id: string;
 
   @Column({ name: 'merchant_id', type: 'bigint' })
-  merchantId: number;
+  merchantId: string;
 
   @ManyToOne(() => Merchant)
   @JoinColumn({ name: 'merchant_id' })
@@ -42,7 +42,7 @@ export class MerchantRecharge {
   status: number;
 
   @Column({ name: 'admin_id', type: 'bigint', nullable: true })
-  adminId: number;
+  adminId: string;
 
   @Column({ name: 'admin_name', length: 100, nullable: true })
   adminName: string;

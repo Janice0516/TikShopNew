@@ -12,10 +12,10 @@ import { Merchant } from '../../merchant/entities/merchant.entity';
 @Entity('merchant_withdrawal')
 export class MerchantWithdrawal {
   @PrimaryGeneratedColumn('increment', { type: 'bigint' })
-  id: number;
+  id: string;
 
   @Column({ name: 'merchant_id', type: 'bigint' })
-  merchantId: number;
+  merchantId: string;
 
   @ManyToOne(() => Merchant)
   @JoinColumn({ name: 'merchant_id' })
@@ -43,7 +43,7 @@ export class MerchantWithdrawal {
   adminRemark: string;
 
   @Column({ name: 'processed_by', type: 'bigint', nullable: true })
-  processedBy: number;
+  processedBy: string;
 
   @Column({ name: 'processed_at', type: 'timestamp', nullable: true })
   processedAt: Date;

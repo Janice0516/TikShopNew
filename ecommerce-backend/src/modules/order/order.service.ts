@@ -95,8 +95,10 @@ export class OrderService {
       // 创建订单主表
       const order = this.orderRepository.create({
         orderNo,
-        userId,
-        merchantId: 1, // TODO: 从商品获取商家ID
+        userId: String(userId),
+        merchantId: String(1), // TODO: 从商品获取商家ID
+        productId: String(orderItems[0].productId), // 假设只有一个商品
+        quantity: orderItems[0].quantity,
         totalAmount,
         costAmount,
         merchantProfit: totalAmount - costAmount,
@@ -180,7 +182,7 @@ export class OrderService {
     // 查询订单明细
     for (const order of list) {
       const items = await this.orderItemRepository.find({
-        where: { orderId: order.id },
+        where: { orderId: String(order.id) },
       });
       (order as any).items = items;
     }
@@ -205,10 +207,10 @@ export class OrderService {
     }
 
     // 验证权限
-    if (userType === 'user' && order.userId !== userId) {
+    if (userType === 'user' && order.userId !== String(userId)) {
       throw new HttpException('无权查看该订单', HttpStatus.FORBIDDEN);
     }
-    if (userType === 'merchant' && order.merchantId !== userId) {
+    if (userType === 'merchant' && order.merchantId !== String(userId)) {
       throw new HttpException('无权查看该订单', HttpStatus.FORBIDDEN);
     }
 

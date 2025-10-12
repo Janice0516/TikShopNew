@@ -167,7 +167,7 @@ export class RechargeService {
       // 如果审核通过，更新商户余额
       if (status === 1) {
         const merchant = await queryRunner.manager.findOne(Merchant, {
-          where: { id: recharge.merchantId },
+          where: { id: String(recharge.merchantId) },
         });
 
         if (merchant) {
