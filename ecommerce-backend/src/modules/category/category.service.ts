@@ -64,6 +64,8 @@ export class CategoryService {
       const categories = await this.categoryRepository.find();
       
       console.log('查询结果数量:', categories.length);
+      console.log('查询结果类型:', typeof categories);
+      console.log('第一个分类:', categories[0]);
 
       return {
         code: 200,
@@ -72,6 +74,7 @@ export class CategoryService {
       };
     } catch (error) {
       console.error('分类服务 findAll 错误:', error);
+      console.error('错误堆栈:', error.stack);
       throw error;
     }
   }
