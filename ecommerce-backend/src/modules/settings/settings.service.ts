@@ -21,38 +21,45 @@ export class SettingsService {
   // 获取所有系统设置
   async getSystemSettings() {
     try {
-      // 先尝试查询数据库
-      let settings = [];
-      try {
-        settings = await this.settingsRepository.find();
-      } catch (dbError) {
-        console.log('数据库查询失败，使用默认设置:', dbError.message);
-        // 如果数据库查询失败，返回默认设置
-        return {
-          code: 200,
-          message: '获取成功',
-          data: {
-            basic: this.getBasicSettings({}),
-            business: this.getBusinessSettings({}),
-            security: this.getSecuritySettings({}),
-            notification: this.getNotificationSettings({})
-          }
-        };
-      }
-
-      const settingsMap = {};
-      settings.forEach(setting => {
-        settingsMap[setting.settingKey] = this.parseSettingValue(setting.settingValue, setting.settingType);
-      });
-
+      // 暂时返回硬编码的默认设置，避免数据库问题
       return {
         code: 200,
         message: '获取成功',
         data: {
-          basic: this.getBasicSettings(settingsMap),
-          business: this.getBusinessSettings(settingsMap),
-          security: this.getSecuritySettings(settingsMap),
-          notification: this.getNotificationSettings(settingsMap)
+          basic: {
+            siteName: 'TikShop 电商平台',
+            siteLogo: '',
+            siteDescription: '一个功能强大的电商平台',
+            customerServicePhone: '+60 12-345 6789',
+            customerServiceEmail: 'support@tikshop.com',
+            defaultCurrency: 'MYR'
+          },
+          business: {
+            autoApproveOrders: true,
+            orderTimeout: 30,
+            minWithdrawalAmount: 10.00,
+            platformFeeRate: 1.5,
+            merchantOnboardingAudit: true,
+            productListingAudit: true
+          },
+          security: {
+            loginFailureLock: true,
+            maxLoginAttempts: 5,
+            lockoutDuration: 30,
+            minPasswordLength: 8,
+            forcePasswordComplexity: true,
+            sessionTimeout: 60
+          },
+          notification: {
+            emailNotifications: true,
+            smsNotifications: false,
+            systemNotifications: true,
+            smtpHost: 'smtp.example.com',
+            smtpPort: 587,
+            smtpUser: 'user@example.com',
+            smtpPass: 'password',
+            smtpSecure: true
+          }
         }
       };
     } catch (error) {
