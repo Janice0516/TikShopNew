@@ -230,11 +230,11 @@ export class ProductService {
   /**
    * 构建分类树
    */
-  private buildCategoryTree(categories: Category[], parentId = 0): any[] {
+  private buildCategoryTree(categories: Category[], parentId: number = 0): any[] {
     const tree = [];
 
     categories
-      .filter((cat) => cat.parent_id === parentId)
+      .filter((cat) => Number(cat.parent_id) === Number(parentId))
       .forEach((cat) => {
         const children = this.buildCategoryTree(categories, cat.id);
         tree.push({
