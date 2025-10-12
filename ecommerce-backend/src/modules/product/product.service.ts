@@ -22,7 +22,7 @@ export class ProductService {
   async create(createProductDto: CreateProductDto) {
     // 验证分类是否存在
     const category = await this.categoryRepository.findOne({
-      where: { id: createProductDto.categoryId },
+      where: { id: String(createProductDto.categoryId) },
     });
     if (!category) {
       throw new HttpException('分类不存在', HttpStatus.BAD_REQUEST);
@@ -94,7 +94,7 @@ export class ProductService {
 
     // 查询分类信息
     const category = await this.categoryRepository.findOne({
-      where: { id: product.categoryId },
+      where: { id: String(product.categoryId) },
     });
 
     return {
@@ -112,7 +112,7 @@ export class ProductService {
     // 如果更新了分类，验证分类是否存在
     if (updateProductDto.categoryId) {
       const category = await this.categoryRepository.findOne({
-        where: { id: updateProductDto.categoryId },
+        where: { id: String(updateProductDto.categoryId) },
       });
       if (!category) {
         throw new HttpException('分类不存在', HttpStatus.BAD_REQUEST);
@@ -205,7 +205,7 @@ export class ProductService {
    * 查询分类详情
    */
   async findCategory(id: number) {
-    const category = await this.categoryRepository.findOne({ where: { id } });
+    const category = await this.categoryRepository.findOne({ where: { id: String(id) } });
     if (!category) {
       throw new HttpException('分类不存在', HttpStatus.NOT_FOUND);
     }
@@ -236,7 +236,7 @@ export class ProductService {
     categories
       .filter((cat) => Number(cat.parentId) === Number(parentId))
       .forEach((cat) => {
-        const children = this.buildCategoryTree(categories, cat.id);
+        const children = this.buildCategoryTree(categories, Number(cat.id));
         tree.push({
           ...cat,
           children: children.length > 0 ? children : undefined,

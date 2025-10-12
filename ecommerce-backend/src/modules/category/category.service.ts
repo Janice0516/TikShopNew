@@ -21,7 +21,7 @@ export class CategoryService {
     // 验证父分类是否存在
     if (parentId > 0) {
       const parentCategory = await this.categoryRepository.findOne({
-        where: { id: parentId },
+        where: { id: String(parentId) },
       });
       if (!parentCategory) {
         throw new BadRequestException('父分类不存在');
@@ -131,7 +131,7 @@ export class CategoryService {
    */
   async update(id: number, updateCategoryDto: UpdateCategoryDto) {
     const category = await this.categoryRepository.findOne({
-      where: { id },
+      where: { id: String(id) },
     });
 
     if (!category) {
@@ -143,7 +143,7 @@ export class CategoryService {
     // 验证父分类是否存在
     if (parentId && parentId > 0) {
       const parentCategory = await this.categoryRepository.findOne({
-        where: { id: parentId },
+        where: { id: String(parentId) },
       });
       if (!parentCategory) {
         throw new BadRequestException('父分类不存在');
@@ -155,7 +155,7 @@ export class CategoryService {
       const existingCategory = await this.categoryRepository.findOne({
         where: { parentId: parentId || category.parentId, name },
       });
-      if (existingCategory && existingCategory.id !== id) {
+      if (existingCategory && existingCategory.id !== String(id)) {
         throw new BadRequestException('同级分类名称已存在');
       }
     }
@@ -183,7 +183,7 @@ export class CategoryService {
    */
   async remove(id: number) {
     const category = await this.categoryRepository.findOne({
-      where: { id },
+      where: { id: String(id) },
     });
 
     if (!category) {
@@ -192,7 +192,7 @@ export class CategoryService {
 
     // 检查是否有子分类
     const childCategories = await this.categoryRepository.find({
-      where: { parentId: id },
+      where: { parentId: String(id) },
     });
 
     if (childCategories.length > 0) {
@@ -211,7 +211,7 @@ export class CategoryService {
    */
   async updateStatus(id: number, status: number) {
     const category = await this.categoryRepository.findOne({
-      where: { id },
+      where: { id: String(id) },
     });
 
     if (!category) {
@@ -232,7 +232,7 @@ export class CategoryService {
    */
   async updateSort(id: number, sort: number) {
     const category = await this.categoryRepository.findOne({
-      where: { id },
+      where: { id: String(id) },
     });
 
     if (!category) {
