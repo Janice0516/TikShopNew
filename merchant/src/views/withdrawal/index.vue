@@ -10,11 +10,11 @@
       <div class="balance-info">
         <div class="balance-item">
           <span class="label">可提现余额：</span>
-          <span class="amount">¥{{ availableBalance.toFixed(2) }}</span>
+          <span class="amount">RM{{ availableBalance.toFixed(2) }}</span>
         </div>
         <div class="balance-item">
           <span class="label">冻结金额：</span>
-          <span class="amount frozen">¥{{ frozenAmount.toFixed(2) }}</span>
+          <span class="amount frozen">RM{{ frozenAmount.toFixed(2) }}</span>
         </div>
       </div>
     </el-card>
@@ -39,7 +39,7 @@
             <template #append>元</template>
           </el-input>
           <div class="form-tip">
-            最小提现金额：¥{{ minWithdrawalAmount }}，最大提现金额：¥{{ availableBalance.toFixed(2) }}
+            最小提现金额：RM{{ minWithdrawalAmount }}，最大提现金额：RM{{ availableBalance.toFixed(2) }}
           </div>
         </el-form-item>
 
@@ -119,7 +119,7 @@
         <el-table-column prop="id" label="申请ID" width="80" />
         <el-table-column prop="withdrawalAmount" label="提现金额" width="120">
           <template #default="scope">
-            ¥{{ scope.row.withdrawalAmount }}
+            RM{{ scope.row.withdrawalAmount }}
           </template>
         </el-table-column>
         <el-table-column prop="bankName" label="银行名称" width="120" />
@@ -258,7 +258,7 @@ const handleSubmit = async () => {
     await withdrawalFormRef.value.validate()
     
     await ElMessageBox.confirm(
-      `确认提现 ¥${withdrawalForm.withdrawalAmount} 到 ${withdrawalForm.bankName} 账户 ${withdrawalForm.bankAccount}？`,
+      `确认提现 RM${withdrawalForm.withdrawalAmount} 到 ${withdrawalForm.bankName} 账户 ${withdrawalForm.bankAccount}？`,
       '确认提现',
       {
         confirmButtonText: '确认',

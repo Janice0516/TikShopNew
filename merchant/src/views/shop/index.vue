@@ -53,7 +53,7 @@
             </el-col>
             <el-col :span="6">
               <div class="stat-item">
-                <div class="stat-value">${{ shopStats.totalSales }}</div>
+                <div class="stat-value">RM{{ shopStats.totalSales }}</div>
                 <div class="stat-label">{{ $t('shop.totalSales') }}</div>
               </div>
             </el-col>

@@ -9,11 +9,11 @@
       <div class="balance-info">
         <div class="balance-item">
           <div class="balance-label">{{ $t('finance.availableBalance') }}</div>
-          <div class="balance-value">${{ availableBalance }}</div>
+          <div class="balance-value">RM{{ availableBalance }}</div>
         </div>
         <div class="balance-item">
           <div class="balance-label">{{ $t('finance.frozenAmount') }}</div>
-          <div class="balance-value frozen">${{ frozenAmount }}</div>
+          <div class="balance-value frozen">RM{{ frozenAmount }}</div>
         </div>
       </div>
     </el-card>
@@ -43,7 +43,7 @@
           />
           <span style="margin-left: 10px; color: #999;">USD</span>
           <div class="form-tip">
-            {{ $t('finance.minimumWithdraw') }} ${{ minWithdrawAmount }}
+            {{ $t('finance.minimumWithdraw') }} RM{{ minWithdrawAmount }}
           </div>
         </el-form-item>
 
@@ -90,16 +90,16 @@
         <div class="fee-details">
           <div class="fee-item">
             <span class="fee-label">{{ $t('finance.withdrawAmount') }}:</span>
-            <span class="fee-value">${{ withdrawForm.amount || '0.00' }}</span>
+            <span class="fee-value">RM{{ withdrawForm.amount || '0.00' }}</span>
           </div>
           <div class="fee-item">
             <span class="fee-label">{{ $t('finance.withdrawFee') }}:</span>
-            <span class="fee-value">${{ withdrawFee }}</span>
+            <span class="fee-value">RM{{ withdrawFee }}</span>
           </div>
           <el-divider />
           <div class="fee-item total">
             <span class="fee-label">{{ $t('finance.actualAmount') }}:</span>
-            <span class="fee-value">${{ actualAmount }}</span>
+            <span class="fee-value">RM{{ actualAmount }}</span>
           </div>
         </div>
       </el-card>

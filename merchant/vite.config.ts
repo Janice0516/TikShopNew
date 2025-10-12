@@ -23,7 +23,7 @@ export default defineConfig({
     ],
     proxy: {
       '/api': {
-        target: 'https://tiktokshop-api.loca.lt',
+        target: 'https://tiktokshop-api.onrender.com',
         changeOrigin: true,
         secure: true
       }
