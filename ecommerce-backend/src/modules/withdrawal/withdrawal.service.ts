@@ -19,7 +19,7 @@ export class WithdrawalService {
 
     // 检查是否有待审核的提现申请
     const pendingWithdrawal = await this.withdrawalRepository.findOne({
-      where: { merchantId, status: 0 },
+      where: { merchantId: String(merchantId), status: 0 },
     });
 
     if (pendingWithdrawal) {
@@ -46,7 +46,7 @@ export class WithdrawalService {
     }
 
     const withdrawal = this.withdrawalRepository.create({
-      merchantId,
+      merchantId: String(merchantId),
       withdrawalAmount,
       bankName,
       bankAccount,
@@ -149,7 +149,7 @@ export class WithdrawalService {
 
     withdrawal.status = status;
     withdrawal.adminRemark = adminRemark || '';
-    withdrawal.processedBy = adminId;
+    withdrawal.processedBy = String(adminId);
     withdrawal.processedAt = new Date();
 
     await this.withdrawalRepository.save(withdrawal);

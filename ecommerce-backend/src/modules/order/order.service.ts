@@ -117,7 +117,8 @@ export class OrderService {
       // 创建订单明细
       for (const item of orderItems) {
         const orderItem = this.orderItemRepository.create({
-          orderId: savedOrder.id,
+          orderId: String(savedOrder.id),
+          productId: String(item.productId),
           ...item,
         });
         await queryRunner.manager.save(orderItem);
@@ -216,7 +217,7 @@ export class OrderService {
 
     // 查询订单明细
     const items = await this.orderItemRepository.find({
-      where: { orderId: order.id },
+      where: { orderId: String(order.id) },
     });
 
     return {

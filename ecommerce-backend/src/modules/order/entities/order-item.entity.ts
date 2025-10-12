@@ -8,16 +8,16 @@ import {
 @Entity('order_item')
 export class OrderItem {
   @PrimaryGeneratedColumn('increment', { type: 'bigint' })
-  id: number;
+  id: string;
 
   @Column({ name: 'order_id', type: 'bigint' })
-  orderId: number;
+  orderId: string;
 
   @Column({ name: 'product_id', type: 'bigint' })
-  productId: number;
+  productId: string;
 
   @Column({ name: 'sku_id', type: 'bigint', nullable: true })
-  skuId: number;
+  skuId: string;
 
   @Column({ name: 'product_name', length: 200 })
   productName: string;
