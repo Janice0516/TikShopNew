@@ -8,7 +8,9 @@ import { join } from 'path';
 import { NestExpressApplication } from '@nestjs/platform-express';
 
 async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
+    logger: process.env.NODE_ENV === 'production' ? ['error', 'warn'] : ['log', 'error', 'warn', 'debug'],
+  });
 
   // 配置静态文件服务
   app.useStaticAssets(join(__dirname, '..', 'uploads'), {
@@ -39,7 +41,7 @@ async function bootstrap() {
   // 全局异常过滤器
   app.useGlobalFilters(new HttpExceptionFilter());
 
-  // Swagger文档配置
+  // Swagger文档配置（仅在非生产环境）
   if (process.env.NODE_ENV !== 'production') {
     const config = new DocumentBuilder()
       .setTitle('供货型电商平台 API')
@@ -59,20 +61,11 @@ async function bootstrap() {
 
   const port = process.env.PORT || 3000;
   const host = process.env.HOST || '0.0.0.0';
+  
+  // 快速启动，减少启动时间
   await app.listen(port, host);
 
-  console.log(`
-    ================================================
-    🚀 应用启动成功！
-    ================================================
-    📝 API地址: http://localhost:${port}/api
-    📝 外部API地址: http://192.168.0.121:${port}/api
-    📚 文档地址: http://localhost:${port}/api/docs
-    📚 外部文档地址: http://192.168.0.121:${port}/api/docs
-    🌍 环境: ${process.env.NODE_ENV || 'development'}
-    🌐 监听地址: ${host}:${port}
-    ================================================
-  `);
+  console.log(`🚀 应用启动成功！端口: ${port}`);
 }
 
 bootstrap();

@@ -40,6 +40,7 @@ import { CategoryModule } from './modules/category/category.module';
 import { WithdrawalModule } from './modules/withdrawal/withdrawal.module';
 import { CreditRatingModule } from './modules/credit-rating/credit-rating.module';
 import { FundManagementModule } from './modules/fund-management/fund-management.module';
+import { HealthModule } from './modules/health/health.module';
 
 @Module({
   imports: [
@@ -132,6 +133,7 @@ import { FundManagementModule } from './modules/fund-management/fund-management.
     CategoryModule,
     WithdrawalModule,
     CreditRatingModule,
+    HealthModule,
   ],
 })
 export class AppModule {}

@@ -1,0 +1,25 @@
+# Render配置文件
+# 用于优化Render部署性能
+
+# 构建配置
+build:
+  commands:
+    - npm ci --only=production
+    - npm run build
+
+# 启动配置
+start:
+  command: npm run start:prod
+
+# 健康检查配置
+healthCheck:
+  path: /api/health
+  intervalSeconds: 10
+  timeoutSeconds: 5
+  unhealthyThreshold: 2
+  healthyThreshold: 1
+
+# 环境变量
+env:
+  NODE_ENV: production
+  PORT: 10000

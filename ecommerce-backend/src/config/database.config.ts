@@ -13,13 +13,13 @@ export default registerAs('database', () => {
       password: process.env.DB_PASSWORD || '',
       database: process.env.DB_DATABASE || 'tiktokshop',
       ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
-      connectTimeoutMS: 60000,
-      acquireTimeoutMS: 60000,
-      timeout: 60000,
+      connectTimeoutMS: 10000, // 减少到10秒
+      acquireTimeoutMS: 10000, // 减少到10秒
+      timeout: 10000, // 减少到10秒
       extra: {
-        max: 20,
-        idleTimeoutMillis: 30000,
-        connectionTimeoutMillis: 60000,
+        max: 10, // 减少连接池大小
+        idleTimeoutMillis: 10000, // 减少到10秒
+        connectionTimeoutMillis: 10000, // 减少到10秒
       },
     };
   } else {
