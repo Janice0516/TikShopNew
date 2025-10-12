@@ -24,14 +24,13 @@ export class AdminService {
     try {
       console.log('开始获取仪表盘统计数据...');
       
-      // 简化版本：只获取基本的count统计
-      const [totalProducts, activeMerchants, totalUsers] = await Promise.all([
+      // 进一步简化：只查询商品和商家
+      const [totalProducts, activeMerchants] = await Promise.all([
         this.productRepository.count(),
-        this.merchantRepository.count({ where: { status: 1 } }),
-        this.userRepository.count()
+        this.merchantRepository.count({ where: { status: 1 } })
       ]);
 
-      console.log('统计数据:', { totalProducts, activeMerchants, totalUsers });
+      console.log('统计数据:', { totalProducts, activeMerchants });
 
       const result = {
         code: 200,
@@ -40,8 +39,8 @@ export class AdminService {
           stats: {
             products: totalProducts,
             merchants: activeMerchants,
-            orders: 0, // 暂时设为0，避免订单查询问题
-            users: totalUsers
+            orders: 0, // 暂时设为0
+            users: 0 // 暂时设为0
           },
           recentOrders: [], // 暂时设为空数组
           topProducts: [] // 暂时设为空数组
