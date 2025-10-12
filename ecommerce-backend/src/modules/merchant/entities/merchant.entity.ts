@@ -10,7 +10,7 @@ import { Exclude } from 'class-transformer';
 @Entity('merchant')
 export class Merchant {
   @PrimaryGeneratedColumn('increment', { type: 'bigint' })
-  id: number;
+  id: string;
 
   @Column({ name: 'merchant_uid', length: 20, unique: true, comment: '商家唯一标识符' })
   merchantUid: string;

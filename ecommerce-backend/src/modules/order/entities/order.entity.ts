@@ -9,19 +9,19 @@ import {
 @Entity('"order"')
 export class Order {
   @PrimaryGeneratedColumn('increment', { type: 'bigint' })
-  id: number;
+  id: string;
 
   @Column({ name: 'order_no', length: 50, unique: true })
   orderNo: string;
 
   @Column({ name: 'user_id', type: 'bigint' })
-  userId: number;
+  userId: string;
 
   @Column({ name: 'merchant_id', type: 'bigint' })
-  merchantId: number;
+  merchantId: string;
 
   @Column({ name: 'product_id', type: 'bigint' })
-  productId: number;
+  productId: string;
 
   @Column({ type: 'int' })
   quantity: number;

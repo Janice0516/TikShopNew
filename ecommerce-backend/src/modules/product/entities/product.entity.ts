@@ -9,7 +9,7 @@ import {
 @Entity('platform_product')
 export class Product {
   @PrimaryGeneratedColumn('increment', { type: 'bigint' })
-  id: number;
+  id: string;
 
   @Column({ name: 'product_no', length: 50, nullable: true, unique: true })
   productNo: string;
@@ -18,7 +18,7 @@ export class Product {
   name: string;
 
   @Column({ name: 'category_id', type: 'bigint' })
-  categoryId: number;
+  categoryId: string;
 
   @Column({ length: 100, nullable: true })
   brand: string;
