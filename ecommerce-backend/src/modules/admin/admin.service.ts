@@ -36,23 +36,30 @@ export class AdminService {
       });
       console.log('活跃商家数:', activeMerchants);
       
-      // 获取订单总数
-      console.log('查询订单总数...');
-      const totalOrders = await this.orderRepository.count();
-      console.log('订单总数:', totalOrders);
-      
       // 获取注册用户总数
       console.log('查询用户总数...');
       const totalUsers = await this.userRepository.count();
       console.log('用户总数:', totalUsers);
 
-      // 获取最近订单（最近5个）
-      console.log('查询最近订单...');
-      const recentOrders = await this.orderRepository.find({
-        take: 5,
-        order: { createTime: 'DESC' }
-      });
-      console.log('最近订单数量:', recentOrders.length);
+      // 先测试订单查询是否正常
+      console.log('测试订单查询...');
+      let totalOrders = 0;
+      let recentOrders = [];
+      try {
+        totalOrders = await this.orderRepository.count();
+        console.log('订单总数:', totalOrders);
+        
+        recentOrders = await this.orderRepository.find({
+          take: 5,
+          order: { createTime: 'DESC' }
+        });
+        console.log('最近订单数量:', recentOrders.length);
+      } catch (orderError) {
+        console.error('订单查询失败:', orderError);
+        // 如果订单查询失败，使用默认值
+        totalOrders = 0;
+        recentOrders = [];
+      }
 
       // 获取热销商品（按销量排序，取前5个）
       console.log('查询热销商品...');
