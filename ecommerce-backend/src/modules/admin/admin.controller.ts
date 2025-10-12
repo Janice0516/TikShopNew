@@ -74,20 +74,29 @@ export class AdminController {
   @Get('dashboard/stats')
   @ApiOperation({ summary: '获取仪表盘统计数据' })
   async getDashboardStats() {
-    return {
-      code: 200,
-      message: '获取成功',
-      data: {
-        stats: {
-          products: 8,
-          merchants: 3,
-          orders: 0,
-          users: 0
-        },
-        recentOrders: [],
-        topProducts: []
-      }
-    };
+    try {
+      return {
+        code: 200,
+        message: '获取成功',
+        data: {
+          stats: {
+            products: 8,
+            merchants: 3,
+            orders: 0,
+            users: 0
+          },
+          recentOrders: [],
+          topProducts: []
+        }
+      };
+    } catch (error) {
+      console.error('getDashboardStats error:', error);
+      return {
+        code: 500,
+        message: '获取统计数据失败',
+        data: null
+      };
+    }
   }
 
   @Get('users')
