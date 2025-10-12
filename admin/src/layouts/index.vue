@@ -111,8 +111,7 @@ const handleCommand = (command: string) => {
   if (command === 'profile') {
     router.push('/profile')
   } else if (command === 'settings') {
-    // 跳转到设置页面（暂时显示消息）
-    ElMessage.info('Settings page coming soon')
+    router.push('/settings')
   } else if (command === 'logout') {
     ElMessageBox.confirm('Are you sure you want to logout?', 'Confirm', {
       confirmButtonText: 'Confirm',

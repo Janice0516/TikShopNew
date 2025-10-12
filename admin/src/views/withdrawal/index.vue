@@ -55,7 +55,7 @@
         <el-table-column prop="merchantId" label="商户ID" width="100" />
         <el-table-column prop="withdrawalAmount" label="提现金额" width="120">
           <template #default="scope">
-            ¥{{ scope.row.withdrawalAmount }}
+            RM{{ scope.row.withdrawalAmount }}
           </template>
         </el-table-column>
         <el-table-column prop="bankName" label="银行名称" width="120" />
@@ -134,7 +134,7 @@
         <el-descriptions :column="2" border>
           <el-descriptions-item label="提现ID">{{ currentWithdrawal.id }}</el-descriptions-item>
           <el-descriptions-item label="商户ID">{{ currentWithdrawal.merchantId }}</el-descriptions-item>
-          <el-descriptions-item label="提现金额">¥{{ currentWithdrawal.withdrawalAmount }}</el-descriptions-item>
+          <el-descriptions-item label="提现金额">RM{{ currentWithdrawal.withdrawalAmount }}</el-descriptions-item>
           <el-descriptions-item label="银行名称">{{ currentWithdrawal.bankName }}</el-descriptions-item>
           <el-descriptions-item label="银行账号">{{ currentWithdrawal.bankAccount }}</el-descriptions-item>
           <el-descriptions-item label="账户持有人">{{ currentWithdrawal.accountHolder }}</el-descriptions-item>

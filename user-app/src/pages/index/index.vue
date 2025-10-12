@@ -52,8 +52,8 @@
             <view class="product-info">
               <text class="product-name">{{ product.name }}</text>
               <view class="product-price">
-                <text class="current-price">${{ product.price }}</text>
-                <text class="original-price" v-if="product.originalPrice">${{ product.originalPrice }}</text>
+                <text class="current-price">RM{{ product.price }}</text>
+                <text class="original-price" v-if="product.originalPrice">RM{{ product.originalPrice }}</text>
               </view>
               <view class="product-sales">
                 <text class="sales-text">{{ $t('product.sales') }}: {{ product.sales }}</text>
@@ -82,8 +82,8 @@
           <view class="product-info">
             <text class="product-name">{{ product.name }}</text>
             <view class="product-price">
-              <text class="current-price">${{ product.price }}</text>
-              <text class="original-price" v-if="product.originalPrice">${{ product.originalPrice }}</text>
+              <text class="current-price">RM{{ product.price }}</text>
+              <text class="original-price" v-if="product.originalPrice">RM{{ product.originalPrice }}</text>
             </view>
             <view class="product-tags">
               <text class="tag new-tag" v-if="product.isNew">{{ $t('product.new') }}</text>

@@ -55,15 +55,15 @@ export function parsePrice(priceStr: string): number {
 /**
  * 货币符号
  */
-export const CURRENCY_SYMBOL = '$'
+export const CURRENCY_SYMBOL = 'RM'
 
 /**
  * 货币代码
  */
-export const CURRENCY_CODE = 'USD'
+export const CURRENCY_CODE = 'MYR'
 
 /**
  * 货币名称
  */
-export const CURRENCY_NAME = 'US Dollar'
+export const CURRENCY_NAME = 'Malaysian Ringgit'
 

@@ -19,10 +19,10 @@
           </el-descriptions-item>
           <el-descriptions-item label="下单时间">{{ orderDetail.createTime }}</el-descriptions-item>
           <el-descriptions-item label="支付时间">{{ orderDetail.payTime || '-' }}</el-descriptions-item>
-          <el-descriptions-item label="Order Amount">${{ orderDetail.totalAmount }}</el-descriptions-item>
-          <el-descriptions-item label="Shipping Fee">${{ orderDetail.freight }}</el-descriptions-item>
+          <el-descriptions-item label="Order Amount">RM{{ orderDetail.totalAmount }}</el-descriptions-item>
+          <el-descriptions-item label="Shipping Fee">RM{{ orderDetail.freight }}</el-descriptions-item>
           <el-descriptions-item label="Total Paid">
-            <span style="color: #f56c6c; font-weight: bold;">${{ orderDetail.payAmount }}</span>
+            <span style="color: #f56c6c; font-weight: bold;">RM{{ orderDetail.payAmount }}</span>
           </el-descriptions-item>
           <el-descriptions-item label="买家留言">{{ orderDetail.buyerMessage || '-' }}</el-descriptions-item>
         </el-descriptions>
@@ -46,12 +46,12 @@
             <el-table-column prop="quantity" label="数量" width="100" />
             <el-table-column prop="salePrice" label="Unit Price" width="120">
               <template #default="{ row }">
-                ${{ row.salePrice }}
+                RM{{ row.salePrice }}
               </template>
             </el-table-column>
             <el-table-column prop="totalPrice" label="Subtotal" width="120">
               <template #default="{ row }">
-                ${{ row.totalPrice }}
+                RM{{ row.totalPrice }}
               </template>
             </el-table-column>
           </el-table>

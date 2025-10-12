@@ -15,8 +15,8 @@
       <view class="product-subtitle">{{ product.brand }}</view>
       
       <view class="price-section">
-        <view class="current-price">${{ product.price }}</view>
-        <view class="original-price" v-if="product.originalPrice">${{ product.originalPrice }}</view>
+        <view class="current-price">RM{{ product.price }}</view>
+        <view class="original-price" v-if="product.originalPrice">RM{{ product.originalPrice }}</view>
         <view class="discount-tag" v-if="product.originalPrice">
           {{ Math.round((1 - product.price / product.originalPrice) * 100) }}% OFF
         </view>
@@ -128,7 +128,7 @@
             <image :src="product.mainImage" class="summary-image" />
             <view class="summary-info">
               <text class="summary-name">{{ product.name }}</text>
-              <text class="summary-price">${{ product.price }}</text>
+              <text class="summary-price">RM{{ product.price }}</text>
             </view>
           </view>
 

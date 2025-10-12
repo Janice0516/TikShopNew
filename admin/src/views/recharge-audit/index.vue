@@ -43,7 +43,7 @@
           <div class="stat-item">
             <el-icon class="stat-icon" color="#409EFF" :size="48"><Money /></el-icon>
             <div class="stat-info">
-              <div class="stat-value">${{ stats.totalAmount }}</div>
+              <div class="stat-value">RM{{ stats.totalAmount }}</div>
               <div class="stat-label">总充值金额</div>
             </div>
           </div>
@@ -150,7 +150,7 @@
 
         <el-table-column prop="amount" label="充值金额" width="120">
           <template #default="{ row }">
-            <span class="amount">${{ row.amount }}</span>
+            <span class="amount">RM{{ row.amount }}</span>
           </template>
         </el-table-column>
 
@@ -244,7 +244,7 @@
     >
       <el-form :model="auditForm" label-width="100px">
         <el-form-item label="充值金额">
-          <span>${{ auditForm.amount }}</span>
+          <span>RM{{ auditForm.amount }}</span>
         </el-form-item>
         <el-form-item label="支付方式">
           <span>{{ getPaymentMethodName(auditForm.paymentMethod) }}</span>
@@ -287,7 +287,7 @@
           <el-descriptions-item label="充值ID">{{ currentRecharge.id }}</el-descriptions-item>
           <el-descriptions-item label="商户名称">{{ currentRecharge.merchant?.merchantName || '-' }}</el-descriptions-item>
           <el-descriptions-item label="商户UID">{{ currentRecharge.merchant?.merchantUid || '-' }}</el-descriptions-item>
-          <el-descriptions-item label="充值金额">${{ currentRecharge.amount }}</el-descriptions-item>
+          <el-descriptions-item label="充值金额">RM{{ currentRecharge.amount }}</el-descriptions-item>
           <el-descriptions-item label="支付方式">{{ getPaymentMethodName(currentRecharge.paymentMethod) }}</el-descriptions-item>
           <el-descriptions-item label="支付凭证">{{ currentRecharge.paymentReference || '-' }}</el-descriptions-item>
           <el-descriptions-item label="状态">

@@ -48,7 +48,7 @@
         <el-table-column prop="name" label="商品名称" min-width="200" show-overflow-tooltip />
         <el-table-column prop="costPrice" label="Cost Price" width="100">
           <template #default="{ row }">
-            ${{ row.costPrice }}
+            RM{{ row.costPrice }}
           </template>
         </el-table-column>
         <el-table-column prop="stock" label="库存" width="100" />

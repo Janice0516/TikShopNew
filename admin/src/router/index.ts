@@ -91,6 +91,12 @@ const routes: RouteRecordRaw[] = [
         name: 'Profile',
         component: () => import('@/views/profile/index.vue'),
         meta: { title: '个人中心', icon: 'User' }
+      },
+      {
+        path: '/settings',
+        name: 'Settings',
+        component: () => import('@/views/settings/index.vue'),
+        meta: { title: '系统设置', icon: 'Setting' }
       }
     ]
   }

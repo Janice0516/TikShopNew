@@ -58,7 +58,7 @@
             </view>
 
             <view class="item-bottom">
-              <view class="item-price">${{ item.price }}</view>
+              <view class="item-price">RM{{ item.price }}</view>
               
               <view class="quantity-control">
                 <view 
@@ -99,7 +99,7 @@
       <view class="checkout-bar">
         <view class="total-info">
           <text class="total-label">{{ $t('cart.total') }}:</text>
-          <text class="total-price">${{ totalAmount }}</text>
+          <text class="total-price">RM{{ totalAmount }}</text>
         </view>
         
         <view class="checkout-btn" @click="checkout" :class="{ disabled: selectedCount === 0 }">
@@ -122,7 +122,7 @@
             <image :src="product.image" class="recommend-image" />
             <view class="recommend-info">
               <text class="recommend-name">{{ product.name }}</text>
-              <text class="recommend-price">${{ product.price }}</text>
+              <text class="recommend-price">RM{{ product.price }}</text>
             </view>
           </view>
         </view>

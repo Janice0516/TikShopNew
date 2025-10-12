@@ -34,7 +34,7 @@
         <el-table-column prop="userId" label="用户ID" width="100" />
         <el-table-column prop="payAmount" label="Order Amount" width="120">
           <template #default="{ row }">
-            ${{ row.payAmount }}
+            RM{{ row.payAmount }}
           </template>
         </el-table-column>
         <el-table-column prop="orderStatus" label="订单状态" width="100">

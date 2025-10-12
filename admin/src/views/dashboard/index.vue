@@ -90,7 +90,7 @@
             <el-table-column prop="customerName" label="Customer" width="100" />
             <el-table-column prop="totalAmount" label="Amount" width="100">
               <template #default="{ row }">
-                ${{ row.totalAmount }}
+                RM{{ row.totalAmount }}
               </template>
             </el-table-column>
             <el-table-column prop="status" label="Status" width="100">
@@ -118,7 +118,7 @@
             <el-table-column prop="stock" label="Stock" width="80" />
             <el-table-column prop="price" label="Price" width="100">
               <template #default="{ row }">
-                ${{ row.price }}
+                RM{{ row.price }}
               </template>
             </el-table-column>
             <el-table-column prop="status" label="Status" width="80">
@@ -252,7 +252,7 @@ const initSalesChart = () => {
     },
     tooltip: {
       trigger: 'axis',
-      formatter: '{b}: ${c}'
+      formatter: '{b}: RM{c}'
     },
     xAxis: {
       type: 'category',
@@ -261,7 +261,7 @@ const initSalesChart = () => {
     yAxis: {
       type: 'value',
       axisLabel: {
-        formatter: '${value}'
+        formatter: 'RM{value}'
       }
     },
     series: [{
