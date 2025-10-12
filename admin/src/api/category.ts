@@ -3,7 +3,7 @@ import request from '@/utils/request'
 // 获取分类列表
 export function getCategoryList(params?: any) {
   return request({
-    url: '/categories',
+    url: '/category',
     method: 'get',
     params
   })
@@ -12,7 +12,7 @@ export function getCategoryList(params?: any) {
 // 获取分类树形结构
 export function getCategoryTree() {
   return request({
-    url: '/categories/tree',
+    url: '/category/tree',
     method: 'get'
   })
 }
@@ -20,7 +20,7 @@ export function getCategoryTree() {
 // 获取分类详情
 export function getCategoryDetail(id: number) {
   return request({
-    url: `/categories/${id}`,
+    url: `/category/${id}`,
     method: 'get'
   })
 }
@@ -28,7 +28,7 @@ export function getCategoryDetail(id: number) {
 // 创建分类
 export function createCategory(data: any) {
   return request({
-    url: '/categories',
+    url: '/category',
     method: 'post',
     data
   })
@@ -37,7 +37,7 @@ export function createCategory(data: any) {
 // 更新分类
 export function updateCategory(id: number, data: any) {
   return request({
-    url: `/categories/${id}`,
+    url: `/category/${id}`,
     method: 'put',
     data
   })
@@ -46,7 +46,7 @@ export function updateCategory(id: number, data: any) {
 // 删除分类
 export function deleteCategory(id: number) {
   return request({
-    url: `/categories/${id}`,
+    url: `/category/${id}`,
     method: 'delete'
   })
 }
@@ -54,7 +54,7 @@ export function deleteCategory(id: number) {
 // 更新分类状态
 export function updateCategoryStatus(id: number, status: number) {
   return request({
-    url: `/categories/${id}/status`,
+    url: `/category/${id}/status`,
     method: 'put',
     data: { status }
   })
@@ -63,7 +63,7 @@ export function updateCategoryStatus(id: number, status: number) {
 // 更新分类排序
 export function updateCategorySort(id: number, sort: number) {
   return request({
-    url: `/categories/${id}/sort`,
+    url: `/category/${id}/sort`,
     method: 'put',
     data: { sort }
   })

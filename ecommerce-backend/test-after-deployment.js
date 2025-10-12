@@ -69,7 +69,10 @@ async function testFixedAPIsAfterDeployment() {
     try {
       const createCategoryResponse = await axios.post(`${API_BASE_URL}/category`, {
         name: 'Test Category',
-        description: 'Test category description'
+        parentId: 0,
+        level: 1,
+        sort: 0,
+        status: 1
       }, {
         headers: { Authorization: `Bearer ${adminToken}` }
       });
