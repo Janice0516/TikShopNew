@@ -29,6 +29,21 @@ export class Order {
   @Column({ name: 'total_amount', type: 'decimal', precision: 10, scale: 2 })
   totalAmount: number;
 
+  @Column({ name: 'cost_amount', type: 'decimal', precision: 10, scale: 2, nullable: true })
+  costAmount: number;
+
+  @Column({ name: 'merchant_profit', type: 'decimal', precision: 10, scale: 2, nullable: true })
+  merchantProfit: number;
+
+  @Column({ name: 'platform_profit', type: 'decimal', precision: 10, scale: 2, nullable: true })
+  platformProfit: number;
+
+  @Column({ name: 'freight', type: 'decimal', precision: 10, scale: 2, default: 0 })
+  freight: number;
+
+  @Column({ name: 'discount_amount', type: 'decimal', precision: 10, scale: 2, default: 0 })
+  discountAmount: number;
+
   @Column({ type: 'smallint', default: 1 })
   status: number;
 
@@ -64,6 +79,27 @@ export class Order {
 
   @Column({ name: 'pay_amount', type: 'decimal', precision: 10, scale: 2, nullable: true })
   payAmount: number;
+
+  @Column({ name: 'receiver_name', type: 'varchar', length: 50, nullable: true })
+  receiverName: string;
+
+  @Column({ name: 'receiver_phone', type: 'varchar', length: 20, nullable: true })
+  receiverPhone: string;
+
+  @Column({ name: 'receiver_province', type: 'varchar', length: 50, nullable: true })
+  receiverProvince: string;
+
+  @Column({ name: 'receiver_city', type: 'varchar', length: 50, nullable: true })
+  receiverCity: string;
+
+  @Column({ name: 'receiver_district', type: 'varchar', length: 50, nullable: true })
+  receiverDistrict: string;
+
+  @Column({ name: 'receiver_address', type: 'varchar', length: 200, nullable: true })
+  receiverAddress: string;
+
+  @Column({ name: 'buyer_message', type: 'text', nullable: true })
+  buyerMessage: string;
 
   @Column({ name: 'shipping_address', type: 'text', nullable: true })
   shippingAddress: string;
