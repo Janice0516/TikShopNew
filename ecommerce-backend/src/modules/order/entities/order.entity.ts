@@ -47,6 +47,24 @@ export class Order {
   @Column({ name: 'ship_time', type: 'timestamp', nullable: true })
   shipTime: Date;
 
+  @Column({ name: 'receive_time', type: 'timestamp', nullable: true })
+  receiveTime: Date;
+
+  @Column({ name: 'finish_time', type: 'timestamp', nullable: true })
+  finishTime: Date;
+
+  @Column({ name: 'cancel_time', type: 'timestamp', nullable: true })
+  cancelTime: Date;
+
+  @Column({ name: 'cancel_reason', type: 'text', nullable: true })
+  cancelReason: string;
+
+  @Column({ name: 'transaction_id', type: 'varchar', length: 100, nullable: true })
+  transactionId: string;
+
+  @Column({ name: 'pay_amount', type: 'decimal', precision: 10, scale: 2, nullable: true })
+  payAmount: number;
+
   @Column({ name: 'shipping_address', type: 'text', nullable: true })
   shippingAddress: string;
 
