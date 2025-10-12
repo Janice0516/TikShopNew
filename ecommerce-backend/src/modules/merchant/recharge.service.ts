@@ -18,7 +18,7 @@ export class RechargeService {
   // 商家申请充值
   async createRecharge(merchantId: number, createDto: CreateRechargeDto) {
     const recharge = this.rechargeRepository.create({
-      merchantId,
+      merchantId: String(merchantId),
       ...createDto,
       status: 0, // 待审核
     });
@@ -157,7 +157,7 @@ export class RechargeService {
     try {
       // 更新充值记录
       recharge.status = status;
-      recharge.adminId = adminId;
+      recharge.adminId = String(adminId);
       recharge.adminName = adminName;
       recharge.auditReason = auditReason;
       recharge.auditTime = new Date();

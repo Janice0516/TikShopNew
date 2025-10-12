@@ -45,7 +45,7 @@ export class ProductController {
   @Get(':id')
   @ApiOperation({ summary: '商品详情' })
   findOne(@Param('id') id: string) {
-    return this.productService.findOne(+id);
+    return this.productService.findOne(id);
   }
 
   @Put(':id')

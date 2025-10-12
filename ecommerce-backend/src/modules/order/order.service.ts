@@ -46,7 +46,7 @@ export class OrderService {
     const orderItems = [];
 
     for (const item of items) {
-      const product = await this.productService.findOne(item.productId);
+      const product = await this.productService.findOne(String(item.productId));
 
       if (product.status !== 1) {
         throw new HttpException(
