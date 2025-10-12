@@ -265,12 +265,12 @@ export class CategoryService {
 
     // 构建树形结构
     categories.forEach(category => {
-      if (Number(category.parentId) === 0) {
-        tree.push(categoryMap.get(String(category.id)));
+      if (category.parentId === '0' || category.parentId === 0) {
+        tree.push(categoryMap.get(category.id));
       } else {
-        const parent = categoryMap.get(String(category.parentId));
+        const parent = categoryMap.get(category.parentId);
         if (parent) {
-          parent.children.push(categoryMap.get(String(category.id)));
+          parent.children.push(categoryMap.get(category.id));
         }
       }
     });

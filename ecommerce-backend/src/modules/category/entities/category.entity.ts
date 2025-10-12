@@ -9,10 +9,10 @@ import {
 @Entity('category')
 export class Category {
   @PrimaryGeneratedColumn('increment', { type: 'bigint' })
-  id: number;
+  id: string;
 
   @Column({ name: 'parent_id', type: 'bigint', default: 0 })
-  parentId: number;
+  parentId: string;
 
   @Column({ length: 50 })
   name: string;
