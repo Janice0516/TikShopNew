@@ -22,34 +22,48 @@ export class AdminService {
   // 获取仪表盘统计数据
   async getDashboardStats() {
     try {
+      console.log('开始获取仪表盘统计数据...');
+      
       // 获取商品总数
+      console.log('查询商品总数...');
       const totalProducts = await this.productRepository.count();
+      console.log('商品总数:', totalProducts);
       
       // 获取活跃商家数（状态为1的商家）
+      console.log('查询活跃商家数...');
       const activeMerchants = await this.merchantRepository.count({
         where: { status: 1 }
       });
+      console.log('活跃商家数:', activeMerchants);
       
       // 获取订单总数
+      console.log('查询订单总数...');
       const totalOrders = await this.orderRepository.count();
+      console.log('订单总数:', totalOrders);
       
       // 获取注册用户总数
+      console.log('查询用户总数...');
       const totalUsers = await this.userRepository.count();
+      console.log('用户总数:', totalUsers);
 
       // 获取最近订单（最近5个）
+      console.log('查询最近订单...');
       const recentOrders = await this.orderRepository.find({
         take: 5,
         order: { createTime: 'DESC' }
       });
+      console.log('最近订单数量:', recentOrders.length);
 
       // 获取热销商品（按销量排序，取前5个）
+      console.log('查询热销商品...');
       const topProducts = await this.productRepository.find({
         take: 5,
         order: { sales: 'DESC' },
         where: { status: 1 }
       });
+      console.log('热销商品数量:', topProducts.length);
 
-      return {
+      const result = {
         code: 200,
         message: '获取成功',
         data: {
@@ -75,8 +89,12 @@ export class AdminService {
           }))
         }
       };
+      
+      console.log('仪表盘统计数据获取成功:', result);
+      return result;
     } catch (error) {
       console.error('获取仪表盘统计数据失败:', error);
+      console.error('错误堆栈:', error.stack);
       return {
         code: 500,
         message: '获取统计数据失败',
