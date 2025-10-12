@@ -234,7 +234,7 @@ export class ProductService {
     const tree = [];
 
     categories
-      .filter((cat) => cat.parentId === parentId)
+      .filter((cat) => cat.parent_id === parentId)
       .forEach((cat) => {
         const children = this.buildCategoryTree(categories, cat.id);
         tree.push({

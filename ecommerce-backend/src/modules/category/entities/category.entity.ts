@@ -12,7 +12,7 @@ export class Category {
   id: number;
 
   @Column({ name: 'parent_id', type: 'bigint', default: 0 })
-  parentId: number;
+  parent_id: number;
 
   @Column({ length: 50 })
   name: string;
