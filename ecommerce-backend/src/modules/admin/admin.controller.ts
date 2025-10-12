@@ -70,8 +70,6 @@ export class AdminController {
   }
 
   @Get('dashboard/stats')
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
   @ApiOperation({ summary: '获取仪表盘统计数据' })
   async getDashboardStats() {
     return this.adminService.getDashboardStats();
