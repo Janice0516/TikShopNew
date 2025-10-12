@@ -25,7 +25,7 @@ export class CreditRatingService {
 
     // 检查商户是否已有有效的信用评级
     const existingRating = await this.creditRatingRepository.findOne({
-      where: { merchantId, status: 1 },
+      where: { merchantId: String(merchantId), status: 1 },
     });
 
     if (existingRating) {
@@ -35,13 +35,13 @@ export class CreditRatingService {
     }
 
     const creditRating = this.creditRatingRepository.create({
-      merchantId,
+      merchantId: String(merchantId),
       rating,
       score,
       level,
       evaluationDate: new Date(evaluationDate),
       validUntil: new Date(validUntil),
-      evaluatorId,
+      evaluatorId: String(evaluatorId),
       evaluationReason: evaluationReason || '',
       status: 1,
     });
@@ -234,7 +234,7 @@ export class CreditRatingService {
    */
   async getMerchantCurrentRating(merchantId: number) {
     const rating = await this.creditRatingRepository.findOne({
-      where: { merchantId, status: 1 },
+      where: { merchantId: String(merchantId), status: 1 },
       relations: ['merchant'],
       order: { createTime: 'DESC' }
     });

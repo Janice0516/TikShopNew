@@ -300,7 +300,7 @@ export class FundManagementService {
    */
   async getMerchantFundInfo(merchantId: number): Promise<MerchantFundInfoDto> {
     const merchant = await this.merchantRepository.findOne({ 
-      where: { id: merchantId },
+      where: { id: String(merchantId) },
       select: ['id', 'merchantName', 'balance', 'frozenAmount', 'totalIncome', 'totalWithdraw']
     });
 
