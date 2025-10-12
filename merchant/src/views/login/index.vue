@@ -87,7 +87,7 @@ const merchantStore = useMerchantStore()
 
 const loginForm = reactive({
   username: 'merchant001',
-  password: '123456'
+  password: 'password123'
 })
 
 const loginRules: FormRules = {

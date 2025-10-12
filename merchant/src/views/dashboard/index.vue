@@ -39,7 +39,7 @@
             </div>
           </div>
           <div class="card-content">
-            <div class="card-value">${{ stats.accountBalance }}</div>
+            <div class="card-value">RM{{ stats.accountBalance }}</div>
             <div class="card-label">Account Balance</div>
           </div>
           <div class="card-footer">
@@ -155,7 +155,7 @@
             <span class="overview-label">Total Earnings</span>
             <el-icon :size="20" color="#67C23A"><TrendCharts /></el-icon>
           </div>
-          <div class="overview-value">${{ stats.totalEarnings }}</div>
+          <div class="overview-value">RM{{ stats.totalEarnings }}</div>
           <div class="overview-chart">
             <div class="chart-bar" style="height: 60%"></div>
             <div class="chart-bar" style="height: 80%"></div>
@@ -171,7 +171,7 @@
             <span class="overview-label">Frozen Amount</span>
             <el-icon :size="20" color="#E6A23C"><Wallet /></el-icon>
           </div>
-          <div class="overview-value">${{ stats.frozenAmount }}</div>
+          <div class="overview-value">RM{{ stats.frozenAmount }}</div>
           <div class="overview-chart">
             <div class="chart-bar" style="height: 30%"></div>
             <div class="chart-bar" style="height: 50%"></div>
