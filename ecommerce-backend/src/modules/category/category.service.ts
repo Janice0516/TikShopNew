@@ -37,7 +37,7 @@ export class CategoryService {
     }
 
     const category = this.categoryRepository.create({
-      parentId: parentId || 0,
+      parentId: String(parentId || 0),
       name,
       level: level || 1,
       sort: sort || 0,
@@ -112,7 +112,7 @@ export class CategoryService {
    */
   async findOne(id: number) {
     const category = await this.categoryRepository.findOne({
-      where: { id },
+      where: { id: String(id) },
     });
 
     if (!category) {
@@ -153,7 +153,7 @@ export class CategoryService {
     // 检查同级分类名称是否重复（排除自己）
     if (name) {
       const existingCategory = await this.categoryRepository.findOne({
-        where: { parentId: parentId || category.parentId, name },
+        where: { parentId: String(parentId || category.parentId), name },
       });
       if (existingCategory && existingCategory.id !== String(id)) {
         throw new BadRequestException('同级分类名称已存在');
@@ -265,7 +265,7 @@ export class CategoryService {
 
     // 构建树形结构
     categories.forEach(category => {
-      if (category.parentId === '0' || category.parentId === 0) {
+      if (category.parentId === '0') {
         tree.push(categoryMap.get(category.id));
       } else {
         const parent = categoryMap.get(category.parentId);
