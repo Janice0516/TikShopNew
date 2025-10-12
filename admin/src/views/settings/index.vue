@@ -322,21 +322,21 @@
 import { ref, reactive, onMounted } from 'vue'
 import { ElMessage, ElMessageBox, FormInstance, FormRules } from 'element-plus'
 import { Plus } from '@element-plus/icons-vue'
-// import {
-//   getSystemSettings,
-//   updateBasicSettings,
-//   updateBusinessSettings,
-//   updateSecuritySettings,
-//   updateNotificationSettings,
-//   testEmailSettings,
-//   clearSystemCache,
-//   clearSystemLogs,
-//   optimizeDatabaseTables,
-//   createDatabaseBackup,
-//   createFileBackup,
-//   restoreDatabaseFromBackup,
-//   getSystemInfo
-// } from '@/api/settings'
+import {
+  getSystemSettings,
+  updateBasicSettings,
+  updateBusinessSettings,
+  updateSecuritySettings,
+  updateNotificationSettings,
+  testEmailSettings,
+  clearSystemCache,
+  clearSystemLogs,
+  optimizeDatabaseTables,
+  createDatabaseBackup,
+  createFileBackup,
+  restoreDatabaseFromBackup,
+  getSystemInfo
+} from '@/api/settings'
 
 const activeTab = ref('basic')
 const saving = ref(false)
@@ -447,8 +447,7 @@ const saveBasicSettings = async () => {
     if (valid) {
       saving.value = true
       try {
-        // await updateBasicSettings(basicSettings)
-        console.log('保存基本设置:', basicSettings)
+        await updateBasicSettings(basicSettings)
         ElMessage.success('基本设置保存成功')
       } catch (error) {
         ElMessage.error('保存失败')
@@ -467,8 +466,7 @@ const saveBusinessSettings = async () => {
     if (valid) {
       saving.value = true
       try {
-        // await updateBusinessSettings(businessSettings)
-        console.log('保存业务设置:', businessSettings)
+        await updateBusinessSettings(businessSettings)
         ElMessage.success('业务设置保存成功')
       } catch (error) {
         ElMessage.error('保存失败')
@@ -487,8 +485,7 @@ const saveSecuritySettings = async () => {
     if (valid) {
       saving.value = true
       try {
-        // await updateSecuritySettings(securitySettings)
-        console.log('保存安全设置:', securitySettings)
+        await updateSecuritySettings(securitySettings)
         ElMessage.success('安全设置保存成功')
       } catch (error) {
         ElMessage.error('保存失败')
@@ -503,8 +500,7 @@ const saveSecuritySettings = async () => {
 const saveNotificationSettings = async () => {
   saving.value = true
   try {
-    // await updateNotificationSettings(notificationSettings)
-    console.log('保存通知设置:', notificationSettings)
+    await updateNotificationSettings(notificationSettings)
     ElMessage.success('通知设置保存成功')
   } catch (error) {
     ElMessage.error('保存失败')
@@ -536,8 +532,7 @@ const beforeLogoUpload = (file: any) => {
 const testEmailConnection = async () => {
   testing.value = true
   try {
-    // await testEmailSettings(notificationSettings)
-    console.log('测试邮件连接:', notificationSettings)
+    await testEmailSettings({ email: notificationSettings.smtpUser })
     ElMessage.success('邮件连接测试成功')
   } catch (error) {
     ElMessage.error('邮件连接测试失败')
@@ -556,8 +551,7 @@ const clearCache = async () => {
     })
     
     clearing.value = true
-    // await clearSystemCache()
-    console.log('清理系统缓存')
+    await clearSystemCache()
     ElMessage.success('缓存清理成功')
   } catch (error) {
     if (error !== 'cancel') {
@@ -578,8 +572,7 @@ const clearLogs = async () => {
     })
     
     clearing.value = true
-    // await clearSystemLogs()
-    console.log('清理系统日志')
+    await clearSystemLogs()
     ElMessage.success('日志清理成功')
   } catch (error) {
     if (error !== 'cancel') {
@@ -600,8 +593,7 @@ const optimizeDatabase = async () => {
     })
     
     optimizing.value = true
-    // await optimizeDatabaseTables()
-    console.log('优化数据库')
+    await optimizeDatabaseTables()
     ElMessage.success('数据库优化成功')
   } catch (error) {
     if (error !== 'cancel') {
@@ -616,8 +608,7 @@ const optimizeDatabase = async () => {
 const backupDatabase = async () => {
   backing.value = true
   try {
-    // await createDatabaseBackup()
-    console.log('备份数据库')
+    await createDatabaseBackup()
     ElMessage.success('数据库备份成功')
   } catch (error) {
     ElMessage.error('数据库备份失败')
@@ -630,8 +621,7 @@ const backupDatabase = async () => {
 const backupFiles = async () => {
   backing.value = true
   try {
-    // await createFileBackup()
-    console.log('备份文件')
+    await createFileBackup()
     ElMessage.success('文件备份成功')
   } catch (error) {
     ElMessage.error('文件备份失败')
@@ -650,8 +640,7 @@ const restoreDatabase = async () => {
     })
     
     restoring.value = true
-    // await restoreDatabaseFromBackup({ backupId: 'latest' })
-    console.log('恢复数据库')
+    await restoreDatabaseFromBackup({ backupId: 'latest' })
     ElMessage.success('数据库恢复成功')
   } catch (error) {
     if (error !== 'cancel') {
@@ -665,23 +654,21 @@ const restoreDatabase = async () => {
 // 加载设置数据
 const loadSettings = async () => {
   try {
-    // const res = await getSystemSettings()
-    // const actualData = res.data?.data || res.data
+    const res = await getSystemSettings()
+    const actualData = res.data?.data || res.data
     
-    // if (actualData.basic) {
-    //   Object.assign(basicSettings, actualData.basic)
-    // }
-    // if (actualData.business) {
-    //   Object.assign(businessSettings, actualData.business)
-    // }
-    // if (actualData.security) {
-    //   Object.assign(securitySettings, actualData.security)
-    // }
-    // if (actualData.notification) {
-    //   Object.assign(notificationSettings, actualData.notification)
-    // }
-    
-    console.log('加载设置数据')
+    if (actualData.basic) {
+      Object.assign(basicSettings, actualData.basic)
+    }
+    if (actualData.business) {
+      Object.assign(businessSettings, actualData.business)
+    }
+    if (actualData.security) {
+      Object.assign(securitySettings, actualData.security)
+    }
+    if (actualData.notification) {
+      Object.assign(notificationSettings, actualData.notification)
+    }
   } catch (error) {
     console.error('加载设置失败:', error)
     ElMessage.warning('加载设置失败，使用默认配置')
