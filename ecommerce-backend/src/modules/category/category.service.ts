@@ -257,7 +257,7 @@ export class CategoryService {
 
     // 创建分类映射
     categories.forEach(category => {
-      categoryMap.set(category.id, {
+      categoryMap.set(String(category.id), {
         ...category,
         children: [],
       });
@@ -266,11 +266,11 @@ export class CategoryService {
     // 构建树形结构
     categories.forEach(category => {
       if (Number(category.parentId) === 0) {
-        tree.push(categoryMap.get(category.id));
+        tree.push(categoryMap.get(String(category.id)));
       } else {
-        const parent = categoryMap.get(Number(category.parentId));
+        const parent = categoryMap.get(String(category.parentId));
         if (parent) {
-          parent.children.push(categoryMap.get(category.id));
+          parent.children.push(categoryMap.get(String(category.id)));
         }
       }
     });
