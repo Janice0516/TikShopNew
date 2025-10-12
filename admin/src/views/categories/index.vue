@@ -212,7 +212,9 @@ const fetchCategories = async () => {
   loading.value = true
   try {
     const res = await getCategoryList(searchForm)
-    categoryList.value = res.data
+    // 处理嵌套的data结构
+    const actualData = res.data?.data || res.data
+    categoryList.value = actualData
   } catch (error) {
     console.error('获取分类失败：', error)
     ElMessage.error('获取分类失败')
@@ -225,7 +227,9 @@ const fetchCategories = async () => {
 const fetchParentCategories = async () => {
   try {
     const res = await getCategoryTree()
-    parentCategoryOptions.value = res.data
+    // 处理嵌套的data结构
+    const actualData = res.data?.data || res.data
+    parentCategoryOptions.value = actualData
   } catch (error) {
     console.error('获取父分类失败：', error)
   }
