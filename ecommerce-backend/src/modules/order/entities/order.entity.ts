@@ -32,6 +32,21 @@ export class Order {
   @Column({ type: 'smallint', default: 1 })
   status: number;
 
+  @Column({ name: 'order_status', type: 'smallint', default: 1, comment: '订单状态 1待支付 2待发货 3待收货 4已完成 5已取消' })
+  orderStatus: number;
+
+  @Column({ name: 'pay_status', type: 'smallint', default: 0, comment: '支付状态 0未支付 1已支付' })
+  payStatus: number;
+
+  @Column({ name: 'pay_type', type: 'smallint', nullable: true, comment: '支付方式 1微信 2支付宝' })
+  payType: number;
+
+  @Column({ name: 'pay_time', type: 'timestamp', nullable: true })
+  payTime: Date;
+
+  @Column({ name: 'ship_time', type: 'timestamp', nullable: true })
+  shipTime: Date;
+
   @Column({ name: 'shipping_address', type: 'text', nullable: true })
   shippingAddress: string;
 
