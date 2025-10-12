@@ -114,7 +114,7 @@ export class WithdrawalService {
    */
   async getWithdrawalDetail(id: number) {
     const withdrawal = await this.withdrawalRepository.findOne({
-      where: { id },
+      where: { id: String(id) },
       relations: ['merchant'],
     });
 
@@ -136,7 +136,7 @@ export class WithdrawalService {
     const { status, adminRemark } = updateStatusDto;
 
     const withdrawal = await this.withdrawalRepository.findOne({
-      where: { id },
+      where: { id: String(id) },
     });
 
     if (!withdrawal) {

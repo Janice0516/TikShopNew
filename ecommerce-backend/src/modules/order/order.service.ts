@@ -198,7 +198,7 @@ export class OrderService {
    * 查询订单详情
    */
   async findOne(id: number, userId: number, userType = 'user') {
-    const order = await this.orderRepository.findOne({ where: { id } });
+    const order = await this.orderRepository.findOne({ where: { id: String(id) } });
 
     if (!order) {
       throw new HttpException('订单不存在', HttpStatus.NOT_FOUND);

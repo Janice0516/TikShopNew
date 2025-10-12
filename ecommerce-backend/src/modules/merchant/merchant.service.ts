@@ -118,7 +118,7 @@ export class MerchantService {
    * 获取商家信息
    */
   async findById(id: number) {
-    const merchant = await this.merchantRepository.findOne({ where: { id } });
+    const merchant = await this.merchantRepository.findOne({ where: { id: String(id) } });
     if (!merchant) {
       throw new HttpException('商家不存在', HttpStatus.NOT_FOUND);
     }

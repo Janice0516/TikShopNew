@@ -128,7 +128,7 @@ export class UserService {
    * 根据ID查找用户
    */
   async findById(id: number) {
-    const user = await this.userRepository.findOne({ where: { id } });
+    const user = await this.userRepository.findOne({ where: { id: String(id) } });
     if (!user) {
       throw new HttpException('用户不存在', HttpStatus.NOT_FOUND);
     }
@@ -141,7 +141,7 @@ export class UserService {
   /**
    * 生成JWT Token
    */
-  private generateToken(userId: number): string {
+  private generateToken(userId: string): string {
     const payload = { userId, type: 'user' };
     return this.jwtService.sign(payload);
   }

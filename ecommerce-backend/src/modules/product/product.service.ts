@@ -86,7 +86,7 @@ export class ProductService {
    * 查询商品详情
    */
   async findOne(id: number) {
-    const product = await this.productRepository.findOne({ where: { id } });
+    const product = await this.productRepository.findOne({ where: { id: String(id) } });
 
     if (!product) {
       throw new HttpException('商品不存在', HttpStatus.NOT_FOUND);

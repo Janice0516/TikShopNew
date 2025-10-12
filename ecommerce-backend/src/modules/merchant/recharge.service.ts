@@ -118,7 +118,7 @@ export class RechargeService {
   // 获取充值详情
   async getRechargeDetail(id: number) {
     const recharge = await this.rechargeRepository.findOne({
-      where: { id },
+      where: { id: String(id) },
       relations: ['merchant'],
     });
 
@@ -138,7 +138,7 @@ export class RechargeService {
     const { id, status, auditReason } = auditDto;
 
     const recharge = await this.rechargeRepository.findOne({
-      where: { id },
+      where: { id: String(id) },
       relations: ['merchant'],
     });
 

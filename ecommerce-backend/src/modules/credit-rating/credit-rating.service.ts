@@ -364,7 +364,7 @@ export class CreditRatingService {
    */
   async getCreditRatingDetail(id: number) {
     const rating = await this.creditRatingRepository.findOne({
-      where: { id },
+      where: { id: String(id) },
       relations: ['merchant'],
     });
 
@@ -384,7 +384,7 @@ export class CreditRatingService {
    */
   async updateCreditRating(id: number, updateCreditRatingDto: UpdateCreditRatingDto) {
     const rating = await this.creditRatingRepository.findOne({
-      where: { id },
+      where: { id: String(id) },
     });
 
     if (!rating) {
@@ -416,7 +416,7 @@ export class CreditRatingService {
    */
   async deleteCreditRating(id: number) {
     const rating = await this.creditRatingRepository.findOne({
-      where: { id },
+      where: { id: String(id) },
     });
 
     if (!rating) {

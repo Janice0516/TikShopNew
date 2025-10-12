@@ -157,7 +157,7 @@ export class AdminService {
   async getUserDetail(id: number) {
     try {
       const user = await this.userRepository.findOne({
-        where: { id }
+        where: { id: String(id) }
       });
       
       if (!user) {
@@ -187,7 +187,7 @@ export class AdminService {
   async updateUserStatus(id: number, data: any) {
     try {
       const user = await this.userRepository.findOne({
-        where: { id }
+        where: { id: String(id) }
       });
       
       if (!user) {

@@ -106,7 +106,7 @@ export class WithdrawalInfoService {
     await this.withdrawalInfoRepository.update(id, updateWithdrawalInfoDto);
 
     const updatedWithdrawalInfo = await this.withdrawalInfoRepository.findOne({
-      where: { id },
+      where: { id: String(id) },
     });
 
     return {

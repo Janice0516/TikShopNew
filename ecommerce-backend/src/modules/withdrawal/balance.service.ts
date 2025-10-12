@@ -15,7 +15,7 @@ export class BalanceService {
    */
   async getMerchantBalance(merchantId: number) {
     const merchant = await this.merchantRepository.findOne({
-      where: { id: merchantId },
+      where: { id: String(merchantId) },
       select: ['id', 'merchantName', 'balance', 'frozenAmount'],
     });
 
@@ -48,7 +48,7 @@ export class BalanceService {
    */
   async updateMerchantBalance(merchantId: number, amount: number, type: 'add' | 'subtract' | 'freeze' | 'unfreeze') {
     const merchant = await this.merchantRepository.findOne({
-      where: { id: merchantId },
+      where: { id: String(merchantId) },
     });
 
     if (!merchant) {
