@@ -7,13 +7,13 @@ import {
 } from 'typeorm';
 import { Exclude } from 'class-transformer';
 
-@Entity('user')
+@Entity('"user"')
 export class User {
   @PrimaryGeneratedColumn('increment', { type: 'bigint' })
   id: number;
 
-  @Column({ length: 11, unique: true })
-  phone: string;
+  @Column({ length: 50, unique: true })
+  username: string;
 
   @Column({ length: 100 })
   @Exclude() // 序列化时排除密码字段
@@ -21,6 +21,12 @@ export class User {
 
   @Column({ length: 50, nullable: true })
   nickname: string;
+
+  @Column({ length: 100, nullable: true })
+  email: string;
+
+  @Column({ length: 20, nullable: true })
+  phone: string;
 
   @Column({ length: 255, nullable: true })
   avatar: string;
