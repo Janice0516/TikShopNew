@@ -69,6 +69,16 @@ export class AdminController {
     };
   }
 
+  @Get('test')
+  @ApiOperation({ summary: '测试端点' })
+  async test() {
+    return {
+      code: 200,
+      message: '测试成功',
+      data: { test: 'hello world' }
+    };
+  }
+
   @Get('dashboard/stats')
   @ApiOperation({ summary: '获取仪表盘统计数据' })
   async getDashboardStats() {
