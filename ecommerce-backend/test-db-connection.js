@@ -1,56 +1,57 @@
-#!/usr/bin/env node
-
-// 数据库连接测试脚本
 const { Client } = require('pg');
 
-async function testDatabaseConnection() {
-  const client = new Client({
-    host: process.env.DB_HOST || 'dpg-d0j8q8h2s78s73fq8hpg-a.oregon-postgres.render.com',
-    port: parseInt(process.env.DB_PORT, 10) || 5432,
-    user: process.env.DB_USERNAME || 'tiktokshop_slkz_user',
-    password: process.env.DB_PASSWORD || 'U7WZHv0ETQfc8bPpQz3sCFlU6EnifRCn',
-    database: process.env.DB_DATABASE || 'tiktokshop_slkz',
-    ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
-    connectionTimeoutMillis: 60000,
+async function testConnection() {
+  console.log('🔍 测试数据库连接配置\n');
+
+  // 测试新的数据库连接
+  const newConfig = {
+    host: 'dpg-d3kgpsd6ubrc73dvbjm0-a.singapore-postgres.render.com',
+    port: 5432,
+    user: 'tiktokshop_slkz_user',
+    password: 'U7WZHv0ETQfc8bPpQz3sCFlU6EnifRCn',
+    database: 'tikshop_slkz',
+    ssl: { rejectUnauthorized: false },
+    connectionTimeoutMillis: 10000
+  };
+
+  console.log('1. 测试新数据库连接...');
+  console.log('   配置:', {
+    host: newConfig.host,
+    port: newConfig.port,
+    user: newConfig.user,
+    database: newConfig.database
   });
 
+  const client = new Client(newConfig);
+
   try {
-    console.log('🔌 尝试连接数据库...');
-    console.log('📋 连接信息:');
-    console.log(`   Host: ${client.host}`);
-    console.log(`   Port: ${client.port}`);
-    console.log(`   User: ${client.user}`);
-    console.log(`   Database: ${client.database}`);
-    
     await client.connect();
-    console.log('✅ 数据库连接成功！');
-    
+    console.log('   ✅ 连接成功');
+
     // 测试查询
-    const result = await client.query('SELECT version()');
-    console.log('📊 PostgreSQL版本:', result.rows[0].version);
-    
-    // 检查数据库是否存在
-    const dbResult = await client.query('SELECT current_database()');
-    console.log('🗄️ 当前数据库:', dbResult.rows[0].current_database);
-    
-    await client.end();
-    console.log('🔚 连接已关闭');
-    
+    const result = await client.query('SELECT COUNT(*) FROM merchant');
+    console.log(`   📊 商家数量: ${result.rows[0].count}`);
+
+    const withdrawalResult = await client.query('SELECT COUNT(*) FROM merchant_withdrawal');
+    console.log(`   📊 提现记录数量: ${withdrawalResult.rows[0].count}`);
+
   } catch (error) {
-    console.error('❌ 数据库连接失败:');
-    console.error('   错误类型:', error.code);
-    console.error('   错误信息:', error.message);
-    
-    if (error.code === 'ECONNREFUSED') {
-      console.log('💡 建议: 检查数据库服务是否正在运行');
-    } else if (error.code === '28P01') {
-      console.log('💡 建议: 检查用户名和密码是否正确');
-    } else if (error.code === '3D000') {
-      console.log('💡 建议: 数据库不存在，需要先创建数据库');
-    }
-    
-    process.exit(1);
+    console.log('   ❌ 连接失败:', error.message);
+  } finally {
+    try { await client.end(); } catch {}
   }
+
+  // 测试环境变量格式
+  console.log('\n2. 生成环境变量配置...');
+  console.log('请在Render Dashboard中设置以下环境变量:');
+  console.log('');
+  console.log('DB_TYPE=postgres');
+  console.log('DB_HOST=dpg-d3kgpsd6ubrc73dvbjm0-a.singapore-postgres.render.com');
+  console.log('DB_PORT=5432');
+  console.log('DB_USERNAME=tiktokshop_slkz_user');
+  console.log('DB_PASSWORD=U7WZHv0ETQfc8bPpQz3sCFlU6EnifRCn');
+  console.log('DB_DATABASE=tiktokshop_slkz');
+  console.log('NODE_ENV=production');
 }
 
-testDatabaseConnection();
+testConnection();
