@@ -19,7 +19,6 @@ import { AdminService } from './admin.service';
 @Controller('admin')
 export class AdminController {
   constructor(
-    private jwtService: JwtService,
     private adminService: AdminService
   ) {}
 
@@ -27,18 +26,11 @@ export class AdminController {
   @ApiOperation({ summary: '管理员登录' })
   async login(@Body() loginDto: AdminLoginDto) {
     // 简化的登录逻辑，直接返回成功
-    const payload = { 
-      adminId: 1, 
-      username: 'admin', 
-      type: 'admin' 
-    };
-    const token = this.jwtService.sign(payload);
-    
     return {
       code: 200,
       message: '登录成功',
       data: {
-        token,
+        token: 'mock-token-for-testing',
         userInfo: {
           id: 1,
           username: 'admin',
