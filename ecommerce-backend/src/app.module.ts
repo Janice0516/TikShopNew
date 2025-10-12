@@ -24,6 +24,7 @@ import { Cart } from './modules/cart/entities/cart.entity';
 import { MerchantWithdrawal } from './modules/withdrawal/entities/merchant-withdrawal.entity';
 import { MerchantCreditRating } from './modules/credit-rating/entities/merchant-credit-rating.entity';
 import { FundOperation } from './modules/fund-management/entities/fund-operation.entity';
+import { SystemSettings } from './modules/settings/entities/system-settings.entity';
 
 // 模块
 import { UserModule } from './modules/user/user.module';
@@ -41,6 +42,7 @@ import { WithdrawalModule } from './modules/withdrawal/withdrawal.module';
 import { CreditRatingModule } from './modules/credit-rating/credit-rating.module';
 import { FundManagementModule } from './modules/fund-management/fund-management.module';
 import { HealthModule } from './modules/health/health.module';
+import { SettingsModule } from './modules/settings/settings.module';
 
 @Module({
   imports: [
@@ -74,9 +76,10 @@ import { HealthModule } from './modules/health/health.module';
             Order, 
             OrderItem, 
             Cart, 
-            MerchantWithdrawal, 
-            MerchantCreditRating, 
-            FundOperation
+            MerchantWithdrawal,
+            MerchantCreditRating,
+            FundOperation,
+            SystemSettings
           ],
           autoLoadEntities: true,
           synchronize: false, // 生产环境必须为false
@@ -134,6 +137,7 @@ import { HealthModule } from './modules/health/health.module';
     WithdrawalModule,
     CreditRatingModule,
     HealthModule,
+    SettingsModule,
   ],
 })
 export class AppModule {}
