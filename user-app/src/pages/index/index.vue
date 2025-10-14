@@ -343,11 +343,30 @@ onMounted(() => {
 const checkDeviceAndRedirect = () => {
   // 延迟执行，确保页面完全加载
   setTimeout(() => {
-    if (shouldShowDesktop()) {
-      console.log('检测到桌面设备，跳转到桌面端')
-      uni.redirectTo({
-        url: '/pages/desktop/index'
-      })
+    console.log('开始设备检测...')
+    
+    try {
+      const shouldDesktop = shouldShowDesktop()
+      console.log('设备检测结果:', shouldDesktop)
+      
+      if (shouldDesktop) {
+        console.log('检测到桌面设备，跳转到桌面端')
+        uni.showToast({
+          title: '检测到桌面设备，跳转到桌面端',
+          icon: 'none',
+          duration: 2000
+        })
+        
+        setTimeout(() => {
+          uni.redirectTo({
+            url: '/pages/desktop/index'
+          })
+        }, 2000)
+      } else {
+        console.log('保持移动端界面')
+      }
+    } catch (error) {
+      console.error('设备检测失败:', error)
     }
   }, 100)
 }

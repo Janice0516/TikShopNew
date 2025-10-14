@@ -256,11 +256,30 @@ onMounted(() => {
 const checkDeviceAndRedirect = () => {
   // 延迟执行，确保页面完全加载
   setTimeout(() => {
-    if (shouldShowMobile()) {
-      console.log('检测到移动设备，跳转到移动端')
-      uni.redirectTo({
-        url: '/pages/index/index'
-      })
+    console.log('桌面端页面开始设备检测...')
+    
+    try {
+      const shouldMobile = shouldShowMobile()
+      console.log('桌面端设备检测结果:', shouldMobile)
+      
+      if (shouldMobile) {
+        console.log('检测到移动设备，跳转到移动端')
+        uni.showToast({
+          title: '检测到移动设备，跳转到移动端',
+          icon: 'none',
+          duration: 2000
+        })
+        
+        setTimeout(() => {
+          uni.redirectTo({
+            url: '/pages/index/index'
+          })
+        }, 2000)
+      } else {
+        console.log('保持桌面端界面')
+      }
+    } catch (error) {
+      console.error('桌面端设备检测失败:', error)
     }
   }, 100)
 }
