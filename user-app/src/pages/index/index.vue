@@ -439,10 +439,11 @@ const loadData = async () => {
 
 <style scoped>
 .home {
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  background: #ffffff;
   min-height: 100vh;
   position: relative;
   padding-top: 80px; /* 为固定搜索栏留出空间 */
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 .home::before {
@@ -557,33 +558,39 @@ const loadData = async () => {
 
 /* 搜索栏 */
 .search-bar {
-  padding: 10px 20px 15px;
-  background: transparent;
+  padding: 15px 40px;
+  background: #fff;
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   z-index: 1000;
+  border-bottom: 1px solid #e5e5e5;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .search-input {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(20px);
-  border-radius: 30px;
-  padding: 15px 25px;
-  height: 50px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: #f8f9fa;
+  border: 2px solid #e5e5e5;
+  border-radius: 8px;
+  padding: 12px 20px;
+  max-width: 600px;
+  margin: 0 auto;
+  transition: all 0.3s ease;
 }
 
-.search-input:active {
-  transform: scale(0.98);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-  background: rgba(255, 255, 255, 1);
+.search-input:hover {
+  border-color: #409EFF;
+  background: #fff;
+}
+
+.search-input:focus-within {
+  border-color: #409EFF;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(64, 158, 255, 0.1);
 }
 
 .search-placeholder {
@@ -595,16 +602,18 @@ const loadData = async () => {
 
 /* 轮播图 */
 .banner-section {
-  margin: 25px 20px 20px;
-  position: relative;
-  z-index: 5;
+  padding: 30px 40px;
+  background: #fff;
 }
 
 .banner-swiper {
-  height: 220px;
-  border-radius: 25px;
+  height: 300px;
+  max-width: 1200px;
+  margin: 0 auto;
+  border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
   position: relative;
 }
 
@@ -633,15 +642,20 @@ const loadData = async () => {
 
 /* 分类导航 */
 .category-section {
-  background: rgba(255, 255, 255, 0.98);
-  backdrop-filter: blur(20px);
-  margin: 20px 20px;
-  border-radius: 25px;
-  padding: 25px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  position: relative;
-  overflow: hidden;
+  padding: 30px 40px;
+  background: #f8f9fa;
+}
+
+.category-scroll {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.categories-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 20px;
+  padding: 20px 0;
 }
 
 .category-section::before {
@@ -756,11 +770,11 @@ const loadData = async () => {
 
 /* 热销商品 */
 .hot-products-section {
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
-  margin: 15px 20px;
-  border-radius: 20px;
-  padding: 20px;
+  padding: 30px 40px;
+  background: #fff;
+  max-width: 1200px;
+  margin: 0 auto;
+}
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
 }
 
@@ -944,10 +958,10 @@ const loadData = async () => {
 
 .product-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 20px;
-  position: relative;
-  z-index: 1;
+  margin-top: 20px;
+}
 }
 
 .product-card {
