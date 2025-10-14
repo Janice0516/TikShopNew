@@ -39,7 +39,11 @@
     "hotProducts": "热销商品",
     "newArrivals": "新品推荐",
     "categories": "商品分类",
-    "viewAll": "查看全部"
+    "viewAll": "查看全部",
+    "welcome": "欢迎来到TikTok Shop",
+    "welcomeSubtitle": "发现更多精彩商品",
+    "login": "登录",
+    "register": "注册"
   },
   "product": {
     "detail": "商品详情",

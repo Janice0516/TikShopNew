@@ -39,7 +39,11 @@
     "hotProducts": "Hot Products",
     "newArrivals": "New Arrivals",
     "categories": "Categories",
-    "viewAll": "View All"
+    "viewAll": "View All",
+    "welcome": "Welcome to TikTok Shop",
+    "welcomeSubtitle": "Discover amazing products",
+    "login": "Login",
+    "register": "Register"
   },
   "product": {
     "detail": "Product Detail",

@@ -1,5 +1,29 @@
 <template>
   <view class="home">
+    <!-- 用户状态栏 -->
+    <view class="user-status-bar">
+      <view class="user-info" v-if="userInfo">
+        <image :src="userInfo.avatar || '/static/default-avatar.png'" class="user-avatar" />
+        <view class="user-details">
+          <text class="user-name">{{ userInfo.nickname || userInfo.name || '用户' }}</text>
+          <text class="user-phone">{{ userInfo.phone || '' }}</text>
+        </view>
+        <view class="logout-btn" @click="handleLogout">
+          <uni-icons type="logout" size="16" color="#999"></uni-icons>
+        </view>
+      </view>
+      <view class="login-prompt" v-else>
+        <view class="welcome-text">
+          <text class="welcome-title">{{ $t('home.welcome') }}</text>
+          <text class="welcome-subtitle">{{ $t('home.welcomeSubtitle') }}</text>
+        </view>
+        <view class="auth-buttons">
+          <view class="login-btn" @click="goToLogin">{{ $t('home.login') }}</view>
+          <view class="register-btn" @click="goToRegister">{{ $t('home.register') }}</view>
+        </view>
+      </view>
+    </view>
+
     <!-- 顶部搜索栏 -->
     <view class="search-bar">
       <view class="search-input" @click="goToSearch">
@@ -145,7 +169,7 @@
             <text class="language-name">{{ lang.name }}</text>
             <uni-icons v-if="lang.code === currentLanguage.code" type="checkmarkempty" size="16" color="#409EFF"></uni-icons>
           </view>
-        </view>
+    </view>
       </view>
     </uni-popup>
   </view>
@@ -159,6 +183,7 @@ import { languages, setLanguage } from '@/locale'
 const { t, locale } = useI18n()
 
 const showLanguageModal = ref(false)
+const userInfo = ref<any>(null)
 
 // 轮播图数据
 const banners = ref([
@@ -195,89 +220,48 @@ const categories = ref([
 ])
 
 // 热销商品
-const hotProducts = ref([
-  {
-    id: 1,
-    name: 'Premium Wireless Headphones',
-    image: '/static/products/headphones.jpg',
-    price: '89.99',
-    originalPrice: '129.99',
-    sales: 1250,
-    isHot: true
-  },
-  {
-    id: 2,
-    name: 'Smart Watch Series 5',
-    image: '/static/products/smartwatch.jpg',
-    price: '219.99',
-    originalPrice: '299.99',
-    sales: 890,
-    isHot: true
-  },
-  {
-    id: 3,
-    name: 'Bluetooth Speaker Pro',
-    image: '/static/products/speaker.jpg',
-    price: '69.99',
-    originalPrice: '99.99',
-    sales: 2100,
-    isHot: true
-  },
-  {
-    id: 4,
-    name: 'Wireless Charger',
-    image: '/static/products/charger.jpg',
-    price: '29.99',
-    originalPrice: '49.99',
-    sales: 3200,
-    isHot: true
-  }
-])
+const hotProducts = ref([])
 
 // 新品推荐
-const newProducts = ref([
-  {
-    id: 5,
-    name: 'iPhone 15 Pro Max',
-    image: '/static/products/iphone.jpg',
-    price: '1199.99',
-    originalPrice: null,
-    sales: 156,
-    isNew: true
-  },
-  {
-    id: 6,
-    name: 'MacBook Pro M3',
-    image: '/static/products/macbook.jpg',
-    price: '1999.99',
-    originalPrice: null,
-    sales: 89,
-    isNew: true
-  },
-  {
-    id: 7,
-    name: 'AirPods Pro 2',
-    image: '/static/products/airpods.jpg',
-    price: '249.99',
-    originalPrice: '299.99',
-    sales: 445,
-    isNew: true
-  },
-  {
-    id: 8,
-    name: 'iPad Air 5',
-    image: '/static/products/ipad.jpg',
-    price: '599.99',
-    originalPrice: '699.99',
-    sales: 234,
-    isNew: true
-  }
-])
+const newProducts = ref([])
 
 // 当前语言
 const currentLanguage = computed(() => {
   return languages.find(lang => lang.code === locale.value) || languages[0]
 })
+
+// 跳转到登录页
+const goToLogin = () => {
+  uni.navigateTo({
+    url: '/pages/login/login'
+  })
+}
+
+// 跳转到注册页
+const goToRegister = () => {
+  uni.navigateTo({
+    url: '/pages/register/register'
+  })
+}
+
+// 退出登录
+const handleLogout = () => {
+  uni.showModal({
+    title: t('common.warning'),
+    content: t('profile.confirmLogout'),
+    success: (res) => {
+      if (res.confirm) {
+        uni.removeStorageSync('token')
+        uni.removeStorageSync('userInfo')
+        userInfo.value = null
+        uni.showToast({
+          title: t('message.logoutSuccess'),
+          icon: 'success'
+        })
+      }
+    }
+  })
+}
 
 // 跳转到搜索页
 const goToSearch = () => {
@@ -346,23 +330,44 @@ const changeLanguage = (langCode: string) => {
 }
 
 onMounted(() => {
+  // 检查用户登录状态
+  checkUserStatus()
   // 加载数据
   loadData()
 })
 
+// 检查用户登录状态
+const checkUserStatus = () => {
+  const storedUserInfo = uni.getStorageSync('userInfo')
+  if (storedUserInfo) {
+    userInfo.value = storedUserInfo
+  }
+}
+
 const loadData = async () => {
   try {
-    // 模拟数据加载
     console.log('Loading home data...')
     
-    // 实际API调用
-    // const bannersRes = await getBanners()
-    // const categoriesRes = await getCategories()
-    // const hotProductsRes = await getHotProducts()
-    // const newProductsRes = await getNewProducts()
+    // 使用真实API调用
+    const [bannersRes, categoriesRes, hotProductsRes, newProductsRes] = await Promise.all([
+      getBanners(),
+      getCategories(),
+      getHotProducts(),
+      getNewProducts()
+    ])
+    
+    // 更新数据
+    banners.value = bannersRes.data || []
+    categories.value = categoriesRes.data?.data || []
+    hotProducts.value = hotProductsRes.data?.list || []
+    newProducts.value = newProductsRes.data?.list || []
+    
+    console.log('Home data loaded successfully')
     
   } catch (error) {
     console.error('Failed to load home data:', error)
+    // 如果API失败，使用默认数据
+    console.log('Using default data due to API error')
   }
 }
 </script>
@@ -385,9 +390,108 @@ const loadData = async () => {
   z-index: -1;
 }
 
+/* 用户状态栏 */
+.user-status-bar {
+  padding: 20px 20px 10px;
+  background: transparent;
+  position: relative;
+  z-index: 10;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 15px;
+  padding: 15px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 20px;
+  margin-right: 12px;
+}
+
+.user-details {
+  flex: 1;
+}
+
+.user-name {
+  display: block;
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 2px;
+}
+
+.user-phone {
+  display: block;
+  font-size: 12px;
+  color: #666;
+}
+
+.logout-btn {
+  padding: 8px;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.login-prompt {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 15px;
+  padding: 15px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.welcome-text {
+  flex: 1;
+}
+
+.welcome-title {
+  display: block;
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 2px;
+}
+
+.welcome-subtitle {
+  display: block;
+  font-size: 12px;
+  color: #666;
+}
+
+.auth-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.login-btn {
+  background: #409EFF;
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.register-btn {
+  background: #67C23A;
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
 /* 搜索栏 */
 .search-bar {
-  padding: 20px 20px 15px;
+  padding: 10px 20px 15px;
   background: transparent;
   position: relative;
   z-index: 10;
