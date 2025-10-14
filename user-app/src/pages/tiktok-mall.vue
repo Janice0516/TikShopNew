@@ -472,6 +472,7 @@ const toggleFavorite = (productId: number) => {
   background: #000;
   color: #fff;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  padding-top: 70px; /* 为固定头部留出空间 */
 }
 
 /* TikTok Shop头部 */
@@ -479,9 +480,11 @@ const toggleFavorite = (productId: number) => {
   background: #000;
   padding: 15px 20px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  position: sticky;
-  top: 44px;
-  z-index: 999;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
 }
 
 .header-content {

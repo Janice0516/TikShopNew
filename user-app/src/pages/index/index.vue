@@ -442,6 +442,7 @@ const loadData = async () => {
   background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
   min-height: 100vh;
   position: relative;
+  padding-top: 80px; /* 为固定搜索栏留出空间 */
 }
 
 .home::before {
@@ -558,8 +559,11 @@ const loadData = async () => {
 .search-bar {
   padding: 10px 20px 15px;
   background: transparent;
-  position: relative;
-  z-index: 10;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
 }
 
 .search-input {
