@@ -132,6 +132,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
+import { shouldShowMobile } from '@/utils/deviceDetection'
 
 // 响应式数据
 const categories = ref([
@@ -245,8 +246,24 @@ const loadData = async () => {
 }
 
 onMounted(() => {
+  // 检查设备类型，如果是移动设备则跳转回移动端
+  checkDeviceAndRedirect()
+  // 加载数据
   loadData()
 })
+
+// 检查设备类型并自动跳转
+const checkDeviceAndRedirect = () => {
+  // 延迟执行，确保页面完全加载
+  setTimeout(() => {
+    if (shouldShowMobile()) {
+      console.log('检测到移动设备，跳转到移动端')
+      uni.redirectTo({
+        url: '/pages/index/index'
+      })
+    }
+  }, 100)
+}
 </script>
 
 <style scoped>
