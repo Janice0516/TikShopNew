@@ -372,16 +372,16 @@ const checkDeviceAndRedirect = () => {
       uni.showToast({
         title: '检测到桌面设备，跳转到桌面端',
         icon: 'none',
-        duration: 1500
+        duration: 1000
       })
       
-      // 立即跳转
-      setTimeout(() => {
+      // 使用nextTick而不是setTimeout
+      uni.nextTick(() => {
         console.log('执行跳转到桌面端')
         uni.redirectTo({
           url: '/pages/desktop/index'
         })
-      }, 1500)
+      })
     } else {
       console.log('保持移动端界面')
     }

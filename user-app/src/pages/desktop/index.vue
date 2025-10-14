@@ -280,16 +280,16 @@ const checkDeviceAndRedirect = () => {
       uni.showToast({
         title: '检测到移动设备，跳转到移动端',
         icon: 'none',
-        duration: 1500
+        duration: 1000
       })
       
-      // 立即跳转
-      setTimeout(() => {
+      // 使用nextTick而不是setTimeout
+      uni.nextTick(() => {
         console.log('执行跳转到移动端')
         uni.redirectTo({
           url: '/pages/index/index'
         })
-      }, 1500)
+      })
     } else {
       console.log('保持桌面端界面')
     }
