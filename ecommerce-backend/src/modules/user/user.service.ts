@@ -38,6 +38,7 @@ export class UserService {
 
     // 创建用户
     const user = this.userRepository.create({
+      username: phone, // 使用手机号作为用户名
       phone,
       password: hashedPassword,
       nickname: `用户${phone.slice(-4)}`,
