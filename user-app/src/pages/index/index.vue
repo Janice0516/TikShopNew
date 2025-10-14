@@ -613,7 +613,6 @@ const loadData = async () => {
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-}
   position: relative;
 }
 
@@ -774,8 +773,6 @@ const loadData = async () => {
   background: #fff;
   max-width: 1200px;
   margin: 0 auto;
-}
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
 }
 
 .section-header {
@@ -961,7 +958,6 @@ const loadData = async () => {
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 20px;
   margin-top: 20px;
-}
 }
 
 .product-card {
