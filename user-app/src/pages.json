@@ -8,9 +8,9 @@
       }
     },
     {
-      "path": "pages/tiktok-mall-desktop",
+      "path": "pages/desktop/index",
       "style": {
-        "navigationBarTitleText": "TikTok Mall Desktop",
+        "navigationBarTitleText": "TikTok Shop Desktop",
         "navigationStyle": "custom"
       }
     },

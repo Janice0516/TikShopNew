@@ -126,6 +126,14 @@
       </view>
     </view>
 
+    <!-- 桌面端入口 -->
+    <view class="desktop-entry">
+      <view class="desktop-btn" @click="goToDesktop">
+        <uni-icons type="monitor" size="16" color="#fff"></uni-icons>
+        <text class="desktop-text">Desktop Version</text>
+      </view>
+    </view>
+
     <!-- TikTok测试入口 -->
     <view class="test-entry">
       <view class="test-btn" @click="goToTest">
@@ -302,6 +310,13 @@ const goToBanner = (banner: any) => {
 const goToTikTokMall = () => {
   uni.navigateTo({
     url: '/pages/tiktok-mall'
+  })
+}
+
+// 跳转到桌面端
+const goToDesktop = () => {
+  uni.navigateTo({
+    url: '/pages/desktop/index'
   })
 }
 
@@ -1033,6 +1048,39 @@ const loadData = async () => {
 
 .tiktok-text {
   letter-spacing: 0.3px;
+}
+
+/* 桌面端入口 */
+.desktop-entry {
+  position: fixed;
+  bottom: 320px;
+  right: 20px;
+  z-index: 999;
+}
+
+.desktop-btn {
+  display: flex;
+  align-items: center;
+  background: linear-gradient(135deg, #409EFF 0%, #67C23A 100%);
+  color: #fff;
+  padding: 14px 18px;
+  border-radius: 30px;
+  font-size: 14px;
+  font-weight: 700;
+  box-shadow: 0 10px 30px rgba(64, 158, 255, 0.4);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.desktop-btn:active {
+  transform: scale(0.95);
+  box-shadow: 0 6px 20px rgba(64, 158, 255, 0.6);
+}
+
+.desktop-text {
+  letter-spacing: 0.3px;
+  margin-left: 8px;
 }
 
 /* TikTok测试入口 */
