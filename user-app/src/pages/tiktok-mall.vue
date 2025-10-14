@@ -1,17 +1,5 @@
 <template>
   <view class="tiktok-shop">
-    <!-- TikTok风格顶部状态栏 -->
-    <view class="status-bar">
-      <view class="status-content">
-        <text class="time">9:41</text>
-        <view class="status-icons">
-          <text class="icon">📶</text>
-          <text class="icon">📶</text>
-          <text class="icon">🔋</text>
-        </view>
-      </view>
-    </view>
-
     <!-- TikTok Shop头部 -->
     <view class="shop-header">
       <view class="header-content">
@@ -484,36 +472,6 @@ const toggleFavorite = (productId: number) => {
   background: #000;
   color: #fff;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-}
-
-/* TikTok风格状态栏 */
-.status-bar {
-  background: #000;
-  padding: 8px 20px 0;
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-}
-
-.status-content {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.time {
-  font-size: 16px;
-  font-weight: 600;
-  color: #fff;
-}
-
-.status-icons {
-  display: flex;
-  gap: 4px;
-}
-
-.status-icons .icon {
-  font-size: 14px;
 }
 
 /* TikTok Shop头部 */
