@@ -274,7 +274,7 @@ const checkDeviceAndRedirect = () => {
     console.log('是否为移动设备:', isMobile)
     
     if (isMobile) {
-      console.log('检测到移动设备，准备跳转到移动端')
+      console.log('检测到移动设备，准备跳转到移动端子域名')
       
       // 显示提示
       uni.showToast({
@@ -283,12 +283,13 @@ const checkDeviceAndRedirect = () => {
         duration: 1000
       })
       
-      // 使用nextTick而不是setTimeout
+      // 跳转到移动端子域名
       uni.nextTick(() => {
-        console.log('执行跳转到移动端')
-        uni.redirectTo({
-          url: '/pages/index/index'
-        })
+        console.log('执行跳转到移动端子域名')
+        const currentUrl = window.location.href
+        const mobileUrl = currentUrl.replace('tikshop-user.onrender.com', 'm.tikshop-user.onrender.com')
+        console.log('跳转URL:', mobileUrl)
+        window.location.href = mobileUrl
       })
     } else {
       console.log('保持桌面端界面')

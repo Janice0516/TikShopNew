@@ -357,33 +357,33 @@ const checkDeviceAndRedirect = () => {
     
     console.log('屏幕宽度:', screenWidth, '平台:', platform)
     
-    // 判断是否为桌面设备
-    const isDesktop = screenWidth >= 1024 || 
-                     platform === 'windows' || 
-                     platform === 'mac' || 
-                     platform === 'linux'
+    // 判断是否为移动设备
+    const isMobile = screenWidth < 1024 || 
+                    platform === 'ios' || 
+                    platform === 'android'
     
-    console.log('是否为桌面设备:', isDesktop)
+    console.log('是否为移动设备:', isMobile)
     
-    if (isDesktop) {
-      console.log('检测到桌面设备，准备跳转到桌面端')
+    if (isMobile) {
+      console.log('检测到移动设备，准备跳转到移动端子域名')
       
       // 显示提示
       uni.showToast({
-        title: '检测到桌面设备，跳转到桌面端',
+        title: '检测到移动设备，跳转到移动端',
         icon: 'none',
         duration: 1000
       })
       
-      // 使用nextTick而不是setTimeout
+      // 跳转到移动端子域名
       uni.nextTick(() => {
-        console.log('执行跳转到桌面端')
-        uni.redirectTo({
-          url: '/pages/desktop/index'
-        })
+        console.log('执行跳转到移动端子域名')
+        const currentUrl = window.location.href
+        const mobileUrl = currentUrl.replace('tikshop-user.onrender.com', 'm.tikshop-user.onrender.com')
+        console.log('跳转URL:', mobileUrl)
+        window.location.href = mobileUrl
       })
     } else {
-      console.log('保持移动端界面')
+      console.log('保持桌面端界面')
     }
   } catch (error) {
     console.error('设备检测失败:', error)
@@ -392,11 +392,11 @@ const checkDeviceAndRedirect = () => {
     const screenWidth = window.innerWidth || 0
     console.log('备用检测 - 屏幕宽度:', screenWidth)
     
-    if (screenWidth >= 1024) {
-      console.log('备用检测 - 跳转到桌面端')
-      uni.redirectTo({
-        url: '/pages/desktop/index'
-      })
+    if (screenWidth < 1024) {
+      console.log('备用检测 - 跳转到移动端子域名')
+      const currentUrl = window.location.href
+      const mobileUrl = currentUrl.replace('tikshop-user.onrender.com', 'm.tikshop-user.onrender.com')
+      window.location.href = mobileUrl
     }
   }
 }
