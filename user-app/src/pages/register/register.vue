@@ -168,7 +168,7 @@ const toggleConfirmPassword = () => {
   showConfirmPassword.value = !showConfirmPassword.value
 }
 
-const getVerifyCode = () => {
+const getVerifyCode = async () => {
   if (form.value.phone.length !== 11) {
     uni.showToast({
       title: t('register.phoneRequired'),
@@ -177,20 +177,36 @@ const getVerifyCode = () => {
     return
   }
 
-  // 开始倒计时
-  codeCountdown.value = 60
-  const timer = setInterval(() => {
-    codeCountdown.value--
-    if (codeCountdown.value <= 0) {
-      clearInterval(timer)
-    }
-  }, 1000)
+  try {
+    // 使用真实API调用
+    const { sendCode } = await import('@/api/index')
+    
+    const result = await sendCode(form.value.phone)
+    
+    if (result.code === 200) {
+      // 开始倒计时
+      codeCountdown.value = 60
+      const timer = setInterval(() => {
+        codeCountdown.value--
+        if (codeCountdown.value <= 0) {
+          clearInterval(timer)
+        }
+      }, 1000)
 
-  // 模拟发送验证码
-  uni.showToast({
-    title: t('message.codeSent'),
-    icon: 'success'
-  })
+      uni.showToast({
+        title: t('message.codeSent'),
+        icon: 'success'
+      })
+    } else {
+      throw new Error(result.message || '发送验证码失败')
+    }
+  } catch (error) {
+    console.error('发送验证码失败:', error)
+    uni.showToast({
+      title: error.message || '发送验证码失败',
+      icon: 'none'
+    })
+  }
 }
 
 const handleRegister = async () => {
@@ -199,24 +215,39 @@ const handleRegister = async () => {
   loading.value = true
 
   try {
-    // 模拟注册请求
-    await new Promise(resolve => setTimeout(resolve, 2000))
-
-    uni.showToast({
-      title: t('message.registerSuccess'),
-      icon: 'success'
+    // 使用真实API调用
+    const { register } = await import('@/api/index')
+    
+    const result = await register({
+      phone: form.value.phone,
+      password: form.value.password,
+      code: form.value.verifyCode
     })
 
-    // 注册成功后跳转到登录页
-    setTimeout(() => {
-      uni.navigateTo({
-        url: '/pages/login/login'
+    if (result.code === 200) {
+      // 保存token和用户信息
+      uni.setStorageSync('token', result.data.token)
+      uni.setStorageSync('userInfo', result.data.userInfo)
+
+      uni.showToast({
+        title: t('message.registerSuccess'),
+        icon: 'success'
       })
-    }, 1500)
+
+      // 注册成功后跳转到首页
+      setTimeout(() => {
+        uni.switchTab({
+          url: '/pages/index/index'
+        })
+      }, 1500)
+    } else {
+      throw new Error(result.message || '注册失败')
+    }
 
   } catch (error) {
+    console.error('注册失败:', error)
     uni.showToast({
-      title: t('message.registerFailed'),
+      title: error.message || t('message.registerFailed'),
       icon: 'none'
     })
   } finally {
