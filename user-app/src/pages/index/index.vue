@@ -331,6 +331,9 @@ const changeLanguage = (langCode: string) => {
 }
 
 onMounted(() => {
+  // 立即执行设备检测
+  console.log('页面加载完成，开始设备检测')
+  
   // 检查设备类型并自动跳转
   checkDeviceAndRedirect()
   // 检查用户登录状态
@@ -341,34 +344,61 @@ onMounted(() => {
 
 // 检查设备类型并自动跳转
 const checkDeviceAndRedirect = () => {
-  // 延迟执行，确保页面完全加载
-  setTimeout(() => {
-    console.log('开始设备检测...')
+  console.log('开始设备检测...')
+  
+  try {
+    // 获取系统信息
+    const systemInfo = uni.getSystemInfoSync()
+    console.log('系统信息:', systemInfo)
     
-    try {
-      const shouldDesktop = shouldShowDesktop()
-      console.log('设备检测结果:', shouldDesktop)
+    // 简单的屏幕宽度检测
+    const screenWidth = systemInfo.screenWidth || 0
+    const platform = systemInfo.platform || ''
+    
+    console.log('屏幕宽度:', screenWidth, '平台:', platform)
+    
+    // 判断是否为桌面设备
+    const isDesktop = screenWidth >= 1024 || 
+                     platform === 'windows' || 
+                     platform === 'mac' || 
+                     platform === 'linux'
+    
+    console.log('是否为桌面设备:', isDesktop)
+    
+    if (isDesktop) {
+      console.log('检测到桌面设备，准备跳转到桌面端')
       
-      if (shouldDesktop) {
-        console.log('检测到桌面设备，跳转到桌面端')
-        uni.showToast({
-          title: '检测到桌面设备，跳转到桌面端',
-          icon: 'none',
-          duration: 2000
+      // 显示提示
+      uni.showToast({
+        title: '检测到桌面设备，跳转到桌面端',
+        icon: 'none',
+        duration: 1500
+      })
+      
+      // 立即跳转
+      setTimeout(() => {
+        console.log('执行跳转到桌面端')
+        uni.redirectTo({
+          url: '/pages/desktop/index'
         })
-        
-        setTimeout(() => {
-          uni.redirectTo({
-            url: '/pages/desktop/index'
-          })
-        }, 2000)
-      } else {
-        console.log('保持移动端界面')
-      }
-    } catch (error) {
-      console.error('设备检测失败:', error)
+      }, 1500)
+    } else {
+      console.log('保持移动端界面')
     }
-  }, 100)
+  } catch (error) {
+    console.error('设备检测失败:', error)
+    
+    // 如果检测失败，使用简单的屏幕宽度判断
+    const screenWidth = window.innerWidth || 0
+    console.log('备用检测 - 屏幕宽度:', screenWidth)
+    
+    if (screenWidth >= 1024) {
+      console.log('备用检测 - 跳转到桌面端')
+      uni.redirectTo({
+        url: '/pages/desktop/index'
+      })
+    }
+  }
 }
 
 // 检查用户登录状态

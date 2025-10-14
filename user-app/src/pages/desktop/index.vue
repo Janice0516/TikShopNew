@@ -254,34 +254,48 @@ onMounted(() => {
 
 // 检查设备类型并自动跳转
 const checkDeviceAndRedirect = () => {
-  // 延迟执行，确保页面完全加载
-  setTimeout(() => {
-    console.log('桌面端页面开始设备检测...')
+  console.log('桌面端页面开始设备检测...')
+  
+  try {
+    // 获取系统信息
+    const systemInfo = uni.getSystemInfoSync()
+    console.log('桌面端系统信息:', systemInfo)
     
-    try {
-      const shouldMobile = shouldShowMobile()
-      console.log('桌面端设备检测结果:', shouldMobile)
+    // 简单的屏幕宽度检测
+    const screenWidth = systemInfo.screenWidth || 0
+    const platform = systemInfo.platform || ''
+    
+    console.log('桌面端屏幕宽度:', screenWidth, '平台:', platform)
+    
+    // 判断是否为移动设备
+    const isMobile = screenWidth < 1024 && 
+                    (platform === 'ios' || platform === 'android')
+    
+    console.log('是否为移动设备:', isMobile)
+    
+    if (isMobile) {
+      console.log('检测到移动设备，准备跳转到移动端')
       
-      if (shouldMobile) {
-        console.log('检测到移动设备，跳转到移动端')
-        uni.showToast({
-          title: '检测到移动设备，跳转到移动端',
-          icon: 'none',
-          duration: 2000
+      // 显示提示
+      uni.showToast({
+        title: '检测到移动设备，跳转到移动端',
+        icon: 'none',
+        duration: 1500
+      })
+      
+      // 立即跳转
+      setTimeout(() => {
+        console.log('执行跳转到移动端')
+        uni.redirectTo({
+          url: '/pages/index/index'
         })
-        
-        setTimeout(() => {
-          uni.redirectTo({
-            url: '/pages/index/index'
-          })
-        }, 2000)
-      } else {
-        console.log('保持桌面端界面')
-      }
-    } catch (error) {
-      console.error('桌面端设备检测失败:', error)
+      }, 1500)
+    } else {
+      console.log('保持桌面端界面')
     }
-  }, 100)
+  } catch (error) {
+    console.error('桌面端设备检测失败:', error)
+  }
 }
 </script>
 
