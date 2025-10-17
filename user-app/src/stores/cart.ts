@@ -22,7 +22,7 @@ export const useCartStore = defineStore('cart', () => {
   const fetchCart = async () => {
     try {
       const response = await cartApi.getCart()
-      cartItems.value = response.items || []
+      cartItems.value = response.data?.items || []
       calculateTotal()
       return response
     } catch (error) {

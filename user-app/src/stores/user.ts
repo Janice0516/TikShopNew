@@ -12,9 +12,9 @@ export const useUserStore = defineStore('user', () => {
   const login = async (phone: string, password: string) => {
     try {
       const response = await userApi.login({ phone, password })
-      token.value = response.token
-      userInfo.value = response.user
-      localStorage.setItem('token', response.token)
+      token.value = response.data?.token || ''
+      userInfo.value = response.data?.user || null
+      localStorage.setItem('token', response.data?.token || '')
       return response
     } catch (error) {
       throw error
@@ -25,9 +25,9 @@ export const useUserStore = defineStore('user', () => {
   const register = async (phone: string, password: string, verifyCode: string) => {
     try {
       const response = await userApi.register({ phone, password, verifyCode })
-      token.value = response.token
-      userInfo.value = response.user
-      localStorage.setItem('token', response.token)
+      token.value = response.data?.token || ''
+      userInfo.value = response.data?.user || null
+      localStorage.setItem('token', response.data?.token || '')
       return response
     } catch (error) {
       throw error
