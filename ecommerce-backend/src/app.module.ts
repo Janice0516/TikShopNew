@@ -24,6 +24,8 @@ import { Cart } from './modules/cart/entities/cart.entity';
 import { MerchantWithdrawal } from './modules/withdrawal/entities/merchant-withdrawal.entity';
 import { MerchantCreditRating } from './modules/credit-rating/entities/merchant-credit-rating.entity';
 import { FundOperation } from './modules/fund-management/entities/fund-operation.entity';
+import { FundFreezeRecord } from './modules/fund-management/entities/fund-freeze-record.entity';
+import { FundTransaction } from './modules/fund-management/entities/fund-transaction.entity';
 import { SystemSettings } from './modules/settings/entities/system-settings.entity';
 
 // 模块
@@ -79,6 +81,8 @@ import { SettingsModule } from './modules/settings/settings.module';
             MerchantWithdrawal,
             MerchantCreditRating,
             FundOperation,
+            FundFreezeRecord,
+            FundTransaction,
             SystemSettings
           ],
           autoLoadEntities: true,

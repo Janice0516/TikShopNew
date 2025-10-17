@@ -1,42 +1,58 @@
-import { ref } from 'vue'
-import { login as loginApi, getUserInfo, register as registerApi } from '@/api/user'
-import type { LoginForm, RegisterForm } from '@/api/user'
+import { defineStore } from 'pinia'
+import { ref, computed } from 'vue'
+import { userApi } from '@/api'
 
-export const useUserStore = () => {
-  const token = ref<string>(uni.getStorageSync('token') || '')
+export const useUserStore = defineStore('user', () => {
+  // 状态
   const userInfo = ref<any>(null)
+  const token = ref<string>(localStorage.getItem('token') || '')
+  const isLoggedIn = computed(() => !!token.value && !!userInfo.value)
 
   // 登录
-  const login = async (loginForm: LoginForm) => {
+  const login = async (phone: string, password: string) => {
     try {
-      const res: any = await loginApi(loginForm)
-      token.value = res.data.token
-      userInfo.value = res.data.userInfo
-      uni.setStorageSync('token', res.data.token)
-      return Promise.resolve(res)
+      const response = await userApi.login({ phone, password })
+      token.value = response.token
+      userInfo.value = response.user
+      localStorage.setItem('token', response.token)
+      return response
     } catch (error) {
-      return Promise.reject(error)
+      throw error
     }
   }
 
   // 注册
-  const register = async (registerForm: RegisterForm) => {
+  const register = async (phone: string, password: string, verifyCode: string) => {
     try {
-      const res: any = await registerApi(registerForm)
-      return Promise.resolve(res)
+      const response = await userApi.register({ phone, password, verifyCode })
+      token.value = response.token
+      userInfo.value = response.user
+      localStorage.setItem('token', response.token)
+      return response
     } catch (error) {
-      return Promise.reject(error)
+      throw error
     }
   }
 
   // 获取用户信息
-  const getInfo = async () => {
+  const fetchUserInfo = async () => {
     try {
-      const res: any = await getUserInfo()
-      userInfo.value = res.data
-      return Promise.resolve(res)
+      const response = await userApi.getUserInfo()
+      userInfo.value = response
+      return response
     } catch (error) {
-      return Promise.reject(error)
+      throw error
+    }
+  }
+
+  // 更新用户信息
+  const updateUserInfo = async (data: any) => {
+    try {
+      const response = await userApi.updateUserInfo(data)
+      userInfo.value = { ...userInfo.value, ...response }
+      return response
+    } catch (error) {
+      throw error
     }
   }
 
@@ -44,15 +60,29 @@ export const useUserStore = () => {
   const logout = () => {
     token.value = ''
     userInfo.value = null
-    uni.removeStorageSync('token')
+    localStorage.removeItem('token')
+  }
+
+  // 初始化用户信息
+  const initUserInfo = async () => {
+    if (token.value && !userInfo.value) {
+      try {
+        await fetchUserInfo()
+      } catch (error) {
+        logout()
+      }
+    }
   }
 
   return {
-    token,
     userInfo,
+    token,
+    isLoggedIn,
     login,
     register,
-    getInfo,
-    logout
+    fetchUserInfo,
+    updateUserInfo,
+    logout,
+    initUserInfo
   }
-}
+})

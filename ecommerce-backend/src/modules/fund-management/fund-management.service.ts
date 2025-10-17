@@ -1,380 +1,300 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { FundOperation } from './entities/fund-operation.entity';
+import { Repository, DataSource } from 'typeorm';
 import { Merchant } from '../merchant/entities/merchant.entity';
-import { 
-  IncreaseFundDto,
-  FreezeFundDto, 
-  UnfreezeFundDto, 
-  DeductFundDto, 
-  RefundFundDto, 
-  QueryFundOperationDto,
-  MerchantFundInfoDto 
-} from './dto/fund-management.dto';
+import { Order } from '../order/entities/order.entity';
+import { Product } from '../product/entities/product.entity';
+import { FundFreezeRecord } from './entities/fund-freeze-record.entity';
+import { FundTransaction } from './entities/fund-transaction.entity';
 
 @Injectable()
 export class FundManagementService {
   constructor(
-    @InjectRepository(FundOperation)
-    private fundOperationRepository: Repository<FundOperation>,
     @InjectRepository(Merchant)
     private merchantRepository: Repository<Merchant>,
+    @InjectRepository(Order)
+    private orderRepository: Repository<Order>,
+    @InjectRepository(Product)
+    private productRepository: Repository<Product>,
+    @InjectRepository(FundFreezeRecord)
+    private fundFreezeRepository: Repository<FundFreezeRecord>,
+    @InjectRepository(FundTransaction)
+    private fundTransactionRepository: Repository<FundTransaction>,
+    private dataSource: DataSource,
   ) {}
 
   /**
-   * 增加商户资金
+   * 订单创建时冻结资金
    */
-  async increaseFund(adminId: number, adminName: string, increaseFundDto: IncreaseFundDto) {
-    const { merchantId, amount, reason, remark } = increaseFundDto;
+  async freezeFundsOnOrder(orderId: string): Promise<void> {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
 
-    const merchant = await this.merchantRepository.findOne({ where: { id: String(merchantId) } });
-    if (!merchant) {
-      throw new NotFoundException('商户不存在');
+    try {
+      // 1. 获取订单信息
+      const order = await queryRunner.manager.findOne(Order, {
+        where: { id: orderId },
+      });
+
+      if (!order) {
+        throw new Error('订单不存在');
+      }
+
+      // 2. 获取订单商品信息
+      const orderItems = await queryRunner.manager.query(
+        'SELECT * FROM order_item WHERE order_id = $1',
+        [orderId]
+      );
+
+      // 3. 计算总成本价（平台提供商品的价格）
+      let totalCostPrice = 0;
+      for (const item of orderItems) {
+        const productResult = await queryRunner.manager.query(
+          'SELECT cost_price FROM platform_product WHERE id = $1',
+          [item.product_id]
+        );
+        if (productResult.length > 0) {
+          const costPrice = parseFloat(productResult[0].cost_price);
+          totalCostPrice += costPrice * item.quantity;
+        }
+      }
+
+      // 4. 更新订单成本价
+      await queryRunner.manager.query(
+        'UPDATE "order" SET cost_amount = $1 WHERE id = $2',
+        [totalCostPrice, orderId]
+      );
+
+      // 5. 获取商家信息
+      const merchant = await queryRunner.manager.findOne(Merchant, {
+        where: { id: order.merchantId },
+      });
+
+      if (!merchant) {
+        throw new Error('商家不存在');
+      }
+
+      // 6. 冻结资金（允许负数）
+      const currentBalance = typeof merchant.balance === 'string' ? parseFloat(merchant.balance) : merchant.balance || 0;
+      const currentFrozen = typeof merchant.frozenAmount === 'string' ? parseFloat(merchant.frozenAmount) : merchant.frozenAmount || 0;
+      const newFrozen = currentFrozen + totalCostPrice;
+      const newBalance = currentBalance - totalCostPrice; // 允许负数
+
+      await queryRunner.manager.query(
+        'UPDATE merchant SET balance = $1, frozen_amount = $2 WHERE id = $3',
+        [newBalance.toString(), newFrozen.toString(), order.merchantId]
+      );
+
+      // 7. 创建冻结记录
+      await queryRunner.manager.query(
+        `INSERT INTO fund_freeze_record (merchant_id, order_id, freeze_amount, freeze_type, freeze_status, freeze_reason)
+         VALUES ($1, $2, $3, $4, $5, $6)`,
+        [order.merchantId, orderId, totalCostPrice, 1, 1, '订单成本价冻结']
+      );
+
+      // 8. 记录资金流水
+      await queryRunner.manager.query(
+        `INSERT INTO fund_transaction (merchant_id, order_id, transaction_type, amount, balance_before, balance_after, frozen_before, frozen_after, description, remark)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
+        [
+          order.merchantId, orderId, 1, totalCostPrice,
+          currentBalance, newBalance, currentFrozen, newFrozen,
+          `订单${orderId}成本价冻结`, `冻结金额: ${totalCostPrice}`
+        ]
+      );
+
+      await queryRunner.commitTransaction();
+      console.log(`✅ 订单${orderId}成本价冻结成功，冻结金额: ${totalCostPrice}`);
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      console.error('❌ 资金冻结失败:', error);
+      throw error;
+    } finally {
+      await queryRunner.release();
     }
-
-    // 更新商户余额
-    const beforeBalance = merchant.balance;
-    const afterBalance = parseFloat((beforeBalance + amount).toFixed(2));
-    merchant.balance = afterBalance;
-
-    await this.merchantRepository.save(merchant);
-
-    // 记录资金操作
-    const fundOperation = this.fundOperationRepository.create({
-      merchantId,
-      operationType: 1, // 1表示充值/增加资金
-      amount,
-      balanceBefore: beforeBalance,
-      balanceAfter: afterBalance,
-      frozenBefore: merchant.frozenAmount,
-      frozenAfter: merchant.frozenAmount,
-      adminId,
-      adminName,
-      reason,
-      remark,
-    });
-
-    await this.fundOperationRepository.save(fundOperation);
-
-    return {
-      code: 200,
-      message: '资金增加成功',
-      data: fundOperation,
-    };
   }
 
   /**
-   * 冻结商户资金
+   * 订单完成时解冻资金并结算佣金
    */
-  async freezeFund(adminId: number, adminName: string, freezeFundDto: FreezeFundDto) {
-    const { merchantId, amount, reason, remark } = freezeFundDto;
+  async unfreezeFundsOnCompletion(orderId: string): Promise<void> {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
 
-    const merchant = await this.merchantRepository.findOne({ where: { id: String(merchantId) } });
-    if (!merchant) {
-      throw new NotFoundException('商户不存在');
+    try {
+      // 1. 获取订单信息
+      const order = await queryRunner.manager.findOne(Order, {
+        where: { id: orderId },
+      });
+
+      if (!order) {
+        throw new Error('订单不存在');
+      }
+
+      // 2. 获取冻结记录
+      const freezeRecords = await queryRunner.manager.query(
+        'SELECT * FROM fund_freeze_record WHERE order_id = $1 AND freeze_status = 1',
+        [orderId]
+      );
+
+      if (freezeRecords.length === 0) {
+        throw new Error('未找到冻结记录');
+      }
+
+      const freezeRecord = freezeRecords[0];
+
+      // 3. 计算商家收益（无平台抽成）
+      const totalAmount = parseFloat(order.totalAmount.toString());
+      const costPrice = parseFloat(freezeRecord.freeze_amount);
+      const merchantProfit = totalAmount - costPrice; // 商家收益 = 订单售价 - 成本价
+      const platformProfit = 0; // 平台不抽成
+      const finalMerchantProfit = merchantProfit; // 商家获得全部收益
+
+      // 4. 更新订单佣金信息
+      await queryRunner.manager.query(
+        'UPDATE "order" SET merchant_profit = $1, platform_profit = $2 WHERE id = $3',
+        [finalMerchantProfit, platformProfit, orderId]
+      );
+
+      // 5. 获取商家信息
+      const merchant = await queryRunner.manager.findOne(Merchant, {
+        where: { id: order.merchantId },
+      });
+
+      if (!merchant) {
+        throw new Error('商家不存在');
+      }
+
+      // 6. 解冻资金并结算收益
+      const currentBalance = typeof merchant.balance === 'string' ? parseFloat(merchant.balance) : merchant.balance || 0;
+      const currentFrozen = typeof merchant.frozenAmount === 'string' ? parseFloat(merchant.frozenAmount) : merchant.frozenAmount || 0;
+      const unfreezeAmount = parseFloat(freezeRecord.freeze_amount);
+      const newFrozen = currentFrozen - unfreezeAmount;
+      const newBalance = currentBalance + unfreezeAmount + finalMerchantProfit; // 解冻成本价 + 商家收益
+
+      await queryRunner.manager.query(
+        'UPDATE merchant SET balance = $1, frozen_amount = $2 WHERE id = $3',
+        [newBalance.toString(), newFrozen.toString(), order.merchantId]
+      );
+
+      // 7. 更新冻结记录状态
+      await queryRunner.manager.query(
+        'UPDATE fund_freeze_record SET freeze_status = 2, unfreeze_time = NOW(), unfreeze_reason = $1 WHERE id = $2',
+        ['订单完成，解冻成本价并结算收益', freezeRecord.id]
+      );
+
+      // 8. 记录解冻流水
+      await queryRunner.manager.query(
+        `INSERT INTO fund_transaction (merchant_id, order_id, transaction_type, amount, balance_before, balance_after, frozen_before, frozen_after, description, remark)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
+        [
+          order.merchantId, orderId, 2, unfreezeAmount,
+          currentBalance, currentBalance + unfreezeAmount, currentFrozen, newFrozen,
+          `订单${orderId}成本价解冻`, `解冻金额: ${unfreezeAmount}`
+        ]
+      );
+
+      // 9. 记录收益结算流水
+      await queryRunner.manager.query(
+        `INSERT INTO fund_transaction (merchant_id, order_id, transaction_type, amount, balance_before, balance_after, frozen_before, frozen_after, description, remark)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
+        [
+          order.merchantId, orderId, 3, finalMerchantProfit,
+          currentBalance + unfreezeAmount, newBalance, newFrozen, newFrozen,
+          `订单${orderId}收益结算`, `收益: ${finalMerchantProfit}, 平台抽成: 0`
+        ]
+      );
+
+      await queryRunner.commitTransaction();
+      console.log(`✅ 订单${orderId}成本价解冻成功，解冻金额: ${unfreezeAmount}，商家收益: ${finalMerchantProfit}`);
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      console.error('❌ 资金解冻失败:', error);
+      throw error;
+    } finally {
+      await queryRunner.release();
     }
-
-    if (amount > merchant.balance) {
-      throw new BadRequestException('冻结金额不能超过可用余额');
-    }
-
-    if (amount <= 0) {
-      throw new BadRequestException('冻结金额必须大于0');
-    }
-
-    const balanceBefore = merchant.balance;
-    const frozenBefore = merchant.frozenAmount;
-    const balanceAfter = balanceBefore - amount;
-    const frozenAfter = frozenBefore + amount;
-
-    // 更新商户资金
-    await this.merchantRepository.update(merchantId, {
-      balance: balanceAfter,
-      frozenAmount: frozenAfter,
-    });
-
-    // 记录操作日志
-    const operation = this.fundOperationRepository.create({
-      merchantId,
-      operationType: 3, // 冻结
-      amount,
-      balanceBefore,
-      balanceAfter,
-      frozenBefore,
-      frozenAfter,
-      adminId,
-      adminName,
-      reason,
-      remark,
-    });
-
-    await this.fundOperationRepository.save(operation);
-
-    return {
-      code: 200,
-      message: '资金冻结成功',
-      data: {
-        merchantId,
-        amount,
-        balanceAfter,
-        frozenAfter,
-      },
-    };
   }
 
   /**
-   * 解冻商户资金
+   * 获取商家资金概览
    */
-  async unfreezeFund(adminId: number, adminName: string, unfreezeFundDto: UnfreezeFundDto) {
-    const { merchantId, amount, reason, remark } = unfreezeFundDto;
-
-    const merchant = await this.merchantRepository.findOne({ where: { id: String(merchantId) } });
-    if (!merchant) {
-      throw new NotFoundException('商户不存在');
-    }
-
-    if (amount > merchant.frozenAmount) {
-      throw new BadRequestException('解冻金额不能超过冻结金额');
-    }
-
-    if (amount <= 0) {
-      throw new BadRequestException('解冻金额必须大于0');
-    }
-
-    const balanceBefore = merchant.balance;
-    const frozenBefore = merchant.frozenAmount;
-    const balanceAfter = balanceBefore + amount;
-    const frozenAfter = frozenBefore - amount;
-
-    // 更新商户资金
-    await this.merchantRepository.update(merchantId, {
-      balance: balanceAfter,
-      frozenAmount: frozenAfter,
-    });
-
-    // 记录操作日志
-    const operation = this.fundOperationRepository.create({
-      merchantId,
-      operationType: 4, // 解冻
-      amount,
-      balanceBefore,
-      balanceAfter,
-      frozenBefore,
-      frozenAfter,
-      adminId,
-      adminName,
-      reason,
-      remark,
-    });
-
-    await this.fundOperationRepository.save(operation);
-
-    return {
-      code: 200,
-      message: '资金解冻成功',
-      data: {
-        merchantId,
-        amount,
-        balanceAfter,
-        frozenAfter,
-      },
-    };
-  }
-
-  /**
-   * 扣除商户资金
-   */
-  async deductFund(adminId: number, adminName: string, deductFundDto: DeductFundDto) {
-    const { merchantId, amount, reason, remark } = deductFundDto;
-
-    const merchant = await this.merchantRepository.findOne({ where: { id: String(merchantId) } });
-    if (!merchant) {
-      throw new NotFoundException('商户不存在');
-    }
-
-    if (amount > merchant.balance) {
-      throw new BadRequestException('扣款金额不能超过可用余额');
-    }
-
-    if (amount <= 0) {
-      throw new BadRequestException('扣款金额必须大于0');
-    }
-
-    const balanceBefore = merchant.balance;
-    const frozenBefore = merchant.frozenAmount;
-    const balanceAfter = balanceBefore - amount;
-    const frozenAfter = frozenBefore;
-
-    // 更新商户资金
-    await this.merchantRepository.update(merchantId, {
-      balance: balanceAfter,
-    });
-
-    // 记录操作日志
-    const operation = this.fundOperationRepository.create({
-      merchantId,
-      operationType: 5, // 扣款
-      amount,
-      balanceBefore,
-      balanceAfter,
-      frozenBefore,
-      frozenAfter,
-      adminId,
-      adminName,
-      reason,
-      remark,
-    });
-
-    await this.fundOperationRepository.save(operation);
-
-    return {
-      code: 200,
-      message: '资金扣除成功',
-      data: {
-        merchantId,
-        amount,
-        balanceAfter,
-        frozenAfter,
-      },
-    };
-  }
-
-  /**
-   * 退还商户资金
-   */
-  async refundFund(adminId: number, adminName: string, refundFundDto: RefundFundDto) {
-    const { merchantId, amount, reason, orderId, remark } = refundFundDto;
-
-    const merchant = await this.merchantRepository.findOne({ where: { id: String(merchantId) } });
-    if (!merchant) {
-      throw new NotFoundException('商户不存在');
-    }
-
-    if (amount <= 0) {
-      throw new BadRequestException('退款金额必须大于0');
-    }
-
-    const balanceBefore = merchant.balance;
-    const frozenBefore = merchant.frozenAmount;
-    const balanceAfter = balanceBefore + amount;
-    const frozenAfter = frozenBefore;
-
-    // 更新商户资金
-    await this.merchantRepository.update(merchantId, {
-      balance: balanceAfter,
-    });
-
-    // 记录操作日志
-    const operation = this.fundOperationRepository.create({
-      merchantId,
-      operationType: 6, // 退款
-      amount,
-      balanceBefore,
-      balanceAfter,
-      frozenBefore,
-      frozenAfter,
-      adminId,
-      adminName,
-      reason,
-      remark,
-      orderId,
-    });
-
-    await this.fundOperationRepository.save(operation);
-
-    return {
-      code: 200,
-      message: '资金退还成功',
-      data: {
-        merchantId,
-        amount,
-        balanceAfter,
-        frozenAfter,
-      },
-    };
-  }
-
-  /**
-   * 获取商户资金信息
-   */
-  async getMerchantFundInfo(merchantId: number): Promise<MerchantFundInfoDto> {
-    const merchant = await this.merchantRepository.findOne({ 
-      where: { id: String(merchantId) },
-      select: ['id', 'merchantName', 'balance', 'frozenAmount', 'totalIncome', 'totalWithdraw']
+  async getMerchantFundOverview(merchantId: string) {
+    const merchant = await this.merchantRepository.findOne({
+      where: { id: merchantId },
     });
 
     if (!merchant) {
-      throw new NotFoundException('商户不存在');
+      throw new Error('商家不存在');
     }
 
+    // 统计冻结中的订单
+    const frozenOrders = await this.fundFreezeRepository.count({
+      where: { merchantId, freezeStatus: 1 },
+    });
+
+    // 统计总冻结金额
+    const totalFrozenResult = await this.dataSource.query(
+      'SELECT SUM(freeze_amount) as total FROM fund_freeze_record WHERE merchant_id = $1 AND freeze_status = 1',
+      [merchantId]
+    );
+
     return {
-      merchantId: Number(merchant.id),
-      merchantName: merchant.merchantName,
-      availableBalance: parseFloat((merchant.balance - merchant.frozenAmount).toFixed(2)),
-      frozenAmount: parseFloat(merchant.frozenAmount.toFixed(2)),
-      totalBalance: parseFloat(merchant.balance.toFixed(2)),
-      totalIncome: parseFloat(merchant.totalIncome.toFixed(2)),
-      totalWithdraw: parseFloat(merchant.totalWithdraw.toFixed(2)),
+      balance: typeof merchant.balance === 'string' ? parseFloat(merchant.balance) : merchant.balance || 0,
+      frozenAmount: typeof merchant.frozenAmount === 'string' ? parseFloat(merchant.frozenAmount) : merchant.frozenAmount || 0,
+      availableBalance: (typeof merchant.balance === 'string' ? parseFloat(merchant.balance) : merchant.balance || 0) + (typeof merchant.frozenAmount === 'string' ? parseFloat(merchant.frozenAmount) : merchant.frozenAmount || 0),
+      frozenOrdersCount: frozenOrders,
+      totalFrozenAmount: parseFloat(totalFrozenResult[0]?.total || '0'),
     };
   }
 
   /**
-   * 获取资金操作记录
+   * 获取商家资金流水
    */
-  async getFundOperationList(query: QueryFundOperationDto) {
-    const { page = 1, pageSize = 10, merchantId, operationType, adminId, startDate, endDate } = query;
-
-    const queryBuilder = this.fundOperationRepository
-      .createQueryBuilder('operation')
-      .leftJoinAndSelect('operation.merchant', 'merchant')
-      .orderBy('operation.createTime', 'DESC');
-
-    if (merchantId) {
-      queryBuilder.andWhere('operation.merchantId = :merchantId', { merchantId });
-    }
-    if (operationType) {
-      queryBuilder.andWhere('operation.operationType = :operationType', { operationType });
-    }
-    if (adminId) {
-      queryBuilder.andWhere('operation.adminId = :adminId', { adminId });
-    }
-    if (startDate) {
-      queryBuilder.andWhere('operation.createTime >= :startDate', { startDate });
-    }
-    if (endDate) {
-      queryBuilder.andWhere('operation.createTime <= :endDate', { endDate });
-    }
-
-    const [list, total] = await queryBuilder
-      .skip((page - 1) * pageSize)
-      .take(pageSize)
-      .getManyAndCount();
+  async getMerchantFundTransactions(
+    merchantId: string,
+    page: number = 1,
+    pageSize: number = 10,
+  ) {
+    const [transactions, total] = await this.fundTransactionRepository.findAndCount({
+      where: { merchantId },
+      order: { createTime: 'DESC' },
+      skip: (page - 1) * pageSize,
+      take: pageSize,
+    });
 
     return {
-      code: 200,
-      message: '获取成功',
-      data: {
-        list,
-        total,
-        page,
-        pageSize,
-      },
+      list: transactions,
+      total,
+      page,
+      pageSize,
+      totalPages: Math.ceil(total / pageSize),
     };
   }
 
   /**
-   * 获取操作类型名称
+   * 获取商家冻结记录
    */
-  getOperationTypeName(type: number): string {
-    const typeMap: Record<number, string> = {
-      1: '充值',
-      2: '提现',
-      3: '冻结',
-      4: '解冻',
-      5: '扣款',
-      6: '退款',
+  async getMerchantFreezeRecords(
+    merchantId: string,
+    page: number = 1,
+    pageSize: number = 10,
+  ) {
+    const [records, total] = await this.fundFreezeRepository.findAndCount({
+      where: { merchantId },
+      order: { createTime: 'DESC' },
+      skip: (page - 1) * pageSize,
+      take: pageSize,
+    });
+
+    return {
+      list: records,
+      total,
+      page,
+      pageSize,
+      totalPages: Math.ceil(total / pageSize),
     };
-    return typeMap[type] || '未知';
   }
 }

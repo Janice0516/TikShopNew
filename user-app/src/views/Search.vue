@@ -1,0 +1,396 @@
+<template>
+  <div class="search-page">
+    <div class="container">
+      <!-- 搜索框 -->
+      <div class="search-header">
+        <div class="search-box">
+          <el-input
+            v-model="searchQuery"
+            placeholder="搜索商品"
+            @keyup.enter="handleSearch"
+            size="large"
+          >
+            <template #append>
+              <el-button @click="handleSearch" :icon="Search" />
+            </template>
+          </el-input>
+        </div>
+        
+        <div class="search-info" v-if="searchQuery">
+          <h2>搜索结果: "{{ searchQuery }}"</h2>
+          <span class="result-count">共找到{{ totalResults }}个商品</span>
+        </div>
+      </div>
+      
+      <!-- 筛选和排序 -->
+      <div class="filter-section" v-if="products.length > 0">
+        <div class="filter-left">
+          <el-select v-model="filters.category" placeholder="分类" clearable>
+            <el-option
+              v-for="category in categories"
+              :key="category.id"
+              :label="category.name"
+              :value="category.id"
+            />
+          </el-select>
+          
+          <el-select v-model="filters.priceRange" placeholder="价格区间" clearable>
+            <el-option label="0-100" value="0-100" />
+            <el-option label="100-500" value="100-500" />
+            <el-option label="500-1000" value="500-1000" />
+            <el-option label="1000+" value="1000+" />
+          </el-select>
+        </div>
+        
+        <div class="filter-right">
+          <el-select v-model="sortBy" placeholder="排序方式">
+            <el-option label="综合排序" value="default" />
+            <el-option label="价格从低到高" value="price_asc" />
+            <el-option label="价格从高到低" value="price_desc" />
+            <el-option label="销量排序" value="sales" />
+            <el-option label="评分排序" value="rating" />
+          </el-select>
+        </div>
+      </div>
+      
+      <!-- 商品列表 -->
+      <div class="products-section" v-if="products.length > 0">
+        <div class="product-grid" v-loading="loading">
+          <ProductCard 
+            v-for="product in products" 
+            :key="product.id"
+            :product="product"
+          />
+        </div>
+        
+        <!-- 分页 -->
+        <div class="pagination" v-if="totalPages > 1">
+          <el-pagination
+            v-model:current-page="currentPage"
+            :page-size="pageSize"
+            :total="totalResults"
+            layout="prev, pager, next, jumper"
+            @current-change="handlePageChange"
+          />
+        </div>
+      </div>
+      
+      <!-- 无结果 -->
+      <div class="no-results" v-else-if="!loading && searchQuery">
+        <div class="no-results-content">
+          <el-icon size="64" color="#ccc"><Search /></el-icon>
+          <h3>没有找到相关商品</h3>
+          <p>请尝试其他关键词或调整筛选条件</p>
+          <el-button type="primary" @click="clearSearch">重新搜索</el-button>
+        </div>
+      </div>
+      
+      <!-- 推荐商品 -->
+      <div class="recommendations" v-if="!searchQuery">
+        <h2>推荐商品</h2>
+        <div class="product-grid">
+          <ProductCard 
+            v-for="product in recommendedProducts" 
+            :key="product.id"
+            :product="product"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ref, reactive, onMounted, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { productApi, categoryApi } from '@/api'
+import ProductCard from '@/components/ProductCard.vue'
+import { Search } from '@element-plus/icons-vue'
+import { ElMessage } from 'element-plus'
+
+const route = useRoute()
+const router = useRouter()
+
+const searchQuery = ref('')
+const products = ref<any[]>([])
+const categories = ref<any[]>([])
+const recommendedProducts = ref<any[]>([])
+const loading = ref(false)
+const currentPage = ref(1)
+const pageSize = ref(12)
+const totalResults = ref(0)
+const totalPages = ref(0)
+const sortBy = ref('default')
+
+const filters = reactive({
+  category: '',
+  priceRange: ''
+})
+
+// 初始化搜索
+const initSearch = () => {
+  const query = route.query.q as string
+  if (query) {
+    searchQuery.value = query
+    handleSearch()
+  }
+}
+
+// 执行搜索
+const handleSearch = async () => {
+  if (!searchQuery.value.trim()) {
+    ElMessage.warning('请输入搜索关键词')
+    return
+  }
+  
+  try {
+    loading.value = true
+    currentPage.value = 1
+    
+    const params = {
+      keyword: searchQuery.value,
+      page: currentPage.value,
+      limit: pageSize.value,
+      ...filters,
+      sort: sortBy.value
+    }
+    
+    const response = await productApi.searchProducts(searchQuery.value, params)
+    products.value = response.products || []
+    totalResults.value = response.total || 0
+    totalPages.value = Math.ceil(totalResults.value / pageSize.value)
+    
+    // 更新URL
+    router.replace({ query: { q: searchQuery.value } })
+  } catch (error) {
+    console.error('搜索失败:', error)
+    ElMessage.error('搜索失败')
+    
+    // 使用默认搜索结果
+    products.value = [
+      {
+        id: '1',
+        name: `搜索结果: ${searchQuery.value}`,
+        description: '这是搜索结果的商品',
+        price: 99.99,
+        image: 'https://via.placeholder.com/300x200/409EFF/ffffff?text=搜索结果',
+        rating: 4.5,
+        reviewCount: 128
+      }
+    ]
+    totalResults.value = products.value.length
+    totalPages.value = 1
+  } finally {
+    loading.value = false
+  }
+}
+
+// 加载分类
+const loadCategories = async () => {
+  try {
+    const response = await categoryApi.getCategories()
+    categories.value = response || []
+  } catch (error) {
+    console.error('加载分类失败:', error)
+    categories.value = []
+  }
+}
+
+// 加载推荐商品
+const loadRecommendedProducts = async () => {
+  try {
+    const response = await productApi.getProducts({ limit: 8, sort: 'popular' })
+    recommendedProducts.value = response.products || []
+  } catch (error) {
+    console.error('加载推荐商品失败:', error)
+    recommendedProducts.value = [
+      {
+        id: '1',
+        name: '推荐商品1',
+        description: '精选好物',
+        price: 99.99,
+        image: 'https://via.placeholder.com/300x200/409EFF/ffffff?text=推荐商品1',
+        rating: 4.5,
+        reviewCount: 128
+      },
+      {
+        id: '2',
+        name: '推荐商品2',
+        description: '精选好物',
+        price: 199.99,
+        image: 'https://via.placeholder.com/300x200/67C23A/ffffff?text=推荐商品2',
+        rating: 4.3,
+        reviewCount: 89
+      }
+    ]
+  }
+}
+
+// 处理分页变化
+const handlePageChange = (page: number) => {
+  currentPage.value = page
+  handleSearch()
+}
+
+// 清空搜索
+const clearSearch = () => {
+  searchQuery.value = ''
+  products.value = []
+  totalResults.value = 0
+  router.replace({ query: {} })
+}
+
+// 监听筛选条件变化
+watch([() => filters.category, () => filters.priceRange, sortBy], () => {
+  if (searchQuery.value) {
+    currentPage.value = 1
+    handleSearch()
+  }
+})
+
+onMounted(async () => {
+  await Promise.all([
+    loadCategories(),
+    loadRecommendedProducts(),
+    initSearch()
+  ])
+})
+</script>
+
+<style scoped lang="scss">
+.search-page {
+  padding: 20px 0;
+  background: $background-base;
+  min-height: 100vh;
+}
+
+.search-header {
+  background: #fff;
+  padding: 30px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  
+  .search-box {
+    max-width: 600px;
+    margin: 0 auto 20px;
+  }
+  
+  .search-info {
+    text-align: center;
+    
+    h2 {
+      font-size: 24px;
+      font-weight: bold;
+      color: $text-primary;
+      margin-bottom: 10px;
+    }
+    
+    .result-count {
+      color: $text-secondary;
+    }
+  }
+}
+
+.filter-section {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  
+  .filter-left {
+    display: flex;
+    gap: 15px;
+  }
+  
+  .filter-right {
+    display: flex;
+    gap: 15px;
+  }
+}
+
+.products-section {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+}
+
+.no-results {
+  background: #fff;
+  padding: 60px 20px;
+  border-radius: 8px;
+  text-align: center;
+  
+  .no-results-content {
+    h3 {
+      font-size: 20px;
+      color: $text-primary;
+      margin: 20px 0 10px;
+    }
+    
+    p {
+      color: $text-secondary;
+      margin-bottom: 20px;
+    }
+  }
+}
+
+.recommendations {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  
+  h2 {
+    font-size: 20px;
+    font-weight: bold;
+    color: $text-primary;
+    margin-bottom: 20px;
+  }
+  
+  .product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .search-header {
+    padding: 20px;
+    
+    .search-info h2 {
+      font-size: 20px;
+    }
+  }
+  
+  .filter-section {
+    flex-direction: column;
+    align-items: stretch;
+    
+    .filter-left,
+    .filter-right {
+      justify-content: center;
+    }
+  }
+  
+  .product-grid {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 15px;
+  }
+}
+</style>

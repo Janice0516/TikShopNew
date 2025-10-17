@@ -1,0 +1,279 @@
+
+const axios = require('axios');
+
+async function insertMerchantProducts() {
+  try {
+    console.log('🚀 开始插入商家产品数据...');
+    
+    const merchantProducts = [
+  {
+    "merchantId": 1,
+    "productId": 8,
+    "salePrice": 347.05,
+    "profitMargin": 19.32,
+    "status": 1,
+    "sales": 44,
+    "merchantName": "merchant001",
+    "productName": "Adidas Ultraboost 22"
+  },
+  {
+    "merchantId": 1,
+    "productId": 7,
+    "salePrice": 8185.56,
+    "profitMargin": -3.84,
+    "status": 1,
+    "sales": 91,
+    "merchantName": "merchant001",
+    "productName": "Canon EOS R5"
+  },
+  {
+    "merchantId": 1,
+    "productId": 6,
+    "salePrice": 1272.53,
+    "profitMargin": 5.7,
+    "status": 1,
+    "sales": 85,
+    "merchantName": "merchant001",
+    "productName": "Sony WH-1000XM5"
+  },
+  {
+    "merchantId": 1,
+    "productId": 5,
+    "salePrice": 391.59,
+    "profitMargin": 10.62,
+    "status": 1,
+    "sales": 75,
+    "merchantName": "merchant001",
+    "productName": "Nike Air Max 270"
+  },
+  {
+    "merchantId": 1,
+    "productId": 4,
+    "salePrice": 4703.55,
+    "profitMargin": 14.96,
+    "status": 1,
+    "sales": 37,
+    "merchantName": "merchant001",
+    "productName": "Samsung Galaxy S24 Ultra"
+  },
+  {
+    "merchantId": 1,
+    "productId": 3,
+    "salePrice": 965.77,
+    "profitMargin": 17.16,
+    "status": 1,
+    "sales": 11,
+    "merchantName": "merchant001",
+    "productName": "AirPods Pro 2nd Gen"
+  },
+  {
+    "merchantId": 1,
+    "productId": 2,
+    "salePrice": 7641.63,
+    "profitMargin": 1.85,
+    "status": 1,
+    "sales": 14,
+    "merchantName": "merchant001",
+    "productName": "MacBook Pro M3 14-inch"
+  },
+  {
+    "merchantId": 1,
+    "productId": 1,
+    "salePrice": 5086.74,
+    "profitMargin": 11.53,
+    "status": 1,
+    "sales": 58,
+    "merchantName": "merchant001",
+    "productName": "iPhone 15 Pro Max 256GB"
+  },
+  {
+    "merchantId": 2,
+    "productId": 8,
+    "salePrice": 291.11,
+    "profitMargin": 3.82,
+    "status": 1,
+    "sales": 62,
+    "merchantName": "merchant002",
+    "productName": "Adidas Ultraboost 22"
+  },
+  {
+    "merchantId": 2,
+    "productId": 7,
+    "salePrice": 8131.75,
+    "profitMargin": -4.53,
+    "status": 1,
+    "sales": 1,
+    "merchantName": "merchant002",
+    "productName": "Canon EOS R5"
+  },
+  {
+    "merchantId": 2,
+    "productId": 6,
+    "salePrice": 1289.23,
+    "profitMargin": 6.92,
+    "status": 1,
+    "sales": 89,
+    "merchantName": "merchant002",
+    "productName": "Sony WH-1000XM5"
+  },
+  {
+    "merchantId": 2,
+    "productId": 5,
+    "salePrice": 393.68,
+    "profitMargin": 11.1,
+    "status": 1,
+    "sales": 40,
+    "merchantName": "merchant002",
+    "productName": "Nike Air Max 270"
+  },
+  {
+    "merchantId": 2,
+    "productId": 4,
+    "salePrice": 3962.22,
+    "profitMargin": -0.95,
+    "status": 1,
+    "sales": 9,
+    "merchantName": "merchant002",
+    "productName": "Samsung Galaxy S24 Ultra"
+  },
+  {
+    "merchantId": 2,
+    "productId": 3,
+    "salePrice": 879.22,
+    "profitMargin": 9.01,
+    "status": 1,
+    "sales": 88,
+    "merchantName": "merchant002",
+    "productName": "AirPods Pro 2nd Gen"
+  },
+  {
+    "merchantId": 2,
+    "productId": 2,
+    "salePrice": 7748.92,
+    "profitMargin": 3.21,
+    "status": 1,
+    "sales": 17,
+    "merchantName": "merchant002",
+    "productName": "MacBook Pro M3 14-inch"
+  },
+  {
+    "merchantId": 2,
+    "productId": 1,
+    "salePrice": 4967.52,
+    "profitMargin": 9.41,
+    "status": 1,
+    "sales": 93,
+    "merchantName": "merchant002",
+    "productName": "iPhone 15 Pro Max 256GB"
+  },
+  {
+    "merchantId": 3,
+    "productId": 8,
+    "salePrice": 328.18,
+    "profitMargin": 14.68,
+    "status": 1,
+    "sales": 2,
+    "merchantName": "merchant003",
+    "productName": "Adidas Ultraboost 22"
+  },
+  {
+    "merchantId": 3,
+    "productId": 7,
+    "salePrice": 9754.49,
+    "profitMargin": 12.86,
+    "status": 1,
+    "sales": 22,
+    "merchantName": "merchant003",
+    "productName": "Canon EOS R5"
+  },
+  {
+    "merchantId": 3,
+    "productId": 6,
+    "salePrice": 1177.09,
+    "profitMargin": -1.95,
+    "status": 1,
+    "sales": 12,
+    "merchantName": "merchant003",
+    "productName": "Sony WH-1000XM5"
+  },
+  {
+    "merchantId": 3,
+    "productId": 5,
+    "salePrice": 406.51,
+    "profitMargin": 13.9,
+    "status": 1,
+    "sales": 16,
+    "merchantName": "merchant003",
+    "productName": "Nike Air Max 270"
+  },
+  {
+    "merchantId": 3,
+    "productId": 4,
+    "salePrice": 4085.59,
+    "profitMargin": 2.09,
+    "status": 1,
+    "sales": 47,
+    "merchantName": "merchant003",
+    "productName": "Samsung Galaxy S24 Ultra"
+  },
+  {
+    "merchantId": 3,
+    "productId": 3,
+    "salePrice": 887.01,
+    "profitMargin": 9.81,
+    "status": 1,
+    "sales": 78,
+    "merchantName": "merchant003",
+    "productName": "AirPods Pro 2nd Gen"
+  },
+  {
+    "merchantId": 3,
+    "productId": 2,
+    "salePrice": 8594.84,
+    "profitMargin": 12.74,
+    "status": 1,
+    "sales": 61,
+    "merchantName": "merchant003",
+    "productName": "MacBook Pro M3 14-inch"
+  },
+  {
+    "merchantId": 3,
+    "productId": 1,
+    "salePrice": 5402.24,
+    "profitMargin": 16.7,
+    "status": 1,
+    "sales": 83,
+    "merchantName": "merchant003",
+    "productName": "iPhone 15 Pro Max 256GB"
+  }
+];
+    
+    // 这里需要数据库连接，但由于API限制，我们只能模拟
+    console.log('📋 商家产品数据已准备完成:');
+    console.log(`📊 总计: ${merchantProducts.length} 个商家产品关系`);
+    
+    // 按商家分组显示
+    const groupedByMerchant = merchantProducts.reduce((acc, mp) => {
+      if (!acc[mp.merchantName]) {
+        acc[mp.merchantName] = [];
+      }
+      acc[mp.merchantName].push(mp);
+      return acc;
+    }, {});
+    
+    for (const [merchantName, products] of Object.entries(groupedByMerchant)) {
+      console.log(`\n🏪 商家 ${merchantName} 的产品:`);
+      products.forEach(p => {
+        console.log(`  ✅ ${p.productName} - RM${p.salePrice} (利润率: ${p.profitMargin}%)`);
+      });
+    }
+    
+    console.log('\n🎉 商家产品数据展示完成！');
+    console.log('💡 要实际插入数据库，需要手动执行merchant-products.sql文件');
+    
+  } catch (error) {
+    console.error('❌ 执行失败:', error.message);
+  }
+}
+
+insertMerchantProducts();

@@ -1,444 +1,146 @@
-# 🛍️ User App (用户端)
+# TikTok Shop - 用户商城
 
-**International E-commerce Platform - User Mobile App**
+## 🎯 项目简介
 
-多语言用户购物端 - 支持英文、中文、马来文
+这是TikTok Shop的用户商城前端，采用现代化的Vue.js技术栈构建，提供完整的电商购物体验。
 
----
+## 🚀 技术栈
 
-## 🌍 Multi-language Support (多语言支持)
+- **Vue 3** - 渐进式JavaScript框架
+- **TypeScript** - 类型安全的JavaScript
+- **Vite** - 下一代前端构建工具
+- **Element Plus** - Vue 3 UI组件库
+- **Pinia** - Vue状态管理
+- **Vue Router** - Vue官方路由
+- **SCSS** - CSS预处理器
 
-### Supported Languages
+## 🎨 设计特色
 
-- 🇬🇧 **English** - Full support
-- 🇨🇳 **中文** - 完整支持
-- 🇲🇾 **Bahasa Melayu** - Sokongan penuh
+- **TikTok风格**: 深色主题 + TikTok红色配色
+- **响应式设计**: 完美适配桌面和移动端
+- **现代交互**: 流畅的动画和用户体验
+- **商品展示**: TikTok风格的商品卡片设计
 
----
+## 📱 功能特性
 
-## 🚀 Quick Start (快速开始)
+### 用户功能
+- ✅ 用户注册/登录
+- ✅ 商品浏览/搜索
+- ✅ 分类筛选
+- ✅ 购物车管理
+- ✅ 订单创建/管理
+- ✅ 个人中心
 
-### 1. Install Dependencies (安装依赖)
+### 界面特色
+- ✅ TikTok风格顶部导航
+- ✅ 圆形分类图标
+- ✅ 商品卡片展示
+- ✅ 搜索功能
+- ✅ 应用推广横幅
 
+## 🔧 开发环境
+
+### 环境要求
+- Node.js >= 20.19.0
+- npm >= 10.9.0
+
+### 安装依赖
 ```bash
 npm install
 ```
 
-### 2. Run Development (运行开发)
-
-#### H5 浏览器版本
+### 启动开发服务器
 ```bash
-npm run dev:h5
+npm run dev
 ```
-访问: http://localhost:5173
+访问: http://localhost:3001
 
-#### 微信小程序
+### 构建生产版本
 ```bash
-npm run dev:mp-weixin
+npm run build-only
 ```
-然后用微信开发者工具打开 `dist/dev/mp-weixin` 目录
 
-#### 支付宝小程序
+### 预览构建结果
 ```bash
-npm run dev:mp-alipay
+npm run preview
 ```
 
-#### APP (iOS/Android)
-```bash
-npm run dev:app
-```
+## 🌐 API对接
 
----
+项目已配置与后端API对接：
+- **后端地址**: https://tikshop-backend.onrender.com
+- **API代理**: `/api` → 后端服务
+- **认证方式**: JWT Token
+- **数据格式**: JSON
 
-## 📱 Platform Support (平台支持)
+### API接口
+- 用户认证: `/api/auth/*`
+- 商品管理: `/api/products/*`
+- 分类管理: `/api/categories/*`
+- 购物车: `/api/cart/*`
+- 订单管理: `/api/orders/*`
+- 轮播图: `/api/banners/*`
 
-| 平台 | 状态 | 说明 |
-|------|------|------|
-| H5 | ✅ | 浏览器/手机浏览器 |
-| 微信小程序 | ✅ | WeChat Mini Program |
-| 支付宝小程序 | ✅ | Alipay Mini Program |
-| APP | ✅ | iOS & Android |
-
----
-
-## 📋 Features (功能特性)
-
-### ✅ Completed (已完成)
-
-1. **Multi-language System (多语言系统)** ✅
-   - 🌐 vue-i18n 完整配置
-   - 🔄 动态语言切换
-   - 💾 语言偏好保存
-   - 3种语言完整翻译
-
-2. **Project Structure (项目结构)** ✅
-   - 页面配置
-   - TabBar 导航
-   - 路由配置
-   - 语言文件
-
-### ⏳ Under Development (开发中)
-
-1. **Home Page (首页)**
-   - [ ] 商品轮播
-   - [ ] 热销商品
-   - [ ] 分类导航
-   - [ ] 搜索功能
-
-2. **Product (商品)**
-   - [ ] 商品列表
-   - [ ] 商品详情
-   - [ ] 商品搜索
-   - [ ] 加入购物车
-
-3. **Cart (购物车)**
-   - [ ] 购物车列表
-   - [ ] 数量修改
-   - [ ] 删除商品
-   - [ ] 结算
-
-4. **Order (订单)**
-   - [ ] 订单列表
-   - [ ] 订单详情
-   - [ ] 支付
-   - [ ] 确认收货
-
-5. **Profile (个人中心)**
-   - [ ] 用户登录
-   - [ ] 个人信息
-   - [ ] 地址管理
-   - [ ] 语言设置
-
----
-
-## 💻 Tech Stack (技术栈)
-
-```json
-{
-  "Framework": "Uni-app (Vue 3 + TypeScript)",
-  "Build Tool": "Vite",
-  "i18n": "Vue I18n",
-  "UI": "uni-ui",
-  "State Management": "Pinia",
-  "HTTP": "uni.request",
-  "Platform": "H5 + WeChat + Alipay + APP"
-}
-```
-
----
-
-## 📁 Project Structure (项目结构)
+## 📁 项目结构
 
 ```
 user-app/
 ├── src/
-│   ├── locale/                    # 🌍 国际化
-│   │   ├── index.ts              # i18n配置
-│   │   ├── en.json               # 🇬🇧 英文
-│   │   ├── zh.json               # 🇨🇳 中文
-│   │   └── ms.json               # 🇲🇾 马来文
-│   │
-│   ├── pages/                     # 页面
-│   │   ├── index/                # 首页
-│   │   ├── category/             # 分类
-│   │   ├── cart/                 # 购物车
-│   │   ├── profile/              # 个人中心
-│   │   ├── product/              # 商品详情
-│   │   ├── order/                # 订单
-│   │   └── login/                # 登录
-│   │
-│   ├── components/                # 组件
-│   │   └── LanguageSwitcher/     # 语言切换器
-│   │
-│   ├── static/                    # 静态资源
-│   │   └── tabbar/               # TabBar图标
-│   │
-│   ├── stores/                    # 状态管理
-│   │   └── user.ts               # 用户状态
-│   │
-│   ├── utils/                     # 工具函数
-│   │   ├── request.ts            # 请求封装
-│   │   └── currency.ts           # 货币工具
-│   │
-│   ├── App.vue                    # 根组件
-│   ├── main.ts                    # 入口文件
-│   └── pages.json                 # 页面配置
-│
-├── package.json
-├── vite.config.ts
-├── tsconfig.json
-└── README.md
+│   ├── api/           # API接口定义
+│   ├── components/     # 可复用组件
+│   ├── router/         # 路由配置
+│   ├── stores/         # Pinia状态管理
+│   ├── styles/         # 全局样式
+│   ├── views/          # 页面组件
+│   └── main.ts         # 应用入口
+├── public/             # 静态资源
+├── dist/               # 构建输出
+└── package.json        # 项目配置
 ```
 
----
+## 🎯 页面路由
 
-## 🌐 i18n Usage (国际化使用)
+- `/` - 首页
+- `/login` - 登录页
+- `/register` - 注册页
+- `/product/:id` - 商品详情
+- `/category/:id` - 分类页面
+- `/search` - 搜索结果
+- `/cart` - 购物车
+- `/order` - 订单确认
+- `/orders` - 订单列表
+- `/profile` - 个人中心
 
-### In Template (模板中)
+## 🚀 部署
 
-```vue
-<template>
-  <view>
-    <!-- Direct translation -->
-    <text>{{ $t('common.loading') }}</text>
-    
-    <!-- With parameters -->
-    <text>{{ $t('product.price') }}: $99.99</text>
-  </view>
-</template>
-```
-
-### In Script (脚本中)
-
-```typescript
-<script setup lang="ts">
-import { useI18n } from 'vue-i18n'
-
-const { t, locale } = useI18n()
-
-// Get translation
-const message = t('common.success')
-
-// Switch language
-locale.value = 'zh'  // 中文
-locale.value = 'en'  // English
-locale.value = 'ms'  // Bahasa Melayu
-</script>
-```
-
----
-
-## 💵 Currency (货币)
-
-**Default Currency**: USD ($)
-
-All prices are displayed in USD:
-- `$19.99`
-- `$1,299.50`
-
----
-
-## 📱 Pages Overview (页面概览)
-
-### Tab Pages (底部导航页面)
-- `/pages/index/index` - 首页 (Home)
-- `/pages/category/category` - 分类 (Category)
-- `/pages/cart/cart` - 购物车 (Cart)
-- `/pages/profile/profile` - 个人中心 (Profile)
-
-### Sub Pages (子页面)
-- `/pages/product/detail` - 商品详情
-- `/pages/order/list` - 订单列表
-- `/pages/login/login` - 登录
-
----
-
-## 🎨 UI Design (UI设计)
-
-### Color Scheme (配色方案)
-- Primary: `#409EFF`
-- Success: `#67C23A`
-- Warning: `#E6A23C`
-- Danger: `#F56C6C`
-- Text: `#333333`
-- Border: `#EBEEF5`
-
-### TabBar Icons (底部导航图标)
-需要准备以下图标:
-- `home.png` / `home-active.png`
-- `category.png` / `category-active.png`
-- `cart.png` / `cart-active.png`
-- `profile.png` / `profile-active.png`
-
----
-
-## 🔧 Configuration (配置)
-
-### API Base URL
-
-在 `utils/request.ts` 中配置:
-
-```typescript
-const baseURL = 'http://localhost:3000/api'
-```
-
-### Language Storage (语言存储)
-
-使用 `uni.setStorageSync` 存储用户语言偏好:
-
-```typescript
-uni.setStorageSync('user-locale', 'en')
-```
-
----
-
-## 📦 Build (构建)
-
-### Production Build (生产构建)
-
+### 构建项目
 ```bash
-# H5
-npm run build:h5
-
-# 微信小程序
-npm run build:mp-weixin
-
-# 支付宝小程序
-npm run build:mp-alipay
-
-# APP
-npm run build:app
+npm run build-only
 ```
 
-构建后的文件在 `dist/build/` 目录
+### 部署平台推荐
+1. **Vercel** - 最简单，免费
+2. **Netlify** - 功能丰富
+3. **Render** - 全栈支持
+
+详细部署指南请参考: `DEPLOYMENT_GUIDE.md`
+
+## 🔄 项目替换说明
+
+此项目已替换原有的UniApp商城：
+- ✅ 原UniApp项目已备份
+- ✅ 新Vue.js项目已部署到位
+- ✅ API接口已配置对接
+- ✅ 功能完整，体验更佳
+
+## 📞 技术支持
+
+如有问题，请检查：
+1. Node.js版本是否符合要求
+2. 依赖是否正确安装
+3. API服务是否正常运行
+4. 网络连接是否正常
 
 ---
 
-## 🎯 Development Roadmap (开发路线图)
-
-### Phase 1: Foundation ✅
-- [x] Multi-language setup
-- [x] Project structure
-- [x] Page configuration
-- [x] TabBar navigation
-
-### Phase 2: Core Features ⏳
-- [ ] Home page
-- [ ] Product list & detail
-- [ ] Shopping cart
-- [ ] Checkout
-- [ ] Order management
-
-### Phase 3: User Features ⏳
-- [ ] User login/register
-- [ ] Profile management
-- [ ] Address management
-- [ ] Payment integration
-
-### Phase 4: Enhancement 📋
-- [ ] Search
-- [ ] Favorites
-- [ ] Reviews
-- [ ] Push notifications
-
----
-
-## 🌟 Key Features (核心特性)
-
-### 1. Cross-platform (跨平台)
-- ✅ One codebase, multiple platforms
-- ✅ H5 + Mini Programs + APP
-- ✅ Native performance
-
-### 2. Multi-language (多语言)
-- ✅ 3 languages support
-- ✅ Dynamic switching
-- ✅ Persistent storage
-
-### 3. Modern UI (现代化界面)
-- ✅ Responsive design
-- ✅ Touch-friendly
-- ✅ Smooth animations
-
-### 4. Type Safety (类型安全)
-- ✅ TypeScript
-- ✅ Strong typing
-- ✅ IDE support
-
----
-
-## 📖 Language Modules (语言模块)
-
-用户端包含以下翻译模块:
-
-- `tabBar` - 底部导航
-- `common` - 通用词汇
-- `home` - 首页
-- `product` - 商品
-- `cart` - 购物车
-- `order` - 订单
-- `profile` - 个人中心
-- `login` - 登录
-- `register` - 注册
-- `address` - 地址
-- `checkout` - 结算
-- `message` - 消息提示
-
-**总计**: 150+ 翻译键
-
----
-
-## 🔗 API Integration (API集成)
-
-### Request Example (请求示例)
-
-```typescript
-import { request } from '@/utils/request'
-
-// Get products
-const getProducts = () => {
-  return request({
-    url: '/products',
-    method: 'GET'
-  })
-}
-
-// Add to cart
-const addToCart = (data: any) => {
-  return request({
-    url: '/cart',
-    method: 'POST',
-    data
-  })
-}
-```
-
----
-
-## 🐛 Common Issues (常见问题)
-
-### Q1: 语言切换后小程序重启？
-
-**A**: 正常现象，小程序语言切换需要重启生效。
-
-### Q2: H5和小程序样式不一致？
-
-**A**: 使用 uni-app 提供的条件编译处理平台差异。
-
-### Q3: 如何调试小程序？
-
-**A**: 使用对应平台的开发者工具（微信开发者工具/支付宝小程序开发者工具）。
-
----
-
-## 📱 Test on Devices (设备测试)
-
-### H5 Testing
-```bash
-npm run dev:h5
-```
-使用手机浏览器访问开发服务器地址
-
-### Mini Program Testing
-1. 运行 `npm run dev:mp-weixin`
-2. 打开微信开发者工具
-3. 导入项目 `dist/dev/mp-weixin`
-
----
-
-## 🎉 Ready to Use! (可以使用了！)
-
-The user app is ready with multi-language support!
-
-用户端已准备就绪，支持多语言！
-
-Aplikasi pengguna sudah siap dengan sokongan pelbagai bahasa!
-
----
-
-**Last Updated**: 2025-10-04  
-**Version**: 1.0.0  
-**Languages**: English, 中文, Bahasa Melayu  
-**Currency**: USD ($)  
-**Platforms**: H5, WeChat, Alipay, APP
-
+**TikTok Shop - 您的购物首选平台** 🛍️

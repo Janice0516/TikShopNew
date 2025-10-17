@@ -1,0 +1,322 @@
+[
+  {
+    "name": "Milo Original 1.5kg",
+    "categoryId": 3,
+    "brand": "Milo",
+    "mainImage": "/static/products/milo-original-1.5kg.jpg",
+    "costPrice": 25,
+    "suggestPrice": 35,
+    "stock": 200,
+    "description": "Original Milo malt drink powder, perfect for breakfast and snacks."
+  },
+  {
+    "name": "Milo 3-in-1 Original 20s",
+    "categoryId": 3,
+    "brand": "Milo",
+    "mainImage": "/static/products/milo-3in1-original-20s.jpg",
+    "costPrice": 8.5,
+    "suggestPrice": 12,
+    "stock": 500,
+    "description": "Convenient 3-in-1 Milo sachets with milk powder and sugar."
+  },
+  {
+    "name": "Nescafe 3-in-1 Original 20s",
+    "categoryId": 3,
+    "brand": "Nescafe",
+    "mainImage": "/static/products/nescafe-3in1-original-20s.jpg",
+    "costPrice": 7.5,
+    "suggestPrice": 11,
+    "stock": 400,
+    "description": "Classic 3-in-1 coffee mix with creamer and sugar."
+  },
+  {
+    "name": "Nescafe Gold 3-in-1 20s",
+    "categoryId": 3,
+    "brand": "Nescafe",
+    "mainImage": "/static/products/nescafe-gold-3in1-20s.jpg",
+    "costPrice": 12,
+    "suggestPrice": 18,
+    "stock": 300,
+    "description": "Premium 3-in-1 coffee with rich aroma and smooth taste."
+  },
+  {
+    "name": "Old Town White Coffee 3-in-1 20s",
+    "categoryId": 3,
+    "brand": "Old Town",
+    "mainImage": "/static/products/old-town-white-coffee-3in1-20s.jpg",
+    "costPrice": 9.5,
+    "suggestPrice": 14,
+    "stock": 350,
+    "description": "Famous Malaysian white coffee with authentic taste."
+  },
+  {
+    "name": "Aik Cheong Coffee 3-in-1 20s",
+    "categoryId": 3,
+    "brand": "Aik Cheong",
+    "mainImage": "/static/products/aik-cheong-coffee-3in1-20s.jpg",
+    "costPrice": 6.5,
+    "suggestPrice": 10,
+    "stock": 250,
+    "description": "Traditional Malaysian coffee blend with rich flavor."
+  },
+  {
+    "name": "Maggi Instant Noodles Curry 5s",
+    "categoryId": 3,
+    "brand": "Maggi",
+    "mainImage": "/static/products/maggi-curry-5s.jpg",
+    "costPrice": 3.5,
+    "suggestPrice": 5.5,
+    "stock": 1000,
+    "description": "Popular curry flavored instant noodles, quick and delicious meal."
+  },
+  {
+    "name": "Maggi Instant Noodles Chicken 5s",
+    "categoryId": 3,
+    "brand": "Maggi",
+    "mainImage": "/static/products/maggi-chicken-5s.jpg",
+    "costPrice": 3.5,
+    "suggestPrice": 5.5,
+    "stock": 800,
+    "description": "Classic chicken flavored instant noodles."
+  },
+  {
+    "name": "Indomie Mi Goreng 5s",
+    "categoryId": 3,
+    "brand": "Indomie",
+    "mainImage": "/static/products/indomie-mi-goreng-5s.jpg",
+    "costPrice": 4,
+    "suggestPrice": 6.5,
+    "stock": 600,
+    "description": "Indonesian fried noodles with authentic seasoning."
+  },
+  {
+    "name": "Cintan Chicken Noodles 5s",
+    "categoryId": 3,
+    "brand": "Cintan",
+    "mainImage": "/static/products/cintan-chicken-5s.jpg",
+    "costPrice": 3,
+    "suggestPrice": 5,
+    "stock": 500,
+    "description": "Local favorite chicken flavored instant noodles."
+  },
+  {
+    "name": "Lee Kum Kee Soy Sauce 500ml",
+    "categoryId": 3,
+    "brand": "Lee Kum Kee",
+    "mainImage": "/static/products/lee-kum-kee-soy-sauce-500ml.jpg",
+    "costPrice": 8.5,
+    "suggestPrice": 12,
+    "stock": 200,
+    "description": "Premium soy sauce for cooking and dipping."
+  },
+  {
+    "name": "Knorr Chicken Stock Cubes 8s",
+    "categoryId": 3,
+    "brand": "Knorr",
+    "mainImage": "/static/products/knorr-chicken-stock-8s.jpg",
+    "costPrice": 4.5,
+    "suggestPrice": 7,
+    "stock": 300,
+    "description": "Chicken stock cubes for enhancing soup and dish flavors."
+  },
+  {
+    "name": "Ajinomoto MSG 200g",
+    "categoryId": 3,
+    "brand": "Ajinomoto",
+    "mainImage": "/static/products/ajinomoto-msg-200g.jpg",
+    "costPrice": 3.5,
+    "suggestPrice": 5.5,
+    "stock": 400,
+    "description": "Umami seasoning to enhance food taste."
+  },
+  {
+    "name": "Dettol Antiseptic Liquid 500ml",
+    "categoryId": 5,
+    "brand": "Dettol",
+    "mainImage": "/static/products/dettol-antiseptic-500ml.jpg",
+    "costPrice": 12,
+    "suggestPrice": 18,
+    "stock": 150,
+    "description": "Antiseptic liquid for first aid and cleaning wounds."
+  },
+  {
+    "name": "Dettol Hand Sanitizer 250ml",
+    "categoryId": 5,
+    "brand": "Dettol",
+    "mainImage": "/static/products/dettol-hand-sanitizer-250ml.jpg",
+    "costPrice": 8.5,
+    "suggestPrice": 13,
+    "stock": 200,
+    "description": "Alcohol-based hand sanitizer for hygiene protection."
+  },
+  {
+    "name": "Lifebuoy Body Wash 400ml",
+    "categoryId": 4,
+    "brand": "Lifebuoy",
+    "mainImage": "/static/products/lifebuoy-body-wash-400ml.jpg",
+    "costPrice": 6.5,
+    "suggestPrice": 10,
+    "stock": 300,
+    "description": "Antibacterial body wash for daily hygiene."
+  },
+  {
+    "name": "Colgate Total Toothpaste 150g",
+    "categoryId": 4,
+    "brand": "Colgate",
+    "mainImage": "/static/products/colgate-total-toothpaste-150g.jpg",
+    "costPrice": 7.5,
+    "suggestPrice": 12,
+    "stock": 250,
+    "description": "Complete protection toothpaste for oral health."
+  },
+  {
+    "name": "Vaseline Petroleum Jelly 100g",
+    "categoryId": 4,
+    "brand": "Vaseline",
+    "mainImage": "/static/products/vaseline-petroleum-jelly-100g.jpg",
+    "costPrice": 5.5,
+    "suggestPrice": 8.5,
+    "stock": 180,
+    "description": "Multi-purpose petroleum jelly for skin care."
+  },
+  {
+    "name": "Johnson Baby Powder 200g",
+    "categoryId": 7,
+    "brand": "Johnson",
+    "mainImage": "/static/products/johnson-baby-powder-200g.jpg",
+    "costPrice": 8,
+    "suggestPrice": 12.5,
+    "stock": 120,
+    "description": "Gentle baby powder for sensitive skin."
+  },
+  {
+    "name": "Pampers Baby Diapers Size M 50s",
+    "categoryId": 7,
+    "brand": "Pampers",
+    "mainImage": "/static/products/pampers-diapers-m-50s.jpg",
+    "costPrice": 35,
+    "suggestPrice": 55,
+    "stock": 80,
+    "description": "Premium baby diapers with superior absorption."
+  },
+  {
+    "name": "Tupperware Food Container Set 5pcs",
+    "categoryId": 5,
+    "brand": "Tupperware",
+    "mainImage": "/static/products/tupperware-container-set-5pcs.jpg",
+    "costPrice": 45,
+    "suggestPrice": 75,
+    "stock": 50,
+    "description": "BPA-free food storage containers for kitchen organization."
+  },
+  {
+    "name": "Lock & Lock Food Container 1L",
+    "categoryId": 5,
+    "brand": "Lock & Lock",
+    "mainImage": "/static/products/lock-lock-container-1l.jpg",
+    "costPrice": 15,
+    "suggestPrice": 25,
+    "stock": 100,
+    "description": "Airtight food container for fresh food storage."
+  },
+  {
+    "name": "Tefal Non-stick Pan 24cm",
+    "categoryId": 5,
+    "brand": "Tefal",
+    "mainImage": "/static/products/tefal-nonstick-pan-24cm.jpg",
+    "costPrice": 65,
+    "suggestPrice": 95,
+    "stock": 30,
+    "description": "Non-stick frying pan for healthy cooking."
+  },
+  {
+    "name": "Faber-Castell Pencil Set 12pcs",
+    "categoryId": 9,
+    "brand": "Faber-Castell",
+    "mainImage": "/static/products/faber-castell-pencil-set-12pcs.jpg",
+    "costPrice": 8.5,
+    "suggestPrice": 15,
+    "stock": 200,
+    "description": "High-quality graphite pencils for writing and drawing."
+  },
+  {
+    "name": "Staedtler Eraser 2pcs",
+    "categoryId": 9,
+    "brand": "Staedtler",
+    "mainImage": "/static/products/staedtler-eraser-2pcs.jpg",
+    "costPrice": 3.5,
+    "suggestPrice": 6,
+    "stock": 300,
+    "description": "Soft erasers that erase cleanly without smudging."
+  },
+  {
+    "name": "Uni-ball Pen Black 0.5mm",
+    "categoryId": 9,
+    "brand": "Uni-ball",
+    "mainImage": "/static/products/uni-ball-pen-black-0.5mm.jpg",
+    "costPrice": 4.5,
+    "suggestPrice": 8,
+    "stock": 150,
+    "description": "Smooth writing gel pen with precise 0.5mm tip."
+  },
+  {
+    "name": "Shell Helix Ultra Engine Oil 4L",
+    "categoryId": 8,
+    "brand": "Shell",
+    "mainImage": "/static/products/shell-helix-ultra-4l.jpg",
+    "costPrice": 85,
+    "suggestPrice": 125,
+    "stock": 40,
+    "description": "Premium synthetic engine oil for better engine performance."
+  },
+  {
+    "name": "Castrol GTX Engine Oil 4L",
+    "categoryId": 8,
+    "brand": "Castrol",
+    "mainImage": "/static/products/castrol-gtx-4l.jpg",
+    "costPrice": 75,
+    "suggestPrice": 110,
+    "stock": 35,
+    "description": "High-quality engine oil for all car types."
+  },
+  {
+    "name": "Whiskas Adult Cat Food 1.2kg",
+    "categoryId": 10,
+    "brand": "Whiskas",
+    "mainImage": "/static/products/whiskas-adult-cat-food-1.2kg.jpg",
+    "costPrice": 18,
+    "suggestPrice": 28,
+    "stock": 120,
+    "description": "Complete nutrition for adult cats with meat and fish."
+  },
+  {
+    "name": "Friskies Adult Cat Food 1.2kg",
+    "categoryId": 10,
+    "brand": "Friskies",
+    "mainImage": "/static/products/friskies-adult-cat-food-1.2kg.jpg",
+    "costPrice": 16,
+    "suggestPrice": 25,
+    "stock": 100,
+    "description": "Balanced cat food with essential nutrients."
+  },
+  {
+    "name": "Wilson Tennis Ball 3pcs",
+    "categoryId": 6,
+    "brand": "Wilson",
+    "mainImage": "/static/products/wilson-tennis-ball-3pcs.jpg",
+    "costPrice": 12,
+    "suggestPrice": 20,
+    "stock": 80,
+    "description": "Professional tennis balls for training and matches."
+  },
+  {
+    "name": "Yonex Badminton Shuttlecock 12pcs",
+    "categoryId": 6,
+    "brand": "Yonex",
+    "mainImage": "/static/products/yonex-shuttlecock-12pcs.jpg",
+    "costPrice": 25,
+    "suggestPrice": 40,
+    "stock": 60,
+    "description": "High-quality feather shuttlecocks for badminton."
+  }
+]

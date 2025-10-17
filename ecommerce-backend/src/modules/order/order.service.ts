@@ -7,6 +7,7 @@ import { CreateOrderDto } from './dto/create-order.dto';
 import { QueryOrderDto } from './dto/query-order.dto';
 import { ProductService } from '../product/product.service';
 import { UserService } from '../user/user.service';
+import { FundManagementService } from '../fund-management/fund-management.service';
 
 @Injectable()
 export class OrderService {
@@ -18,6 +19,7 @@ export class OrderService {
     private dataSource: DataSource,
     private productService: ProductService,
     private userService: UserService,
+    private fundManagementService: FundManagementService,
   ) {}
 
   /**
@@ -130,6 +132,14 @@ export class OrderService {
       }
 
       await queryRunner.commitTransaction();
+
+      // 订单创建成功后，冻结商家资金
+      try {
+        await this.fundManagementService.freezeFundsOnOrder(String(savedOrder.id));
+      } catch (error) {
+        console.error('资金冻结失败:', error);
+        // 资金冻结失败不影响订单创建，但需要记录日志
+      }
 
       return {
         orderId: savedOrder.id,
@@ -270,7 +280,13 @@ export class OrderService {
       finishTime: new Date(),
     });
 
-    // TODO: 结算商家收益
+    // 订单完成后，解冻资金并结算佣金
+    try {
+      await this.fundManagementService.unfreezeFundsOnCompletion(String(id));
+    } catch (error) {
+      console.error('资金解冻失败:', error);
+      // 资金解冻失败不影响订单完成，但需要记录日志
+    }
 
     return { message: '确认收货成功' };
   }

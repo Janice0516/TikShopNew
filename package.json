@@ -1,0 +1,56 @@
+{
+  "name": "tiktok-shop",
+  "version": "1.0.0",
+  "description": "Complete E-commerce Platform with Admin, Merchant, and User interfaces",
+  "main": "index.js",
+  "scripts": {
+    "install:all": "npm install && cd ecommerce-backend && npm install && cd ../admin && npm install && cd ../merchant && npm install && cd ../user-app && npm install",
+    "dev": "pm2 start ecosystem.config.js",
+    "start": "pm2 start ecosystem.config.js",
+    "stop": "pm2 stop all",
+    "restart": "pm2 restart all",
+    "logs": "pm2 logs",
+    "status": "pm2 status",
+    "monit": "pm2 monit",
+    "build:all": "cd admin && npm run build && cd ../merchant && npm run build && cd ../user-app && npm run build",
+    "build:admin": "cd admin && npm run build",
+    "build:merchant": "cd merchant && npm run build", 
+    "build:user": "cd user-app && npm run build",
+    "build:backend": "cd ecommerce-backend && npm run build",
+    "test": "echo \"No tests specified\" && exit 0",
+    "clean": "pm2 delete all && rm -rf logs/*",
+    "setup": "./start-all.sh"
+  },
+  "keywords": [
+    "ecommerce",
+    "vue",
+    "nestjs",
+    "typescript",
+    "postgresql",
+    "admin",
+    "merchant",
+    "user"
+  ],
+  "author": "Admin",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.12.2",
+    "bcrypt": "^6.0.0",
+    "pg": "^8.16.3"
+  },
+  "devDependencies": {
+    "pm2": "^5.3.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Janice0516/TikShop.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Janice0516/TikShop/issues"
+  },
+  "homepage": "https://github.com/Janice0516/TikShop#readme"
+}
