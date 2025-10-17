@@ -6,9 +6,9 @@ echo "Building user-app for Render deployment..."
 # 进入user-app目录
 cd user-app
 
-# 安装依赖
+# 安装依赖（包括devDependencies）
 echo "Installing dependencies..."
-npm ci
+npm install
 
 # 构建项目
 echo "Building project..."
