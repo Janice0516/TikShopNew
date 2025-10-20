@@ -5,6 +5,7 @@ import { Order } from './entities/order.entity';
 import { OrderItem } from './entities/order-item.entity';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { QueryOrderDto } from './dto/query-order.dto';
+import { UpdateOrderRemarkDto, OrderLogisticsDto } from './dto/order-remark.dto';
 import { ProductService } from '../product/product.service';
 import { UserService } from '../user/user.service';
 import { FundManagementService } from '../fund-management/fund-management.service';
@@ -408,6 +409,199 @@ export class OrderService {
       waitReceive: waitReceiveCount,
       finished: finishedCount,
     };
+  }
+
+  // ========== 订单备注和物流跟踪 ==========
+
+  /**
+   * 更新订单备注
+   */
+  async updateOrderRemark(orderId: string, updateRemarkDto: UpdateOrderRemarkDto) {
+    try {
+      const order = await this.orderRepository.findOne({ where: { id: orderId } });
+      if (!order) {
+        throw new HttpException('订单不存在', HttpStatus.NOT_FOUND);
+      }
+
+      // 更新备注信息
+      Object.assign(order, updateRemarkDto);
+      
+      // 如果更新了物流信息，同时更新物流时间
+      if (updateRemarkDto.logisticsStatus) {
+        order.logisticsUpdateTime = new Date();
+      }
+
+      const updatedOrder = await this.orderRepository.save(order);
+      return updatedOrder;
+    } catch (error) {
+      if (error instanceof HttpException) {
+        throw error;
+      }
+      throw new HttpException('更新订单备注失败', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  /**
+   * 更新订单物流状态
+   */
+  async updateOrderLogistics(logisticsDto: OrderLogisticsDto) {
+    try {
+      const { orderId, ...logisticsData } = logisticsDto;
+      
+      const order = await this.orderRepository.findOne({ where: { id: orderId } });
+      if (!order) {
+        throw new HttpException('订单不存在', HttpStatus.NOT_FOUND);
+      }
+
+      // 更新物流信息
+      Object.assign(order, {
+        logisticsStatus: logisticsData.logisticsStatus,
+        trackingNumber: logisticsData.trackingNumber,
+        logisticsCompany: logisticsData.logisticsCompany,
+        adminRemark: logisticsData.adminRemark,
+        logisticsUpdateTime: new Date(),
+      });
+
+      const updatedOrder = await this.orderRepository.save(order);
+      return updatedOrder;
+    } catch (error) {
+      if (error instanceof HttpException) {
+        throw error;
+      }
+      throw new HttpException('更新物流状态失败', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  /**
+   * 获取订单详情（包含备注和物流信息）
+   */
+  async getOrderDetail(orderId: string) {
+    try {
+      const order = await this.orderRepository.findOne({ where: { id: orderId } });
+      if (!order) {
+        throw new HttpException('订单不存在', HttpStatus.NOT_FOUND);
+      }
+
+      return order;
+    } catch (error) {
+      if (error instanceof HttpException) {
+        throw error;
+      }
+      throw new HttpException('获取订单详情失败', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  /**
+   * 批量更新订单物流状态
+   */
+  async batchUpdateLogistics(orders: Array<{
+    orderId: string;
+    logisticsStatus: string;
+    trackingNumber?: string;
+    logisticsCompany?: string;
+    adminRemark?: string;
+  }>) {
+    try {
+      const results = [];
+      
+      for (const orderData of orders) {
+        try {
+          const order = await this.orderRepository.findOne({ 
+            where: { id: orderData.orderId } 
+          });
+          
+          if (!order) {
+            results.push({
+              orderId: orderData.orderId,
+              success: false,
+              message: '订单不存在'
+            });
+            continue;
+          }
+
+          // 更新物流信息
+          Object.assign(order, {
+            logisticsStatus: orderData.logisticsStatus,
+            trackingNumber: orderData.trackingNumber,
+            logisticsCompany: orderData.logisticsCompany,
+            adminRemark: orderData.adminRemark,
+            logisticsUpdateTime: new Date(),
+          });
+
+          await this.orderRepository.save(order);
+          results.push({
+            orderId: orderData.orderId,
+            success: true,
+            message: '更新成功'
+          });
+        } catch (error) {
+          results.push({
+            orderId: orderData.orderId,
+            success: false,
+            message: error.message || '更新失败'
+          });
+        }
+      }
+
+      return results;
+    } catch (error) {
+      throw new HttpException('批量更新物流状态失败', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  /**
+   * 获取物流状态历史记录（模拟）
+   */
+  async getLogisticsHistory(orderId: string) {
+    try {
+      const order = await this.orderRepository.findOne({ where: { id: orderId } });
+      if (!order) {
+        throw new HttpException('订单不存在', HttpStatus.NOT_FOUND);
+      }
+
+      // 模拟物流历史记录
+      const logisticsHistory = [
+        {
+          time: order.createTime,
+          status: '订单已创建',
+          location: '平台仓库',
+          remark: '订单已生成，等待商家确认'
+        },
+        {
+          time: order.payTime || order.createTime,
+          status: '订单已支付',
+          location: '平台仓库',
+          remark: '支付成功，准备发货'
+        }
+      ];
+
+      // 如果有发货时间，添加发货记录
+      if (order.shipTime) {
+        logisticsHistory.push({
+          time: order.shipTime,
+          status: '商品已发货',
+          location: '平台仓库',
+          remark: '商品已从平台仓库发出'
+        });
+      }
+
+      // 如果有物流状态，添加物流记录
+      if (order.logisticsStatus) {
+        logisticsHistory.push({
+          time: order.logisticsUpdateTime || new Date(),
+          status: order.logisticsStatus,
+          location: '运输途中',
+          remark: order.adminRemark || '物流状态更新'
+        });
+      }
+
+      return logisticsHistory;
+    } catch (error) {
+      if (error instanceof HttpException) {
+        throw error;
+      }
+      throw new HttpException('获取物流历史失败', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 }
 

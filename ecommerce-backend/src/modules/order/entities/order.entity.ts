@@ -104,6 +104,21 @@ export class Order {
   @Column({ name: 'shipping_address', type: 'text', nullable: true })
   shippingAddress: string;
 
+  @Column({ name: 'admin_remark', type: 'text', nullable: true, comment: '管理员备注' })
+  adminRemark: string;
+
+  @Column({ name: 'logistics_status', type: 'varchar', length: 100, nullable: true, comment: '物流状态' })
+  logisticsStatus: string;
+
+  @Column({ name: 'tracking_number', type: 'varchar', length: 50, nullable: true, comment: '快递单号' })
+  trackingNumber: string;
+
+  @Column({ name: 'logistics_company', type: 'varchar', length: 50, nullable: true, comment: '物流公司' })
+  logisticsCompany: string;
+
+  @Column({ name: 'logistics_update_time', type: 'timestamp', nullable: true, comment: '物流更新时间' })
+  logisticsUpdateTime: Date;
+
   @CreateDateColumn({ name: 'create_time', type: 'timestamp' })
   createTime: Date;
 
