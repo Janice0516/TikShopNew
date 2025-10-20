@@ -33,7 +33,7 @@ PORT=10000
 ### 2. 前端服务API连接配置
 ```bash
 # 环境变量配置 (需要在每个前端服务中设置)
-VITE_API_BASE_URL=https://tiktokshop-api.onrender.com/api
+VITE_API_BASE_URL=http://localhost:3000/api
 ```
 
 ---
@@ -41,17 +41,17 @@ VITE_API_BASE_URL=https://tiktokshop-api.onrender.com/api
 ## 📋 前端服务配置检查
 
 ### ✅ 商家后台 (Merchant Backend)
-- **API地址**: `https://tiktokshop-api.onrender.com/api`
+- **API地址**: `http://localhost:3000/api`
 - **配置文件**: `merchant/src/utils/request.ts`
 - **环境变量**: `VITE_API_BASE_URL`
 
 ### ✅ 管理后台 (Admin Backend)  
-- **API地址**: `https://tiktokshop-api.onrender.com/api`
+- **API地址**: `http://localhost:3000/api`
 - **配置文件**: `admin/src/utils/request.ts`
 - **环境变量**: `VITE_API_BASE_URL`
 
 ### ✅ 用户前端 (User App)
-- **API地址**: `https://tiktokshop-api.onrender.com/api`
+- **API地址**: `http://localhost:3000/api`
 - **配置文件**: `user-app/src/utils/request.ts`
 - **环境变量**: `VITE_API_BASE_URL`
 
@@ -60,7 +60,7 @@ VITE_API_BASE_URL=https://tiktokshop-api.onrender.com/api
 ## 🔍 数据库连接验证
 
 ### 1. 检查API服务状态
-访问: `https://tiktokshop-api.onrender.com/api/test/health`
+访问: `http://localhost:3000/api/test/health`
 
 预期响应:
 ```json
@@ -75,7 +75,7 @@ VITE_API_BASE_URL=https://tiktokshop-api.onrender.com/api
 ```
 
 ### 2. 检查数据库连接
-访问: `https://tiktokshop-api.onrender.com/api/products`
+访问: `http://localhost:3000/api/products`
 
 预期响应:
 ```json
@@ -99,17 +99,17 @@ VITE_API_BASE_URL=https://tiktokshop-api.onrender.com/api
 
 #### 商家后台环境变量:
 ```bash
-VITE_API_BASE_URL=https://tiktokshop-api.onrender.com/api
+VITE_API_BASE_URL=http://localhost:3000/api
 ```
 
 #### 管理后台环境变量:
 ```bash
-VITE_API_BASE_URL=https://tiktokshop-api.onrender.com/api
+VITE_API_BASE_URL=http://localhost:3000/api
 ```
 
 #### 用户前端环境变量:
 ```bash
-VITE_API_BASE_URL=https://tiktokshop-api.onrender.com/api
+VITE_API_BASE_URL=http://localhost:3000/api
 ```
 
 ---
@@ -149,7 +149,7 @@ export function getUserList(params: any) {
 // user-app/src/api/product.ts
 export function getProducts() {
   return uni.request({
-    url: 'https://tiktokshop-api.onrender.com/api/products',
+    url: 'http://localhost:3000/api/products',
     method: 'GET'
   })
 }

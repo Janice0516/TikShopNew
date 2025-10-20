@@ -18,12 +18,14 @@
     "pinia": "^3.0.3",
     "vue": "^3.5.22",
     "vue-echarts": "^8.0.0",
+    "vue-i18n": "^9.14.5",
     "vue-router": "^4.5.1"
   },
   "devDependencies": {
     "@types/node": "^24.6.0",
     "@vitejs/plugin-vue": "^6.0.1",
     "@vue/tsconfig": "^0.8.1",
+    "sass-embedded": "^1.93.2",
     "typescript": "~5.9.3",
     "vite": "npm:rolldown-vite@7.1.14",
     "vue-tsc": "^3.1.0"

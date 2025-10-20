@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtModule } from '@nestjs/jwt';
 import { UserService } from './user.service';
 import { UserController } from './user.controller';
+import { AdminUserController } from './admin-user.controller';
 import { User } from './entities/user.entity';
 
 @Module({
@@ -13,7 +14,7 @@ import { User } from './entities/user.entity';
       signOptions: { expiresIn: '7d' },
     }),
   ],
-  controllers: [UserController],
+  controllers: [UserController, AdminUserController],
   providers: [UserService],
   exports: [UserService],
 })

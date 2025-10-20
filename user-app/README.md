@@ -68,7 +68,7 @@ npm run preview
 ## 🌐 API对接
 
 项目已配置与后端API对接：
-- **后端地址**: https://tikshop-backend.onrender.com
+- **后端地址**: http://localhost:3000
 - **API代理**: `/api` → 后端服务
 - **认证方式**: JWT Token
 - **数据格式**: JSON

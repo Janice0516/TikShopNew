@@ -7,8 +7,20 @@ const router = createRouter({
     {
       path: '/',
       name: 'Home',
-      component: () => import('@/views/Home.vue'),
+      component: () => import('@/views/HomeModular.vue'),
       meta: { title: 'TikTok Shop' }
+    },
+    {
+      path: '/mobile',
+      name: 'MobileHome',
+      component: () => import('@/views/MobileHome.vue'),
+      meta: { title: 'TikTok Shop Mobile' }
+    },
+    {
+      path: '/home-original',
+      name: 'HomeOriginal',
+      component: () => import('@/views/Home.vue'),
+      meta: { title: 'TikTok Shop (Original)' }
     },
     {
       path: '/debug',

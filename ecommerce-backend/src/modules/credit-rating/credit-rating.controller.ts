@@ -35,25 +35,17 @@ export class CreditRatingController {
     return this.creditRatingService.getCreditRatingList(params);
   }
 
-  @Get(':id')
-  @ApiOperation({ summary: '获取信用评级详情' })
-  async getCreditRatingDetail(@Param('id') id: string) {
-    return this.creditRatingService.getCreditRatingDetail(+id);
+  @Get('dashboard-stats')
+  @ApiOperation({ summary: '获取信用评级统计信息' })
+  async getCreditRatingStats() {
+    console.log('🔧 控制器: getCreditRatingStats 被调用');
+    return this.creditRatingService.getCreditRatingStats();
   }
 
-  @Put(':id')
-  @ApiOperation({ summary: '更新信用评级' })
-  async updateCreditRating(
-    @Param('id') id: string,
-    @Body() updateCreditRatingDto: UpdateCreditRatingDto,
-  ) {
-    return this.creditRatingService.updateCreditRating(+id, updateCreditRatingDto);
-  }
-
-  @Delete(':id')
-  @ApiOperation({ summary: '删除信用评级' })
-  async deleteCreditRating(@Param('id') id: string) {
-    return this.creditRatingService.deleteCreditRating(+id);
+  @Get('operations')
+  @ApiOperation({ summary: '获取操作记录' })
+  async getOperationRecords(@Query('page') page: number = 1, @Query('pageSize') pageSize: number = 10) {
+    return this.creditRatingService.getOperationRecords(page, pageSize);
   }
 
   @Get('merchant/current')
@@ -102,6 +94,12 @@ export class CreditRatingController {
     };
   }
 
+  @Get(':id')
+  @ApiOperation({ summary: '获取信用评级详情' })
+  async getCreditRatingDetail(@Param('id') id: string) {
+    return this.creditRatingService.getCreditRatingDetail(+id);
+  }
+
   @Post('calculate/:merchantId')
   @ApiOperation({ summary: '自动计算商户信用评级' })
   async calculateMerchantRating(
@@ -109,29 +107,6 @@ export class CreditRatingController {
     @Request() req: any
   ) {
     return this.creditRatingService.calculateMerchantRating(+merchantId, req.user.id);
-  }
-
-  @Get('stats')
-  @ApiOperation({ summary: '获取信用评级统计信息' })
-  async getCreditRatingStats() {
-    return {
-      code: 200,
-      message: '获取信用评级统计成功',
-      data: {
-        totalRatings: 1,
-        activeRatings: 1,
-        avgScore: 95.5,
-        levelDistribution: {
-          AAA: 1,
-          AA: 0,
-          A: 0,
-          BBB: 0,
-          BB: 0,
-          B: 0,
-          C: 0
-        }
-      }
-    };
   }
 
   @Post('recalculate-all')

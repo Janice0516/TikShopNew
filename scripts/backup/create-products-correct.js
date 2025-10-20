@@ -64,7 +64,7 @@ async function createProducts() {
     console.log('🚀 开始创建40个产品...');
 
     // 先登录获取token
-    const loginResponse = await axios.post('https://tiktokshop-api.onrender.com/api/admin/login', {
+    const loginResponse = await axios.post('http://localhost:3000/api/admin/login', {
       username: 'admin',
       password: 'admin123'
     });
@@ -87,7 +87,7 @@ async function createProducts() {
       };
 
       try {
-        const response = await axios.post('https://tiktokshop-api.onrender.com/api/products', productData, {
+        const response = await axios.post('http://localhost:3000/api/products', productData, {
           headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json'

@@ -5,13 +5,12 @@
       <div class="header-content">
         <div class="header-left">
           <div class="logo">
-            <span class="tiktok-icon">♪</span>
-            <span class="logo-text">TikTok Shop</span>
+            <img src="/logo.png" alt="TikTok Shop" class="logo-image" />
           </div>
         </div>
         
         <div class="header-right">
-          <button class="get-app-btn">Get app</button>
+          <a class="get-app-btn" href="https://www.tiktok.com/download" target="_blank" rel="noopener" title="Download TikTok">Get app</a>
           <button class="login-btn">Log in</button>
         </div>
       </div>
@@ -22,8 +21,7 @@
       <aside class="sidebar">
         <div class="sidebar-content">
           <div class="sidebar-logo">
-            <span class="tiktok-icon">♪</span>
-            <span class="logo-text">TikTok Shop</span>
+            <img src="/logo.png" alt="TikTok Shop" class="logo-image" />
           </div>
           
           <nav class="sidebar-nav">
@@ -157,20 +155,73 @@ const loading = ref(false)
 const loadCategories = async () => {
   try {
     const response = await categoryApi.getCategories()
-    categories.value = response.data || []
+    const apiCategories = response.list || []
+    
+    // 为分类添加图标
+    const categoryIcons = {
+      'Home & Living': 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=120&h=120&fit=crop&crop=center&auto=format&q=80',
+      'Electronics & Appliances': 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=120&h=120&fit=crop&crop=center&auto=format&q=80',
+      'Fashion & Bags': 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=120&h=120&fit=crop&crop=center&auto=format&q=80',
+      'Beauty & Personal Care': 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=120&h=120&fit=crop&crop=center&auto=format&q=80',
+      'Food & Fresh': 'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=120&h=120&fit=crop&crop=center&auto=format&q=80',
+      'Sports & Outdoor': 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=120&h=120&fit=crop&crop=center&auto=format&q=80',
+      'Books & Stationery': 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=120&h=120&fit=crop&crop=center&auto=format&q=80',
+      'Baby & Kids': 'https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=120&h=120&fit=crop&crop=center&auto=format&q=80'
+    }
+    
+    categories.value = apiCategories.map((category: any) => ({
+      ...category,
+      icon: categoryIcons[category.name] || 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=120&h=120&fit=crop&crop=center&auto=format&q=80'
+    }))
   } catch (error) {
     console.error('加载分类失败:', error)
     // 使用默认分类数据
     categories.value = [
-      { id: '1', name: 'Womenswear & Underwear', icon: 'https://via.placeholder.com/60x60/F5E6D3/ffffff?text=👗' },
-      { id: '2', name: 'Phones & Electronics', icon: 'https://via.placeholder.com/60x60/E8F4FD/ffffff?text=📱' },
-      { id: '3', name: 'Fashion Accessories', icon: 'https://via.placeholder.com/60x60/F0E68C/ffffff?text=👒' },
-      { id: '4', name: 'Menswear & Underwear', icon: 'https://via.placeholder.com/60x60/D3D3D3/ffffff?text=👕' },
-      { id: '5', name: 'Home Supplies', icon: 'https://via.placeholder.com/60x60/ADD8E6/ffffff?text=🧴' },
-      { id: '6', name: 'Beauty & Personal Care', icon: 'https://via.placeholder.com/60x60/FFFFFF/ffffff?text=💄' },
-      { id: '7', name: 'Shoes', icon: 'https://via.placeholder.com/60x60/FFFFFF/ffffff?text=👟' },
-      { id: '8', name: 'Sports & Outdoor', icon: 'https://via.placeholder.com/60x60/90EE90/ffffff?text=🏕️' },
-      { id: '9', name: 'Luggage & Bags', icon: 'https://via.placeholder.com/60x60/D3D3D3/ffffff?text=🧳' }
+      { 
+        id: '1', 
+        name: 'Womenswear & Underwear', 
+        icon: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=120&h=120&fit=crop&crop=center&auto=format&q=80' 
+      },
+      { 
+        id: '2', 
+        name: 'Phones & Electronics', 
+        icon: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=120&h=120&fit=crop&crop=center&auto=format&q=80' 
+      },
+      { 
+        id: '3', 
+        name: 'Fashion Accessories', 
+        icon: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=120&h=120&fit=crop&crop=center&auto=format&q=80' 
+      },
+      { 
+        id: '4', 
+        name: 'Menswear & Underwear', 
+        icon: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&h=120&fit=crop&crop=center&auto=format&q=80' 
+      },
+      { 
+        id: '5', 
+        name: 'Home Supplies', 
+        icon: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=120&h=120&fit=crop&crop=center&auto=format&q=80' 
+      },
+      { 
+        id: '6', 
+        name: 'Beauty & Personal Care', 
+        icon: 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=120&h=120&fit=crop&crop=center&auto=format&q=80' 
+      },
+      { 
+        id: '7', 
+        name: 'Shoes', 
+        icon: 'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=120&h=120&fit=crop&crop=center&auto=format&q=80' 
+      },
+      { 
+        id: '8', 
+        name: 'Sports & Outdoor', 
+        icon: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=120&h=120&fit=crop&crop=center&auto=format&q=80' 
+      },
+      { 
+        id: '9', 
+        name: 'Luggage & Bags', 
+        icon: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=120&h=120&fit=crop&crop=center&auto=format&q=80' 
+      }
     ]
   }
 }
@@ -179,96 +230,38 @@ const loadCategories = async () => {
 const loadProducts = async () => {
   loading.value = true
   try {
-    const response = await productApi.getProducts({ page: 1, pageSize: 10 })
-    const apiProducts = response?.data?.list || []
+    const response = await fetch('/api/shop/products?page=1&pageSize=10')
+    const data = await response.json()
+    const apiProducts = data?.list || []
     
-    // 转换为TikTok Shop风格的商品数据
-    products.value = apiProducts.map((product: any, index: number) => ({
+    // 使用完全真实的数据，移除所有模拟内容
+    products.value = apiProducts.map((product: any) => ({
       id: product.id,
+      productId: product.productId,
       name: product.name,
       description: product.description,
-      price: product.suggestPrice || product.costPrice,
-      originalPrice: product.suggestPrice ? product.costPrice : null,
-      image: `https://via.placeholder.com/300x300/409EFF/ffffff?text=${encodeURIComponent(product.name)}`,
-      rating: 4.5 + Math.random() * 0.5,
-      sales: Math.floor(Math.random() * 10000) + 100,
-      banner: index === 0 ? 'GRACE AND GLOW BIG SALE' : null,
-      timer: index === 0 ? 'TIME: 10.14-10.17' : null,
-      badge: index === 0 ? {
-        title: '10.15 BIG SALE!',
-        price: 'RM45',
-        discount: '31% OFF'
-      } : null
+      price: product.salePrice || product.costPrice,
+      originalPrice: product.salePrice && product.costPrice && product.salePrice < product.costPrice ? product.costPrice : null,
+      image: product.mainImage || `https://via.placeholder.com/300x300/409EFF/ffffff?text=${encodeURIComponent(product.name)}`,
+      rating: 4.0, // 固定评分，不使用随机数
+      sales: product.sales || 0, // 真实销量
+      stock: product.stock || 0, // 真实库存
+      brand: product.brand || '', // 真实品牌
+      categoryId: product.categoryId || '',
+      categoryName: product.categoryName || '',
+      merchantId: product.merchantId,
+      merchantName: product.merchantName || '',
+      // 完全移除模拟促销信息
+      banner: null,
+      timer: null,
+      badge: null
     }))
   } catch (error) {
     console.error('加载商品失败:', error)
     ElMessage.error('加载商品失败！')
     
-    // 使用默认商品数据
-    products.value = [
-      {
-        id: '1',
-        name: 'Grace and Glow New Bundle 2in1 Vanilla Velvet Body Mist + BO Smooth Deodorant Serum',
-        description: 'Grace and Glow New Bundle 2in1 Vanilla Velvet Body Mist + BO Smooth Deodorant Serum - Premium Quality',
-        price: 30.90,
-        originalPrice: 44.80,
-        image: 'https://via.placeholder.com/300x300/8A2BE2/ffffff?text=Grace+Glow',
-        rating: 4.8,
-        sales: 10000,
-        banner: 'GRACE AND GLOW BIG SALE',
-        timer: 'TIME: 10.14-10.17',
-        badge: {
-          title: '10.15 BIG SALE!',
-          price: 'RM45',
-          discount: '31% OFF'
-        }
-      },
-      {
-        id: '2',
-        name: 'Superstore Premium Quality Item',
-        description: '[PENINGKATAN PERCUMA] Naik taraf PERCUMA dari 220g ke 240g | Kualiti Lebih Baik',
-        price: 19.00,
-        originalPrice: 20.00,
-        image: 'https://via.placeholder.com/300x300/FF0000/ffffff?text=Superstore',
-        rating: 4.6,
-        sales: 5000
-      },
-      {
-        id: '3',
-        name: 'Brobaba Fish Grill Pan Japanese Style',
-        description: 'Brobaba Pemanggang Ikan PEMBAKAR BBQ GRILL PENGEPIT IKAN AYAM BBQ Fish Grill Pan',
-        price: 13.90,
-        originalPrice: 49.00,
-        image: 'https://via.placeholder.com/300x300/000000/ffffff?text=Grill+Pan',
-        rating: 4.8,
-        sales: 776
-      },
-      {
-        id: '4',
-        name: 'Dell Chromebook Laptop 4GB RAM 16GB SSD',
-        description: '(Refurbished) AlaCarte | Dell (3100/3180/5190) Chromebook Laptop (Intel Celeron/4GB RAM)',
-        price: 96.00,
-        originalPrice: 196.00,
-        image: 'https://via.placeholder.com/300x300/000000/ffffff?text=Chromebook',
-        rating: 4.6,
-        sales: 3300,
-        badge: {
-          title: 'LIVE SALE',
-          price: '',
-          discount: ''
-        }
-      },
-      {
-        id: '5',
-        name: 'MeowMe Unisex Casual Sandals',
-        description: 'READY STOCK MeowMe Kasut Unisex Lembut Kasut Lelaki Perempuan Kasual Sandal pantai',
-        price: 5.65,
-        originalPrice: 20.00,
-        image: 'https://via.placeholder.com/300x300/F5DEB3/ffffff?text=Sandals',
-        rating: 4.7,
-        sales: 67000
-      }
-    ]
+    // 如果API失败，显示空状态，不使用模拟数据
+    products.value = []
   } finally {
     loading.value = false
   }
@@ -333,18 +326,11 @@ onMounted(async () => {
     .logo {
       display: flex;
       align-items: center;
-      gap: 8px;
       
-      .tiktok-icon {
-        font-size: 24px;
-        color: #000;
-        font-weight: bold;
-      }
-      
-      .logo-text {
-        font-size: 18px;
-        font-weight: bold;
-        color: #000;
+      .logo-image {
+        height: 70px;
+        width: auto;
+        max-width: 350px;
       }
     }
   }
@@ -411,19 +397,12 @@ onMounted(async () => {
   .sidebar-logo {
     display: flex;
     align-items: center;
-    gap: 8px;
     margin-bottom: 30px;
     
-    .tiktok-icon {
-      font-size: 24px;
-      color: #000;
-      font-weight: bold;
-    }
-    
-    .logo-text {
-      font-size: 18px;
-      font-weight: bold;
-      color: #000;
+    .logo-image {
+      height: 70px;
+      width: auto;
+      max-width: 350px;
     }
   }
   
@@ -607,27 +586,8 @@ onMounted(async () => {
       display: flex;
       flex-direction: column;
       gap: 20px;
-      max-height: 600px;
-      overflow-y: auto;
-      padding-right: 10px;
-      
-      &::-webkit-scrollbar {
-        width: 6px;
-      }
-      
-      &::-webkit-scrollbar-track {
-        background: #f1f1f1;
-        border-radius: 3px;
-      }
-      
-      &::-webkit-scrollbar-thumb {
-        background: #c1c1c1;
-        border-radius: 3px;
-        
-        &:hover {
-          background: #a8a8a8;
-        }
-      }
+      overflow-x: hidden;
+      overflow-y: visible;
     }
   }
 }
@@ -641,7 +601,7 @@ onMounted(async () => {
   cursor: pointer;
   transition: transform 0.3s ease;
   display: flex;
-  align-items: center;
+  flex-direction: column;
   gap: 15px;
   
   &:hover {

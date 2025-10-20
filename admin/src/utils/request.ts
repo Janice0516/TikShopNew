@@ -5,7 +5,7 @@ import router from '@/router'
 
 // 创建axios实例
 const service = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || 'https://tiktokshop-api.onrender.com/api',
+  baseURL: import.meta.env.VITE_API_BASE_URL || '/api',
   timeout: 30000  // 增加到30秒
 })
 
@@ -30,35 +30,25 @@ service.interceptors.request.use(
 
 // 响应拦截器
 service.interceptors.response.use(
-  (response: AxiosResponse) => {
-    const res = response.data
-    
-    // 如果是下载文件，直接返回
-    if (response.config.responseType === 'blob') {
-      return response
+  (response) => {
+    const data = response.data
+    if (data.code && data.code !== 200) {
+      ElMessage.error(data.message || '请求失败')
+      return Promise.reject(new Error(data.message || '请求失败'))
     }
-    
-    // 正常响应
-    if (res.code === 200) {
-      return res
-    }
-    
-    // 业务错误
-    ElMessage.error(res.message || '请求失败')
-    return Promise.reject(new Error(res.message || '请求失败'))
+    return response
   },
-  (error: AxiosError<any>) => {
-    console.error('响应错误：', error)
-    
-    if (error.response) {
-      const { status, data } = error.response
-      
+  (error) => {
+    const { response } = error
+    if (response) {
+      const { status, data } = response
       switch (status) {
         case 401:
           ElMessage.error('未登录或登录已过期，请重新登录')
           // 清除token并跳转到登录页
           localStorage.removeItem('token')
-          router.push('/login')
+          const base = import.meta.env.BASE_URL || '/'
+          router.push(`${base}login`)
           break
         case 403:
           ElMessage.error('没有权限访问')

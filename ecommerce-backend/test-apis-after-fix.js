@@ -1,6 +1,6 @@
 const axios = require('axios');
 
-const API_BASE = 'https://tiktokshop-api.onrender.com/api';
+const API_BASE = 'http://localhost:3000/api';
 
 async function testAPIs() {
   console.log('🧪 测试修复后的API\n');

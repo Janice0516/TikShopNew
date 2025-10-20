@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { FundManagementService } from './fund-management.service';
 import { FundManagementController } from './fund-management.controller';
+import { AdminFundManagementController } from './admin-fund-management.controller';
 import { FundFreezeRecord } from './entities/fund-freeze-record.entity';
 import { FundTransaction } from './entities/fund-transaction.entity';
 import { Merchant } from '../merchant/entities/merchant.entity';
@@ -18,7 +19,7 @@ import { Product } from '../product/entities/product.entity';
       Product,
     ]),
   ],
-  controllers: [FundManagementController],
+  controllers: [FundManagementController, AdminFundManagementController],
   providers: [FundManagementService],
   exports: [FundManagementService],
 })

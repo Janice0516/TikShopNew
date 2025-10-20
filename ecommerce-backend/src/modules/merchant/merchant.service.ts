@@ -7,6 +7,7 @@ import { Merchant } from './entities/merchant.entity';
 import { RegisterMerchantDto } from './dto/register-merchant.dto';
 import { LoginMerchantDto } from './dto/login-merchant.dto';
 import { UidGenerator } from '../../common/utils/uid-generator.util';
+import { InviteCodeService } from '../invite-code/invite-code.service';
 
 @Injectable()
 export class MerchantService {
@@ -14,13 +15,14 @@ export class MerchantService {
     @InjectRepository(Merchant)
     private merchantRepository: Repository<Merchant>,
     private jwtService: JwtService,
+    private inviteCodeService: InviteCodeService,
   ) {}
 
   /**
    * 商家注册
    */
   async register(registerDto: RegisterMerchantDto) {
-    const { username, password, ...rest } = registerDto;
+    const { username, password, inviteCode, ...rest } = registerDto;
 
     // 检查用户名是否已存在
     const existMerchant = await this.merchantRepository.findOne({
@@ -28,6 +30,21 @@ export class MerchantService {
     });
     if (existMerchant) {
       throw new HttpException('该账号已被注册', HttpStatus.BAD_REQUEST);
+    }
+
+    // 验证邀请码（如果提供）
+    let salespersonInfo = null;
+    if (inviteCode) {
+      try {
+        const validationResult = await this.inviteCodeService.validateInviteCode({ inviteCode });
+        salespersonInfo = {
+          salespersonName: validationResult.salespersonName,
+          salespersonPhone: validationResult.salespersonPhone,
+          salespersonId: validationResult.salespersonId,
+        };
+      } catch (error) {
+        throw new HttpException(`邀请码验证失败: ${error.message}`, HttpStatus.BAD_REQUEST);
+      }
     }
 
     // 生成唯一的商家UID
@@ -55,20 +72,43 @@ export class MerchantService {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // 创建商家（默认待审核状态）
-    const merchant = this.merchantRepository.create({
+    const merchantData = {
       username,
       password: hashedPassword,
       merchantUid,
+      inviteCode,
+      ...salespersonInfo,
       ...rest,
       status: 0, // 待审核
+    };
+
+    const insertResult = await this.merchantRepository.insert(merchantData);
+    const savedMerchant = await this.merchantRepository.findOne({
+      where: { id: insertResult.identifiers[0].id }
     });
 
-    await this.merchantRepository.save(merchant);
+    if (!savedMerchant) {
+      throw new HttpException('商家创建失败', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    // 如果使用了邀请码，增加使用次数
+    if (inviteCode && salespersonInfo) {
+      try {
+        await this.inviteCodeService.useInviteCode(inviteCode);
+      } catch (error) {
+        console.error('更新邀请码使用次数失败:', error);
+        // 不影响注册流程，只记录错误
+      }
+    }
 
     return {
       message: '注册成功，请等待审核',
-      merchantId: merchant.id,
-      merchantUid: merchant.merchantUid,
+      merchantId: savedMerchant.id,
+      merchantUid: savedMerchant.merchantUid,
+      salespersonInfo: salespersonInfo ? {
+        salespersonName: salespersonInfo.salespersonName,
+        salespersonPhone: salespersonInfo.salespersonPhone,
+      } : null,
     };
   }
 
@@ -115,6 +155,13 @@ export class MerchantService {
   }
 
   /**
+   * 获取商家信息（别名方法）
+   */
+  async getMerchantById(id: number) {
+    return this.findById(id);
+  }
+
+  /**
    * 获取商家信息
    */
   async findById(id: number) {
@@ -125,6 +172,51 @@ export class MerchantService {
 
     const { password, ...result } = merchant;
     return result;
+  }
+
+  /**
+   * 获取店铺信息
+   */
+  async getShopInfo(merchantId: string) {
+    try {
+      const merchant = await this.merchantRepository.findOne({
+        where: { id: merchantId },
+      });
+
+      if (!merchant) {
+        throw new Error('商家不存在');
+      }
+
+      // 获取店铺统计信息（模拟数据）
+      const shopStats = {
+        totalProducts: 0, // 可以从merchant_product表统计
+        totalOrders: 0,   // 可以从order表统计
+        totalSales: '0.00', // 可以从order表统计
+        totalCustomers: 0   // 可以从order表统计
+      };
+
+      return {
+        shopInfo: {
+          id: merchant.id,
+          name: merchant.shopName || merchant.merchantName || '',
+          description: merchant.shopDescription || '',
+          logo: merchant.shopLogo || '',
+          phone: merchant.contactPhone || '',
+          email: '', // 实体中没有email字段
+          status: merchant.status || 1,
+          rating: '0.0', // 实体中没有rating字段
+          announcement: '', // 实体中没有announcement字段
+          bannerImage: merchant.shopBanner || '',
+          welcomeImage: '', // 实体中没有welcomeImage字段
+          categoryImage: '', // 实体中没有categoryImage字段
+          businessHours: ['09:00', '18:00'] // 实体中没有businessHours字段
+        },
+        shopStats: shopStats
+      };
+    } catch (error) {
+      console.error('获取店铺信息错误:', error);
+      throw error;
+    }
   }
 
   /**
@@ -297,6 +389,98 @@ export class MerchantService {
     });
 
     return { message: '密码重置成功' };
+  }
+
+  /**
+   * 获取商家仪表盘统计数据
+   */
+  async getDashboardStats(merchantId: string) {
+    try {
+      // 获取商家基本信息
+      const merchant = await this.merchantRepository.findOne({
+        where: { id: merchantId },
+      });
+
+      if (!merchant) {
+        throw new Error('商家不存在');
+      }
+
+      // 获取今日订单数
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const tomorrow = new Date(today);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+
+      // 这里需要根据实际的订单表结构来查询
+      // 暂时返回模拟数据
+      const todayOrders = 0; // 实际应该查询订单表
+      const totalOrders = 0; // 实际应该查询订单表
+
+      return {
+        balance: typeof merchant.balance === 'string' ? parseFloat(merchant.balance) : merchant.balance || 0,
+        frozenAmount: typeof merchant.frozenAmount === 'string' ? parseFloat(merchant.frozenAmount) : merchant.frozenAmount || 0,
+        totalIncome: typeof merchant.totalIncome === 'string' ? parseFloat(merchant.totalIncome) : merchant.totalIncome || 0,
+        totalWithdraw: typeof merchant.totalWithdraw === 'string' ? parseFloat(merchant.totalWithdraw) : merchant.totalWithdraw || 0,
+        todayOrders,
+        totalOrders,
+        merchantName: merchant.merchantName,
+        shopName: merchant.shopName,
+      };
+    } catch (error) {
+      console.error('获取商家仪表盘统计错误:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * 获取商家财务统计
+   */
+  async getFinanceStats(merchantId: string) {
+    try {
+      const merchant = await this.merchantRepository.findOne({
+        where: { id: merchantId },
+      });
+
+      if (!merchant) {
+        throw new Error('商家不存在');
+      }
+
+      return {
+        balance: typeof merchant.balance === 'string' ? parseFloat(merchant.balance) : merchant.balance || 0,
+        frozenAmount: typeof merchant.frozenAmount === 'string' ? parseFloat(merchant.frozenAmount) : merchant.frozenAmount || 0,
+        totalIncome: typeof merchant.totalIncome === 'string' ? parseFloat(merchant.totalIncome) : merchant.totalIncome || 0,
+        totalWithdraw: typeof merchant.totalWithdraw === 'string' ? parseFloat(merchant.totalWithdraw) : merchant.totalWithdraw || 0,
+        availableBalance: (typeof merchant.balance === 'string' ? parseFloat(merchant.balance) : merchant.balance || 0) + (typeof merchant.frozenAmount === 'string' ? parseFloat(merchant.frozenAmount) : merchant.frozenAmount || 0),
+      };
+    } catch (error) {
+      console.error('获取商家财务统计错误:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * 获取商家订单统计
+   */
+  async getOrdersStats(merchantId: string) {
+    try {
+      // 这里需要根据实际的订单表结构来查询
+      // 暂时返回模拟数据
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const tomorrow = new Date(today);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+
+      return {
+        todayOrders: 0, // 实际应该查询订单表
+        totalOrders: 0, // 实际应该查询订单表
+        pendingOrders: 0, // 待处理订单
+        completedOrders: 0, // 已完成订单
+        cancelledOrders: 0, // 已取消订单
+      };
+    } catch (error) {
+      console.error('获取商家订单统计错误:', error);
+      throw error;
+    }
   }
 
   /**

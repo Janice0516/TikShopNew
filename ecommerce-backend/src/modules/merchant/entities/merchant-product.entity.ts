@@ -33,6 +33,24 @@ export class MerchantProduct {
   @Column({ type: 'int', default: 0, comment: '销量' })
   sales: number;
 
+  @Column({ name: 'is_popular', type: 'boolean', default: false, comment: '是否推荐为热门商品' })
+  isPopular: boolean;
+
+  @Column({ name: 'is_top_deal', type: 'boolean', default: false, comment: '是否推荐为Top Deals' })
+  isTopDeal: boolean;
+
+  @Column({ name: 'recommend_reason', length: 255, nullable: true, comment: '推荐理由' })
+  recommendReason: string;
+
+  @Column({ name: 'recommend_priority', type: 'int', default: 0, comment: '推荐优先级' })
+  recommendPriority: number;
+
+  @Column({ name: 'recommend_start_time', type: 'timestamp', nullable: true, comment: '推荐开始时间' })
+  recommendStartTime: Date;
+
+  @Column({ name: 'recommend_end_time', type: 'timestamp', nullable: true, comment: '推荐结束时间' })
+  recommendEndTime: Date;
+
   @CreateDateColumn({ name: 'create_time', type: 'timestamp' })
   createTime: Date;
 

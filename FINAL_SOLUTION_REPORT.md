@@ -212,7 +212,7 @@ INSERT INTO platform_product (name, category_id, brand, main_image, images, cost
 - 需要检查数据库表是否存在，以及用户权限
 
 #### **需要提供的信息：**
-- 服务URL：`https://tiktokshop-api.onrender.com`
+- 服务URL：`http://localhost:3000`
 - 数据库信息：已提供
 - 错误日志：500 Internal Server Error
 - 健康检查：`/api/health`正常

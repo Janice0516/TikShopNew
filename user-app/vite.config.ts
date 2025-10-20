@@ -20,11 +20,18 @@ export default defineConfig({
   server: {
     port: 3001,
     host: true,
+    allowedHosts: [
+      'localhost',
+      '127.0.0.1',
+      'tiktokbusines.store',
+      'www.tiktokbusines.store'
+    ],
     proxy: {
       '/api': {
-        target: 'https://tiktokshop-api.onrender.com',
+        target: 'http://localhost:3000',
         changeOrigin: true,
-        secure: true
+        secure: false,
+        rewrite: (path) => path.replace(/^\/api/, '/api')
       }
     }
   },
@@ -40,5 +47,8 @@ export default defineConfig({
         }
       }
     }
+  },
+  define: {
+    'import.meta.env.VITE_API_BASE_URL': JSON.stringify(process.env.NODE_ENV === 'production' ? 'https://tiktokbusines.store/api' : '/api')
   }
 })

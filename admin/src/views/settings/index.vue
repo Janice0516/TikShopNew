@@ -532,7 +532,7 @@ const beforeLogoUpload = (file: any) => {
 const testEmailConnection = async () => {
   testing.value = true
   try {
-    await testEmailSettings({ email: notificationSettings.smtpUser })
+    await testEmailSettings({ email: notificationSettings.smtpUsername })
     ElMessage.success('邮件连接测试成功')
   } catch (error) {
     ElMessage.error('邮件连接测试失败')

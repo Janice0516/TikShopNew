@@ -1,6 +1,6 @@
 const axios = require('axios');
 
-const API_BASE = 'https://tiktokshop-api.onrender.com/api';
+const API_BASE = 'http://localhost:3000/api';
 
 async function ultimateTest() {
   console.log('🚀 终极测试 - 验证所有功能\n');
@@ -51,9 +51,9 @@ async function ultimateTest() {
     console.log('   商家账号: merchant001 / password123');
     console.log('   管理员账号: admin / admin123');
     console.log('\n🌐 访问地址:');
-    console.log('   管理后台: https://tikshop-admin.onrender.com');
-    console.log('   商家后台: https://tikshop-merchant.onrender.com');
-    console.log('   用户前端: https://tikshop-user.onrender.com');
+    console.log('   管理后台: http://localhost:5175');
+console.log('   商家后台: http://localhost:5176');
+console.log('   用户前端: http://localhost:5177');
 
   } catch (error) {
     console.error('❌ 测试失败:', error.response?.data?.message || error.message);

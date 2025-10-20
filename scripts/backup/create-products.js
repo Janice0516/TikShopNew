@@ -78,7 +78,7 @@ async function createProducts() {
       };
 
       try {
-        const response = await axios.post('https://tiktokshop-api.onrender.com/api/public-products', productData);
+        const response = await axios.post('http://localhost:3000/api/public-products', productData);
         console.log(`✅ 产品 ${product.name} 创建成功`);
       } catch (error) {
         console.log(`⚠️  产品 ${product.name} 创建失败: ${error.response?.data?.message || error.message}`);

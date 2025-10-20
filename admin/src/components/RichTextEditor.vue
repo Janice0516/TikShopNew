@@ -180,7 +180,7 @@ const editorConfig = reactive({
   MENU_CONF: {
     // 配置上传图片
     uploadImage: {
-      server: '/api/upload/image',
+      server: '/upload/image',
       fieldName: 'file',
       headers: {
         // 如果需要token，在这里配置
@@ -197,7 +197,7 @@ const editorConfig = reactive({
     },
     // 配置上传视频
     uploadVideo: {
-      server: '/api/upload/video',
+      server: '/upload/video',
       fieldName: 'file',
       headers: {},
       onSuccess: (file: any, res: any) => {

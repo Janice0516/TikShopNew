@@ -8,9 +8,11 @@ export interface LoginForm {
 export interface RegisterForm {
   username: string
   password: string
-  email: string
-  phone: string
-  shopName: string
+  merchantName: string
+  contactName: string
+  contactPhone: string
+  shopName?: string
+  inviteCode?: string
 }
 
 // 商家登录

@@ -7,7 +7,7 @@
           <div class="stat-item">
             <el-icon class="stat-icon" color="#67C23A" :size="48"><Money /></el-icon>
             <div class="stat-info">
-              <div class="stat-value">${{ stats.accountBalance }}</div>
+              <div class="stat-value">RM{{ stats.accountBalance }}</div>
               <div class="stat-label">{{ $t('finance.accountBalance') }}</div>
             </div>
           </div>
@@ -19,7 +19,7 @@
           <div class="stat-item">
             <el-icon class="stat-icon" color="#409EFF" :size="48"><TrendCharts /></el-icon>
             <div class="stat-info">
-              <div class="stat-value">${{ stats.totalEarnings }}</div>
+              <div class="stat-value">RM{{ stats.totalEarnings }}</div>
               <div class="stat-label">{{ $t('finance.totalEarnings') }}</div>
             </div>
           </div>
@@ -31,7 +31,7 @@
           <div class="stat-item">
             <el-icon class="stat-icon" color="#E6A23C" :size="48"><Wallet /></el-icon>
             <div class="stat-info">
-              <div class="stat-value">${{ stats.frozenAmount }}</div>
+              <div class="stat-value">RM{{ stats.frozenAmount }}</div>
               <div class="stat-label">{{ $t('finance.frozenAmount') }}</div>
             </div>
           </div>
@@ -43,7 +43,7 @@
           <div class="stat-item">
             <el-icon class="stat-icon" color="#F56C6C" :size="48"><CreditCard /></el-icon>
             <div class="stat-info">
-              <div class="stat-value">${{ stats.totalWithdrawn }}</div>
+              <div class="stat-value">RM{{ stats.totalWithdrawn }}</div>
               <div class="stat-label">{{ $t('finance.totalWithdrawn') }}</div>
             </div>
           </div>
@@ -71,15 +71,15 @@
         <div class="chart-data">
           <div class="data-item">
             <span class="label">{{ $t('finance.todayEarnings') }}:</span>
-            <span class="value">${{ todayEarnings }}</span>
+            <span class="value">RM{{ todayEarnings }}</span>
           </div>
           <div class="data-item">
             <span class="label">{{ $t('finance.weekEarnings') }}:</span>
-            <span class="value">${{ weekEarnings }}</span>
+            <span class="value">RM{{ weekEarnings }}</span>
           </div>
           <div class="data-item">
             <span class="label">{{ $t('finance.monthEarnings') }}:</span>
-            <span class="value">${{ monthEarnings }}</span>
+            <span class="value">RM{{ monthEarnings }}</span>
           </div>
         </div>
       </div>
@@ -143,14 +143,14 @@
         <el-table-column :label="$t('finance.amount')" width="120">
           <template #default="{ row }">
             <span :class="getAmountClass(row.type)">
-              {{ row.type === 'withdraw' ? '-' : '+' }}${{ row.amount }}
+              {{ row.type === 'withdraw' ? '-' : '+' }}RM{{ row.amount }}
             </span>
           </template>
         </el-table-column>
 
         <el-table-column :label="$t('finance.balance')" width="120">
           <template #default="{ row }">
-            ${{ row.balance }}
+            RM{{ row.balance }}
           </template>
         </el-table-column>
 

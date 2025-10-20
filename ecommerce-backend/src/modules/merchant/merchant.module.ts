@@ -15,10 +15,12 @@ import { MerchantWithdrawalInfo } from './entities/merchant-withdrawal-info.enti
 import { MerchantRecharge } from './entities/merchant-recharge.entity';
 import { MerchantProduct } from './entities/merchant-product.entity';
 import { Product } from '../product/entities/product.entity';
+import { InviteCodeModule } from '../invite-code/invite-code.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Merchant, MerchantWithdrawalInfo, MerchantRecharge, MerchantProduct, Product]),
+    InviteCodeModule,
     JwtModule.registerAsync({
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({

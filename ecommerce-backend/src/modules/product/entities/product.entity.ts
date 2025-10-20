@@ -4,7 +4,10 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToOne,
+  JoinColumn,
 } from 'typeorm';
+import { Category } from '../../category/entities/category.entity';
 
 @Entity('platform_product')
 export class Product {
@@ -58,5 +61,10 @@ export class Product {
 
   @UpdateDateColumn({ name: 'update_time', type: 'timestamp' })
   updateTime: Date;
+
+  // 关联关系
+  @ManyToOne(() => Category)
+  @JoinColumn({ name: 'category_id' })
+  category: Category;
 }
 

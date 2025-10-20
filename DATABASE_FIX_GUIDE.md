@@ -48,18 +48,18 @@ psql "postgresql://tikshop_user:xNye4k92dtzXqa9rPkLRW04Au74ZK6Yv@dpg-ctatjh5u0jm
 
 1. **商家登录**
    ```bash
-   curl -X POST https://tiktokshop-api.onrender.com/api/merchant/login \
+   curl -X POST http://localhost:3000/api/merchant/login \
      -H "Content-Type: application/json" \
      -d '{"username":"merchant001","password":"password123"}'
    ```
 
 2. **提现列表**
    ```bash
-   curl https://tiktokshop-api.onrender.com/api/withdrawal/list
+   curl http://localhost:3000/api/withdrawal/list
    ```
 
 3. **管理后台**
-   - 访问 https://tikshop-admin.onrender.com
+   - 访问 http://localhost:5175
    - 登录管理后台
    - 检查提现管理页面是否显示数据
 

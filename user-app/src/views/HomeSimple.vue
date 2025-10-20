@@ -40,43 +40,19 @@ const loadProducts = async () => {
   
   try {
     const response = await productApi.getProducts({ page: 1, pageSize: 8 })
-    products.value = response.data?.list || []
+    products.value = (response?.list || []).map((product: any) => ({
+      ...product,
+      image: product.mainImage || `https://via.placeholder.com/300x200/409EFF/ffffff?text=${encodeURIComponent(product.name)}`,
+      rating: 4.0, // 固定评分
+      sales: product.sales || 0 // 真实销量
+    }))
     console.log('商品加载成功:', products.value.length)
   } catch (err: any) {
     error.value = err.message
     console.error('商品加载失败:', err)
     
-    // 使用默认商品数据
-    products.value = [
-      {
-        id: '1',
-        name: 'iPhone 15 Pro Max',
-        description: '全新A17 Pro芯片，钛金属设计',
-        price: 4999,
-        image: 'https://via.placeholder.com/300x200/409EFF/ffffff?text=iPhone+15+Pro+Max'
-      },
-      {
-        id: '2',
-        name: 'MacBook Pro 16',
-        description: 'M3 Max芯片，专业级性能',
-        price: 19999,
-        image: 'https://via.placeholder.com/300x200/67C23A/ffffff?text=MacBook+Pro+16'
-      },
-      {
-        id: '3',
-        name: 'AirPods Pro 2',
-        description: '主动降噪，空间音频',
-        price: 1899,
-        image: 'https://via.placeholder.com/300x200/E6A23C/ffffff?text=AirPods+Pro+2'
-      },
-      {
-        id: '4',
-        name: 'iPad Air 5',
-        description: 'M1芯片，10.9英寸屏幕',
-        price: 4399,
-        image: 'https://via.placeholder.com/300x200/F56C6C/ffffff?text=iPad+Air+5'
-      }
-    ]
+    // 如果API失败，显示空状态，不使用模拟数据
+    products.value = []
   } finally {
     loading.value = false
   }

@@ -3,7 +3,7 @@
 // 简单测试分类API
 const axios = require('axios');
 
-const API_BASE_URL = 'https://tiktokshop-api.onrender.com/api';
+const API_BASE_URL = 'http://localhost:3000/api';
 
 async function testCategoryAPI() {
   console.log('🔍 测试分类API...');

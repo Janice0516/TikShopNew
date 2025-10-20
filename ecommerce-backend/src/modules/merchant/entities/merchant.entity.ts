@@ -70,6 +70,18 @@ export class Merchant {
   @Column({ name: 'total_withdraw', type: 'decimal', precision: 10, scale: 2, default: 0 })
   totalWithdraw: number;
 
+  @Column({ name: 'invite_code', length: 20, nullable: true, comment: '注册时使用的邀请码' })
+  inviteCode: string;
+
+  @Column({ name: 'salesperson_name', length: 100, nullable: true, comment: '业务员姓名' })
+  salespersonName: string;
+
+  @Column({ name: 'salesperson_phone', length: 20, nullable: true, comment: '业务员电话' })
+  salespersonPhone: string;
+
+  @Column({ name: 'salesperson_id', length: 50, nullable: true, comment: '业务员ID' })
+  salespersonId: string;
+
   @CreateDateColumn({ name: 'create_time', type: 'timestamp' })
   createTime: Date;
 

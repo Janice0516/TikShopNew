@@ -45,7 +45,7 @@
 #### 步骤4: 环境变量 (可选)
 如果需要连接后端API，添加环境变量：
 ```
-VITE_API_BASE_URL=https://tikshop-backend.onrender.com
+VITE_API_BASE_URL=http://localhost:3000
 ```
 
 #### 步骤5: 部署
@@ -147,7 +147,7 @@ ls -la dist/
 ### 1. 环境变量
 ```bash
 # .env.production
-VITE_API_BASE_URL=https://tikshop-backend.onrender.com
+VITE_API_BASE_URL=http://localhost:3000
 VITE_APP_TITLE=TikTok Shop
 VITE_APP_DESCRIPTION=您的购物首选平台
 ```

@@ -1,5 +1,21 @@
 <template>
   <div class="login-container">
+    <!-- 语言切换 -->
+    <div class="language-switcher">
+      <el-dropdown @command="handleLanguageChange">
+        <span class="language-selector">
+          <el-icon><LanguageIcon /></el-icon>
+          <span>{{ currentLanguage }}</span>
+        </span>
+        <template #dropdown>
+          <el-dropdown-menu>
+            <el-dropdown-item command="zh-CN">中文</el-dropdown-item>
+            <el-dropdown-item command="en-US">English</el-dropdown-item>
+          </el-dropdown-menu>
+        </template>
+      </el-dropdown>
+    </div>
+
     <el-form
       ref="loginFormRef"
       :model="loginForm"
@@ -9,13 +25,13 @@
       label-position="left"
     >
       <div class="title-container">
-        <h3 class="title">电商管理后台</h3>
+        <h3 class="title">{{ $t('login.title') }}</h3>
       </div>
 
       <el-form-item prop="username">
         <el-input
           v-model="loginForm.username"
-          placeholder="手机号"
+          :placeholder="$t('login.usernamePlaceholder')"
           name="username"
           type="text"
           tabindex="1"
@@ -28,7 +44,7 @@
         <el-input
           v-model="loginForm.password"
           :type="passwordType"
-          placeholder="密码"
+          :placeholder="$t('login.passwordPlaceholder')"
           name="password"
           tabindex="2"
           auto-complete="on"
@@ -50,26 +66,25 @@
         style="width: 100%; margin-bottom: 30px"
         @click="handleLogin"
       >
-        登录
+        {{ $t('login.login') }}
       </el-button>
-
-      <div class="tips">
-        <span>测试账号：admin</span>
-        <span>密码：admin123</span>
-      </div>
     </el-form>
   </div>
 </template>
 
 <script setup lang="ts">
-import { reactive, ref, onMounted } from 'vue'
+import { reactive, ref, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { ElMessage, FormInstance, FormRules } from 'element-plus'
+import { Setting as LanguageIcon } from '@element-plus/icons-vue'
 import { useUserStore } from '@/stores/user'
 import { testConnection } from '@/api/user'
+import { setLocale } from '@/i18n'
 
 const router = useRouter()
 const userStore = useUserStore()
+const { t, locale } = useI18n()
 
 const loginForm = reactive({
   username: '',
@@ -77,8 +92,19 @@ const loginForm = reactive({
 })
 
 const loginRules: FormRules = {
-  username: [{ required: true, message: '请输入手机号', trigger: 'blur' }],
-  password: [{ required: true, message: '请输入密码', trigger: 'blur' }]
+  username: [{ required: true, message: t('login.usernamePlaceholder'), trigger: 'blur' }],
+  password: [{ required: true, message: t('login.passwordPlaceholder'), trigger: 'blur' }]
+}
+
+// 当前语言显示
+const currentLanguage = computed(() => {
+  return locale.value === 'zh-CN' ? '中文' : 'English'
+})
+
+// 处理语言切换
+const handleLanguageChange = (lang: 'zh-CN' | 'en-US') => {
+  setLocale(lang)
+  ElMessage.success(t('common.success'))
 }
 
 const loginFormRef = ref<FormInstance>()
@@ -111,7 +137,7 @@ const handleLogin = async () => {
         
         // 执行登录
         const result = await userStore.login(loginForm)
-        ElMessage.success('登录成功')
+        ElMessage.success(t('login.loginSuccess'))
         // 使用replace而不是push，避免返回按钮问题
         await router.replace('/')
       } catch (error: any) {
@@ -121,7 +147,7 @@ const handleLogin = async () => {
         } else if (error.message?.includes('timeout')) {
           ElMessage.error('请求超时，请检查网络连接')
         } else {
-          ElMessage.error(error.message || '登录失败')
+          ElMessage.error(error.message || t('login.loginFailed'))
         }
       } finally {
         loading.value = false
@@ -145,6 +171,33 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
+}
+
+.language-switcher {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+}
+
+.language-selector {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 12px;
+  border-radius: 4px;
+  background-color: rgba(255, 255, 255, 0.9);
+  color: #606266;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.language-selector:hover {
+  background-color: rgba(255, 255, 255, 1);
+  color: #409eff;
 }
 
 .login-form {
@@ -169,16 +222,6 @@ onMounted(() => {
     text-align: center;
     font-weight: bold;
   }
-}
-
-.tips {
-  font-size: 14px;
-  color: #999;
-  margin-bottom: 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  text-align: center;
 }
 
 :deep(.el-input__wrapper) {

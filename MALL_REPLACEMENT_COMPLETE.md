@@ -58,9 +58,9 @@
 
 ### 生产环境
 - **用户商城**: 待部署 (Vercel/Netlify推荐)
-- **管理后台**: https://tikshop-admin.onrender.com
-- **商家后台**: https://tikshop-merchant.onrender.com
-- **API服务**: https://tikshop-backend.onrender.com
+- **管理后台**: http://localhost:5175
+- **商家后台**: http://localhost:5176
+- **API服务**: http://localhost:3000
 
 ## 🔧 API对接状态
 

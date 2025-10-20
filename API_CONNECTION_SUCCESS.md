@@ -3,23 +3,23 @@
 ## ✅ 对接状态：成功！
 
 **对接时间**: 2024年10月15日  
-**API地址**: https://tiktokshop-api.onrender.com  
+**API地址**: http://localhost:3000  
 **对接状态**: ✅ 完全成功
 
 ## 🔗 API配置更新
 
 ### 1. 统一API地址
 所有前端项目现在使用相同的API地址：
-- **管理后台**: `https://tiktokshop-api.onrender.com`
-- **商家后台**: `https://tiktokshop-api.onrender.com`  
-- **用户商城**: `https://tiktokshop-api.onrender.com` ✅ 已更新
+- **管理后台**: `http://localhost:3000`
+- **商家后台**: `http://localhost:3000`  
+- **用户商城**: `http://localhost:3000` ✅ 已更新
 
 ### 2. Vue.js商城配置
 ```typescript
 // vite.config.ts
 proxy: {
   '/api': {
-    target: 'https://tiktokshop-api.onrender.com',
+    target: 'http://localhost:3000',
     changeOrigin: true,
     secure: true
   }
@@ -105,13 +105,13 @@ GET /api/category
 - **用户商城**: http://localhost:3001 ✅
 - **管理后台**: http://localhost:5175 ✅
 - **商家后台**: http://localhost:5174 ✅
-- **API服务**: https://tiktokshop-api.onrender.com ✅
+- **API服务**: http://localhost:3000 ✅
 
 ### 生产环境
 - **用户商城**: 待部署 (Vercel/Netlify推荐)
-- **管理后台**: https://tikshop-admin.onrender.com ✅
-- **商家后台**: https://tikshop-merchant.onrender.com ✅
-- **API服务**: https://tiktokshop-api.onrender.com ✅
+- **管理后台**: http://localhost:5175 ✅
+- **商家后台**: http://localhost:5176 ✅
+- **API服务**: http://localhost:3000 ✅
 
 ## 📱 商城功能测试
 

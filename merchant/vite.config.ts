@@ -4,6 +4,7 @@ import { resolve } from 'path'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  base: '/merchant/',
   plugins: [vue()],
   resolve: {
     alias: {
@@ -23,9 +24,10 @@ export default defineConfig({
     ],
     proxy: {
       '/api': {
-        target: 'https://tiktokshop-api.onrender.com',
+        target: process.env.NODE_ENV === 'production' ? 'https://tiktokbusines.store' : 'http://localhost:3000',
         changeOrigin: true,
-        secure: true
+        secure: false,
+        rewrite: (path) => path.replace(/^\/api/, '/api')
       }
     }
   }

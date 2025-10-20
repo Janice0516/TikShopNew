@@ -93,7 +93,11 @@
       <el-table :data="tableData" v-loading="loading" border stripe style="width: 100%">
         <el-table-column prop="id" label="ID" width="80" />
         <el-table-column prop="merchantId" label="商户ID" width="100" />
-        <el-table-column prop="merchant.merchantName" label="商户名称" width="150" />
+        <el-table-column label="商户名称" width="150">
+          <template #default="scope">
+            {{ scope.row.merchant?.merchantName || '未知商户' }}
+          </template>
+        </el-table-column>
         <el-table-column prop="rating" label="星级" width="80">
           <template #default="scope">
             <el-rate v-model="scope.row.rating" disabled show-score />
@@ -461,6 +465,7 @@ const handleAdd = () => {
 // 编辑
 const handleEdit = (row: any) => {
   isEdit.value = true
+  currentRating.value = row  // 设置当前评级对象
   form.merchantId = row.merchantId
   form.rating = row.rating
   form.score = row.score
@@ -522,6 +527,10 @@ const handleSubmit = async () => {
     submitting.value = true
     
     if (isEdit.value) {
+      if (!currentRating.value || !currentRating.value.id) {
+        ElMessage.error('编辑数据异常，请重新选择')
+        return
+      }
       await updateCreditRating(currentRating.value.id, form)
       ElMessage.success('更新成功')
     } else {

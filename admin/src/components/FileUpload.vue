@@ -118,7 +118,7 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  uploadUrl: '/api/upload',
+  uploadUrl: '/upload/image',
   multiple: false,
   accept: 'image/*',
   limit: 5,

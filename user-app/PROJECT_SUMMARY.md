@@ -111,7 +111,7 @@ tikshop-web/
 
 ### 环境变量
 ```env
-VITE_API_BASE_URL=https://tikshop-backend.onrender.com
+VITE_API_BASE_URL=http://localhost:3000
 VITE_APP_TITLE=TikTok Shop
 VITE_APP_DESCRIPTION=您的购物首选平台
 ```
@@ -122,7 +122,7 @@ VITE_APP_DESCRIPTION=您的购物首选平台
 server: {
   proxy: {
     '/api': {
-      target: 'https://tikshop-backend.onrender.com',
+      target: 'http://localhost:3000',
       changeOrigin: true,
       rewrite: (path) => path.replace(/^\/api/, '')
     }

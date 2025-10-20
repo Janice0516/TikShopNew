@@ -5,14 +5,14 @@
       <div class="header-content">
         <div class="header-left">
           <div class="logo">
-            <span class="tiktok-icon">♪</span>
-            <span class="logo-text">TikTok Shop</span>
+            <img src="/logo.png" alt="TikTok Shop" class="logo-image" />
           </div>
         </div>
         
         <div class="header-right">
-          <button class="get-app-btn">Get app</button>
-          <button class="login-btn">Log in</button>
+          <LanguageSwitcher />
+          <a class="get-app-btn" href="https://www.tiktok.com/download" target="_blank" rel="noopener" title="Download TikTok">{{ $t('home.getApp') }}</a>
+          <button class="login-btn">{{ $t('navigation.login') }}</button>
         </div>
       </div>
     </header>
@@ -22,31 +22,30 @@
       <aside class="sidebar">
         <div class="sidebar-content">
           <div class="sidebar-logo">
-            <span class="tiktok-icon">♪</span>
-            <span class="logo-text">TikTok Shop</span>
+            <img src="/logo.png" alt="TikTok Shop" class="logo-image" />
           </div>
           
           <nav class="sidebar-nav">
             <div class="nav-item">
               <span class="nav-icon">🛍️</span>
-              <span class="nav-text">Sell</span>
+              <span class="nav-text">{{ $t('navigation.products') }}</span>
             </div>
             <div class="nav-item">
               <span class="nav-icon">⋯</span>
-              <span class="nav-text">More</span>
+              <span class="nav-text">{{ $t('common.more') }}</span>
             </div>
           </nav>
           
           <div class="sidebar-login">
-            <button class="login-btn-large">Log in</button>
+            <button class="login-btn-large">{{ $t('navigation.login') }}</button>
           </div>
           
           <div class="sidebar-footer">
-            <a href="#" class="footer-link">Start shopping</a>
-            <a href="#" class="footer-link">Make money with us</a>
-            <a href="#" class="footer-link">Company info</a>
-            <a href="#" class="footer-link">Customer support</a>
-            <a href="#" class="footer-link">Policy and legal</a>
+            <a href="#" class="footer-link">{{ $t('home.startShopping') }}</a>
+            <a href="#" class="footer-link">{{ $t('footer.company') }}</a>
+            <a href="#" class="footer-link">{{ $t('footer.help') }}</a>
+            <a href="#" class="footer-link">{{ $t('footer.contact') }}</a>
+            <a href="#" class="footer-link">{{ $t('footer.legal') }}</a>
           </div>
         </div>
       </aside>
@@ -55,7 +54,7 @@
       <main class="main-content">
         <!-- 分类区域 -->
         <section class="categories-section">
-          <h2 class="section-title">Categories</h2>
+          <h2 class="section-title">{{ $t('home.categories') }}</h2>
           <div class="categories-container">
             <div class="categories-scroll">
               <div 
@@ -153,6 +152,7 @@ import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { productApi, categoryApi } from '@/api'
 import { ElMessage } from 'element-plus'
+import LanguageSwitcher from '@/components/LanguageSwitcher.vue'
 
 const router = useRouter()
 
@@ -171,20 +171,73 @@ const pagination = ref({
 const loadCategories = async () => {
   try {
     const response = await categoryApi.getCategories()
-    categories.value = response.data || []
+    const apiCategories = response.list || []
+    
+    // 为分类添加图标
+    const categoryIcons = {
+      'Home & Living': 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=120&h=120&fit=crop&crop=center&auto=format&q=80',
+      'Electronics & Appliances': 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=120&h=120&fit=crop&crop=center&auto=format&q=80',
+      'Fashion & Bags': 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=120&h=120&fit=crop&crop=center&auto=format&q=80',
+      'Beauty & Personal Care': 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=120&h=120&fit=crop&crop=center&auto=format&q=80',
+      'Food & Fresh': 'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=120&h=120&fit=crop&crop=center&auto=format&q=80',
+      'Sports & Outdoor': 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=120&h=120&fit=crop&crop=center&auto=format&q=80',
+      'Books & Stationery': 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=120&h=120&fit=crop&crop=center&auto=format&q=80',
+      'Baby & Kids': 'https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=120&h=120&fit=crop&crop=center&auto=format&q=80'
+    }
+    
+    categories.value = apiCategories.map((category: any) => ({
+      ...category,
+      icon: categoryIcons[category.name] || 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=120&h=120&fit=crop&crop=center&auto=format&q=80'
+    }))
   } catch (error) {
     console.error('加载分类失败:', error)
     // 分类API需要认证，使用基础分类数据
     categories.value = [
-      { id: '1', name: 'Womenswear & Underwear', icon: 'https://via.placeholder.com/60x60/F5E6D3/ffffff?text=👗' },
-      { id: '2', name: 'Phones & Electronics', icon: 'https://via.placeholder.com/60x60/E8F4FD/ffffff?text=📱' },
-      { id: '3', name: 'Fashion Accessories', icon: 'https://via.placeholder.com/60x60/F0E68C/ffffff?text=👒' },
-      { id: '4', name: 'Menswear & Underwear', icon: 'https://via.placeholder.com/60x60/D3D3D3/ffffff?text=👕' },
-      { id: '5', name: 'Home Supplies', icon: 'https://via.placeholder.com/60x60/ADD8E6/ffffff?text=🧴' },
-      { id: '6', name: 'Beauty & Personal Care', icon: 'https://via.placeholder.com/60x60/FFFFFF/ffffff?text=💄' },
-      { id: '7', name: 'Shoes', icon: 'https://via.placeholder.com/60x60/FFFFFF/ffffff?text=👟' },
-      { id: '8', name: 'Sports & Outdoor', icon: 'https://via.placeholder.com/60x60/90EE90/ffffff?text=🏕️' },
-      { id: '9', name: 'Luggage & Bags', icon: 'https://via.placeholder.com/60x60/D3D3D3/ffffff?text=🧳' }
+      { 
+        id: '1', 
+        name: 'Womenswear & Underwear', 
+        icon: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=120&h=120&fit=crop&crop=center&auto=format&q=80' 
+      },
+      { 
+        id: '2', 
+        name: 'Phones & Electronics', 
+        icon: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=120&h=120&fit=crop&crop=center&auto=format&q=80' 
+      },
+      { 
+        id: '3', 
+        name: 'Fashion Accessories', 
+        icon: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=120&h=120&fit=crop&crop=center&auto=format&q=80' 
+      },
+      { 
+        id: '4', 
+        name: 'Menswear & Underwear', 
+        icon: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&h=120&fit=crop&crop=center&auto=format&q=80' 
+      },
+      { 
+        id: '5', 
+        name: 'Home Supplies', 
+        icon: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=120&h=120&fit=crop&crop=center&auto=format&q=80' 
+      },
+      { 
+        id: '6', 
+        name: 'Beauty & Personal Care', 
+        icon: 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=120&h=120&fit=crop&crop=center&auto=format&q=80' 
+      },
+      { 
+        id: '7', 
+        name: 'Shoes', 
+        icon: 'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=120&h=120&fit=crop&crop=center&auto=format&q=80' 
+      },
+      { 
+        id: '8', 
+        name: 'Sports & Outdoor', 
+        icon: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=120&h=120&fit=crop&crop=center&auto=format&q=80' 
+      },
+      { 
+        id: '9', 
+        name: 'Luggage & Bags', 
+        icon: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=120&h=120&fit=crop&crop=center&auto=format&q=80' 
+      }
     ]
   }
 }
@@ -194,51 +247,55 @@ const loadProducts = async (page = 1) => {
   loading.value = true
   console.log('开始加载商品数据...', { page })
   try {
-    // 使用Render API
-    const response = await fetch(`https://tiktokshop-api.onrender.com/api/products?page=${page}&pageSize=${pagination.value.pageSize}`)
+    // 使用商城API获取商家上架的商品
+    const response = await fetch(`/api/shop/products?page=${page}&pageSize=${pagination.value.pageSize}`)
     const data = await response.json()
     console.log('API响应:', data)
     
     // 更新分页信息
-    if (data?.data) {
-      pagination.value.total = data.data.total || data.data.list?.length || 0
-      pagination.value.totalPages = Math.ceil(pagination.value.total / pagination.value.pageSize)
-      pagination.value.current = page
+    if (data) {
+      pagination.value.total = data.total || data.list?.length || 0
+      pagination.value.totalPages = data.totalPages || Math.ceil(pagination.value.total / pagination.value.pageSize)
+      pagination.value.current = data.page || page
     }
     
-    const apiProducts = data?.data?.list || []
+    const apiProducts = data?.list || []
     console.log('API商品数据:', apiProducts)
     
-    // 使用真实数据，移除所有虚拟生成
+    // 使用商家上架的商品数据
     products.value = apiProducts.map((product: any) => {
-      const suggestPrice = parseFloat(product.suggestPrice) || 0
+      const salePrice = parseFloat(product.salePrice) || 0
       const costPrice = parseFloat(product.costPrice) || 0
       
-      // 修复价格逻辑：
-      // - costPrice 是成本价（进货价）
-      // - suggestPrice 是建议售价（零售价）
-      // - 当前价格应该是建议售价
-      // - 只有当建议售价低于成本价时才显示"折扣"（这种情况很少见）
-      const currentPrice = suggestPrice || costPrice
-      const originalPrice = suggestPrice && costPrice && suggestPrice < costPrice ? costPrice : null
+      // 商家商品价格逻辑：
+      // - costPrice 是平台成本价（进货价）
+      // - salePrice 是商家设定的售价（零售价）
+      // - 当前价格应该是商家售价
+      // - 只有当商家售价低于成本价时才显示"折扣"（这种情况很少见）
+      const currentPrice = salePrice || costPrice
+      const originalPrice = salePrice && costPrice && salePrice < costPrice ? costPrice : null
       
-      // 如果建议售价和成本价相同，也不显示原价
+      // 如果商家售价和成本价相同，也不显示原价
       const shouldShowOriginalPrice = originalPrice && originalPrice !== currentPrice
       
       return {
         id: product.id,
+        productId: product.productId,
         name: product.name,
         description: product.description,
         price: currentPrice,
         originalPrice: shouldShowOriginalPrice ? originalPrice : null,
-        image: `https://via.placeholder.com/300x300/409EFF/ffffff?text=${encodeURIComponent(product.name)}`,
-        // 使用真实数据
-        rating: 4.0, // 固定评分，避免随机生成
-        sales: product.sales || 0, // 使用真实销量
-        stock: product.stock || 0, // 添加库存信息
-        brand: product.brand || '', // 添加品牌信息
+        image: product.mainImage || `https://via.placeholder.com/300x300/409EFF/ffffff?text=${encodeURIComponent(product.name)}`,
+        // 使用完全真实的数据
+        rating: 4.0, // 固定评分
+        sales: product.sales || 0, // 真实销量
+        stock: product.stock || 0, // 真实库存
+        brand: product.brand || '', // 真实品牌
         categoryId: product.categoryId || '',
-        // 移除所有虚拟的促销信息
+        categoryName: product.categoryName || '',
+        merchantId: product.merchantId,
+        merchantName: product.merchantName || '',
+        // 完全移除虚拟促销信息
         banner: null,
         timer: null,
         badge: null
@@ -323,18 +380,11 @@ onMounted(async () => {
     .logo {
       display: flex;
       align-items: center;
-      gap: 8px;
       
-      .tiktok-icon {
-        font-size: 24px;
-        color: #000;
-        font-weight: bold;
-      }
-      
-      .logo-text {
-        font-size: 18px;
-        font-weight: bold;
-        color: #000;
+      .logo-image {
+        height: 70px;
+        width: auto;
+        max-width: 350px;
       }
     }
   }
@@ -401,19 +451,12 @@ onMounted(async () => {
   .sidebar-logo {
     display: flex;
     align-items: center;
-    gap: 8px;
     margin-bottom: 30px;
     
-    .tiktok-icon {
-      font-size: 24px;
-      color: #000;
-      font-weight: bold;
-    }
-    
-    .logo-text {
-      font-size: 18px;
-      font-weight: bold;
-      color: #000;
+    .logo-image {
+      height: 70px;
+      width: auto;
+      max-width: 350px;
     }
   }
   
@@ -608,10 +651,12 @@ onMounted(async () => {
     position: relative;
     
     .products-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
       padding: 0;
+      overflow-x: hidden;
+      overflow-y: visible;
     }
   }
 }

@@ -33,7 +33,17 @@ export class MerchantProductService {
     });
 
     if (existingProduct) {
-      throw new HttpException('该商品已在您的店铺中', HttpStatus.BAD_REQUEST);
+      return {
+        success: false,
+        message: '该商品已在您的店铺中，请勿重复添加',
+        code: 'DUPLICATE_PRODUCT',
+        data: {
+          productId: existingProduct.productId,
+          productName: product.name,
+          currentPrice: existingProduct.salePrice,
+          status: existingProduct.status === 1 ? '已上架' : '已下架'
+        }
+      };
     }
 
     // 计算利润率
@@ -48,7 +58,21 @@ export class MerchantProductService {
       status: 1, // 默认上架
     });
 
-    return await this.merchantProductRepository.save(merchantProduct);
+    const savedProduct = await this.merchantProductRepository.save(merchantProduct);
+    
+    return {
+      success: true,
+      message: '商品添加成功',
+      code: 'SUCCESS',
+      data: {
+        id: savedProduct.id,
+        productId: savedProduct.productId,
+        productName: product.name,
+        salePrice: savedProduct.salePrice,
+        profitMargin: savedProduct.profitMargin,
+        status: savedProduct.status === 1 ? '已上架' : '已下架'
+      }
+    };
   }
 
   // 获取商家商品列表

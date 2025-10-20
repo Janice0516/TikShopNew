@@ -9,7 +9,7 @@
 
 ### 1. 图片资源404错误
 - **API返回的图片路径**: `/static/products/yonex-shuttlecock-12pcs.jpg`
-- **实际访问URL**: `https://tiktokshop-api.onrender.com/static/products/yonex-shuttlecock-12pcs.jpg`
+- **实际访问URL**: `http://localhost:3000/static/products/yonex-shuttlecock-12pcs.jpg`
 - **结果**: 404 Not Found
 
 ### 2. 静态资源不存在

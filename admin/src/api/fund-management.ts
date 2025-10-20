@@ -3,7 +3,7 @@ import request from '@/utils/request';
 // 增加商户资金
 export function increaseFund(data: any) {
   return request({
-    url: '/fund-management/increase',
+    url: '/admin/fund-management/increase',
     method: 'post',
     data,
   });
@@ -12,7 +12,7 @@ export function increaseFund(data: any) {
 // 冻结商户资金
 export function freezeFund(data: any) {
   return request({
-    url: '/fund-management/freeze',
+    url: '/admin/fund-management/freeze',
     method: 'post',
     data,
   });
@@ -21,7 +21,7 @@ export function freezeFund(data: any) {
 // 解冻商户资金
 export function unfreezeFund(data: any) {
   return request({
-    url: '/fund-management/unfreeze',
+    url: '/admin/fund-management/unfreeze',
     method: 'post',
     data,
   });
@@ -30,7 +30,7 @@ export function unfreezeFund(data: any) {
 // 扣除商户资金
 export function deductFund(data: any) {
   return request({
-    url: '/fund-management/deduct',
+    url: '/admin/fund-management/deduct',
     method: 'post',
     data,
   });
@@ -39,7 +39,7 @@ export function deductFund(data: any) {
 // 退还商户资金
 export function refundFund(data: any) {
   return request({
-    url: '/fund-management/refund',
+    url: '/admin/fund-management/refund',
     method: 'post',
     data,
   });
@@ -48,7 +48,7 @@ export function refundFund(data: any) {
 // 获取商户资金信息
 export function getMerchantFundInfo(merchantId: number) {
   return request({
-    url: `/fund-management/merchant/${merchantId}/info`,
+    url: `/admin/fund-management/merchant/${merchantId}/overview`,
     method: 'get',
   });
 }
@@ -56,7 +56,7 @@ export function getMerchantFundInfo(merchantId: number) {
 // 获取资金操作记录
 export function getFundOperationList(params: any) {
   return request({
-    url: '/fund-management/operations',
+    url: '/admin/fund-management/operations',
     method: 'get',
     params,
   });
@@ -65,7 +65,7 @@ export function getFundOperationList(params: any) {
 // 获取操作类型列表
 export function getOperationTypes() {
   return request({
-    url: '/fund-management/operation-types',
+    url: '/admin/fund-management/operation-types',
     method: 'get',
   });
 }

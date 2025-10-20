@@ -11,13 +11,13 @@ async function testMerchantBackend() {
       password: 'password123'
     };
     
-    const loginResponse = await axios.post('https://tiktokshop-api.onrender.com/api/merchant/login', loginData);
+    const loginResponse = await axios.post('http://localhost:3000/api/merchant/login', loginData);
     console.log('   ✅ 商家登录API正常');
     console.log('   响应:', loginResponse.data);
 
     // 2. 测试商家后台页面
     console.log('\n2. 测试商家后台页面...');
-    const pageResponse = await axios.get('https://tikshop-merchant.onrender.com');
+    const pageResponse = await axios.get('http://localhost:5176')
     console.log('   ✅ 商家后台页面可访问');
     console.log('   状态码:', pageResponse.status);
     console.log('   内容长度:', pageResponse.data.length);

@@ -1,7 +1,7 @@
 const axios = require('axios');
 require('dotenv').config({ path: './.env.local' });
 
-const API_BASE_URL = 'https://tiktokshop-api.onrender.com/api';
+const API_BASE_URL = 'http://localhost:3000/api';
 
 async function debugCategoryAPI() {
   try {

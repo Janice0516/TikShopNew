@@ -38,9 +38,11 @@ const products = ref<any[]>([])
 const loadRealProducts = async () => {
   try {
     const response = await productApi.getProducts({ page: 1, pageSize: 6 })
-    products.value = (response?.data?.list || []).map((product: any) => ({
+    products.value = (response?.list || []).map((product: any) => ({
       ...product,
-      image: `https://via.placeholder.com/300x200/409EFF/ffffff?text=${encodeURIComponent(product.name)}`
+      image: product.mainImage || `https://via.placeholder.com/300x200/409EFF/ffffff?text=${encodeURIComponent(product.name)}`,
+      rating: 4.0, // 固定评分
+      sales: product.sales || 0 // 真实销量
     }))
   } catch (error) {
     console.error('加载商品失败:', error)
@@ -52,7 +54,7 @@ const testAPI = async () => {
   loading.value = true
   try {
     const response = await productApi.getProducts({ page: 1, pageSize: 5 })
-    apiStatus.value = `✅ API连接成功！获取到 ${response.data?.list?.length || 0} 个商品`
+    apiStatus.value = `✅ API连接成功！获取到 ${response?.list?.length || 0} 个商品`
     ElMessage.success('API连接成功！')
   } catch (error: any) {
     apiStatus.value = `❌ API连接失败: ${error.message}`

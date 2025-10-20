@@ -89,10 +89,10 @@ const loadProducts = async () => {
   productsLoading.value = true
   try {
     const response = await productApi.getProducts({ page: 1, pageSize: 10 })
-    const apiProducts = response.data?.list || []
+    const apiProducts = response?.list || []
     
-    // 测试数据转换
-    products.value = apiProducts.map((product: any, index: number) => {
+    // 使用真实数据转换
+    products.value = apiProducts.map((product: any) => {
       const suggestPrice = parseFloat(product.suggestPrice) || 0
       const costPrice = parseFloat(product.costPrice) || 0
       const currentPrice = suggestPrice || costPrice
@@ -105,8 +105,8 @@ const loadProducts = async () => {
         price: currentPrice,
         originalPrice: originalPrice,
         image: product.mainImage || `https://via.placeholder.com/300x300/409EFF/ffffff?text=${encodeURIComponent(product.name)}`,
-        rating: 4.5 + Math.random() * 0.5,
-        sales: Math.floor(Math.random() * 10000) + 100
+        rating: 4.0, // 固定评分，不使用随机数
+        sales: product.sales || 0 // 使用真实销量
       }
     })
     

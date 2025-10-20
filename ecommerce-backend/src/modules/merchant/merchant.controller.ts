@@ -74,15 +74,141 @@ export class MerchantController {
   @ApiOperation({ summary: '获取商家信息' })
   async getProfile(@Request() req) {
     try {
-      const merchantId = req.user.merchantId || req.user.userId;
-      const merchant = await this.merchantService.findById(merchantId);
+      const merchantId = req.user.merchantId || req.user.id;
+      const merchant = await this.merchantService.getMerchantById(merchantId);
+      
+      if (!merchant) {
+        return {
+          code: 404,
+          message: '商家不存在',
+          data: null,
+        };
+      }
+
+      // 商家信息已经是安全的（findById方法已经移除了敏感信息）
       return {
         code: 200,
-        message: 'success',
+        message: '获取成功',
         data: merchant,
       };
     } catch (error) {
-      console.error('获取商家信息错误:', error);
+      console.error('获取商家信息失败:', error);
+      return {
+        code: 500,
+        message: '获取商家信息失败',
+        data: null,
+      };
+    }
+  }
+
+  @Put('profile')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: '更新商家信息' })
+  async updateProfile(@Request() req, @Body() updateDto: UpdateMerchantDto) {
+    try {
+      const merchantId = req.user.merchantId || req.user.id;
+      const result = await this.merchantService.updateMerchant(merchantId, updateDto);
+      
+      return {
+        code: 200,
+        message: '更新成功',
+        data: result,
+      };
+    } catch (error) {
+      console.error('更新商家信息失败:', error);
+      return {
+        code: 500,
+        message: '更新商家信息失败',
+        data: null,
+      };
+    }
+  }
+
+  @Get('dashboard/stats')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: '获取商家仪表盘统计数据' })
+  async getDashboardStats(@Request() req) {
+    try {
+      const merchantId = req.user.merchantId || req.user.userId;
+      const result = await this.merchantService.getDashboardStats(merchantId);
+      return {
+        code: 200,
+        message: 'success',
+        data: result,
+      };
+    } catch (error) {
+      console.error('获取商家仪表盘统计错误:', error);
+      return {
+        code: 500,
+        message: 'Internal server error',
+        data: null,
+      };
+    }
+  }
+
+  @Get('finance/stats')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: '获取商家财务统计' })
+  async getFinanceStats(@Request() req) {
+    try {
+      const merchantId = req.user.merchantId || req.user.userId;
+      const result = await this.merchantService.getFinanceStats(merchantId);
+      return {
+        code: 200,
+        message: 'success',
+        data: result,
+      };
+    } catch (error) {
+      console.error('获取商家财务统计错误:', error);
+      return {
+        code: 500,
+        message: 'Internal server error',
+        data: null,
+      };
+    }
+  }
+
+  @Get('orders/stats')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: '获取商家订单统计' })
+  async getOrdersStats(@Request() req) {
+    try {
+      const merchantId = req.user.merchantId || req.user.userId;
+      const result = await this.merchantService.getOrdersStats(merchantId);
+      return {
+        code: 200,
+        message: 'success',
+        data: result,
+      };
+    } catch (error) {
+      console.error('获取商家订单统计错误:', error);
+      return {
+        code: 500,
+        message: 'Internal server error',
+        data: null,
+      };
+    }
+  }
+
+  @Get('shop')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: '获取店铺信息' })
+  async getShop(@Request() req) {
+    try {
+      const merchantId = req.user.merchantId || req.user.userId;
+      const result = await this.merchantService.getShopInfo(merchantId);
+      return {
+        code: 200,
+        message: 'success',
+        data: result,
+      };
+    } catch (error) {
+      console.error('获取店铺信息错误:', error);
       return {
         code: 500,
         message: 'Internal server error',

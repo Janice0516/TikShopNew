@@ -3,7 +3,7 @@
 // 修正字段名后插入数据到Render数据库
 const axios = require('axios');
 
-const API_BASE_URL = 'https://tiktokshop-api.onrender.com/api';
+const API_BASE_URL = 'http://localhost:3000/api';
 
 async function insertDataWithCorrectFields() {
   try {

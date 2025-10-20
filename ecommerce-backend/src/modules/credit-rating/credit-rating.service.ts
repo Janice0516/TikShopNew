@@ -72,9 +72,9 @@ export class CreditRatingService {
       .createQueryBuilder('order')
       .select([
         'COUNT(*) as totalOrders',
-        'SUM(CASE WHEN order.status = "completed" THEN 1 ELSE 0 END) as completedOrders',
-        'SUM(CASE WHEN order.status = "cancelled" THEN 1 ELSE 0 END) as cancelledOrders',
-        'AVG(CASE WHEN order.status = "completed" THEN order.totalAmount ELSE NULL END) as avgOrderAmount',
+        'SUM(CASE WHEN order.orderStatus = 4 THEN 1 ELSE 0 END) as completedOrders',
+        'SUM(CASE WHEN order.orderStatus = 5 THEN 1 ELSE 0 END) as cancelledOrders',
+        'AVG(CASE WHEN order.orderStatus = 4 THEN order.totalAmount ELSE NULL END) as avgOrderAmount',
         'COUNT(CASE WHEN order.createTime >= DATE_SUB(NOW(), INTERVAL 30 DAY) THEN 1 END) as recentOrders'
       ])
       .where('order.merchantId = :merchantId', { merchantId })
@@ -283,41 +283,6 @@ export class CreditRatingService {
     };
   }
 
-  /**
-   * 获取信用评级统计信息
-   */
-  async getCreditRatingStats() {
-    try {
-      const totalRatings = await this.creditRatingRepository.count();
-      const activeRatings = await this.creditRatingRepository.count({ where: { status: 1 } });
-      
-      return {
-        code: 200,
-        message: '获取信用评级统计成功',
-        data: {
-          totalRatings,
-          activeRatings,
-          avgScore: 0,
-          levelDistribution: {
-            AAA: 0,
-            AA: 0,
-            A: 0,
-            BBB: 0,
-            BB: 0,
-            B: 0,
-            C: 0
-          }
-        }
-      };
-    } catch (error) {
-      console.error('获取信用评级统计失败:', error);
-      return {
-        code: 500,
-        message: '获取信用评级统计失败',
-        data: null
-      };
-    }
-  }
 
   /**
    * 批量重新计算所有商户信用评级
@@ -458,5 +423,134 @@ export class CreditRatingService {
       'C': { min: 0, max: 49 },
     };
     return ranges[level] || { min: 0, max: 100 };
+  }
+
+  /**
+   * 获取信用评级统计信息
+   */
+  async getCreditRatingStats() {
+    console.log('🔧 getCreditRatingStats 被调用');
+    try {
+      // 获取总评级数
+      const totalRatings = await this.creditRatingRepository.count({
+        where: { status: 1 }
+      });
+      console.log('📊 总评级数:', totalRatings);
+
+      // 获取平均分数
+      const avgScoreResult = await this.creditRatingRepository
+        .createQueryBuilder('rating')
+        .select('AVG(rating.score)', 'avgScore')
+        .where('rating.status = :status', { status: 1 })
+        .getRawOne();
+      
+      const averageScore = avgScoreResult?.avgScore ? parseFloat(avgScoreResult.avgScore) : 0;
+      console.log('📊 平均分数:', averageScore);
+
+      // 获取AAA级商户数
+      const aaaCount = await this.creditRatingRepository.count({
+        where: { status: 1, level: 'AAA' }
+      });
+      console.log('📊 AAA级商户数:', aaaCount);
+
+      // 获取各等级分布
+      const levelDistribution = await this.creditRatingRepository
+        .createQueryBuilder('rating')
+        .select('rating.level', 'level')
+        .addSelect('COUNT(*)', 'count')
+        .where('rating.status = :status', { status: 1 })
+        .groupBy('rating.level')
+        .getRawMany();
+
+      console.log('📊 等级分布:', levelDistribution);
+
+      // 格式化等级分布数据
+      const distribution = [
+        { level: 'AAA', count: 0, color: '#52c41a' },
+        { level: 'AA', count: 0, color: '#73d13d' },
+        { level: 'A', count: 0, color: '#95de64' },
+        { level: 'BBB', count: 0, color: '#ffc53d' },
+        { level: 'BB', count: 0, color: '#ff9c6e' },
+        { level: 'B', count: 0, color: '#ff7875' },
+        { level: 'C', count: 0, color: '#ff4d4f' }
+      ];
+
+      levelDistribution.forEach(item => {
+        const index = distribution.findIndex(d => d.level === item.level);
+        if (index !== -1) {
+          distribution[index].count = parseInt(item.count);
+        }
+      });
+
+      const result = {
+        code: 200,
+        message: '获取统计信息成功',
+        data: {
+          totalRatings,
+          averageScore: Math.round(averageScore * 100) / 100,
+          aaaCount,
+          distribution
+        }
+      };
+      
+      console.log('✅ 返回结果:', result);
+      return result;
+    } catch (error) {
+      console.error('❌ 获取信用评级统计失败:', error);
+      return {
+        code: 500,
+        message: '获取统计信息失败',
+        data: null
+      };
+    }
+  }
+
+  /**
+   * 获取操作记录
+   */
+  async getOperationRecords(page: number = 1, pageSize: number = 10) {
+    try {
+      console.log('🔧 getOperationRecords 被调用');
+      
+      // 先测试基本查询
+      const records = await this.creditRatingRepository.find({
+        where: { status: 1 },
+        order: { createTime: 'DESC' },
+        take: 10
+      });
+      
+      console.log('📊 查询到记录数:', records.length);
+
+      const formattedRecords = records.map(record => ({
+        id: record.id,
+        merchantName: `商户${record.merchantId}`,
+        merchantId: record.merchantId,
+        rating: record.rating,
+        score: record.score,
+        level: record.level,
+        evaluationDate: record.evaluationDate,
+        validUntil: record.validUntil,
+        evaluationReason: record.evaluationReason,
+        createTime: record.createTime
+      }));
+
+      return {
+        code: 200,
+        message: '获取操作记录成功',
+        data: {
+          list: formattedRecords,
+          total: records.length,
+          page: 1,
+          pageSize: 10
+        }
+      };
+    } catch (error) {
+      console.error('❌ 获取操作记录失败:', error);
+      return {
+        code: 500,
+        message: '获取操作记录失败',
+        data: null
+      };
+    }
   }
 }

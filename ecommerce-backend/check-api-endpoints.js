@@ -3,7 +3,7 @@
 // 检查API端点是否存在
 const axios = require('axios');
 
-const API_BASE_URL = 'https://tiktokshop-api.onrender.com/api';
+const API_BASE_URL = 'http://localhost:3000/api';
 
 async function checkAPIEndpoints() {
   try {

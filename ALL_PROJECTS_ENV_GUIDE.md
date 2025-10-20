@@ -24,7 +24,7 @@ project/
 
 ### 开发环境 (.env)
 ```bash
-VITE_API_BASE_URL=https://tiktokshop-api.onrender.com/api
+VITE_API_BASE_URL=http://localhost:3000/api
 VITE_APP_TITLE=TikTok Shop
 VITE_APP_VERSION=1.0.0
 VITE_NODE_ENV=development
@@ -33,7 +33,7 @@ VITE_DEBUG=true
 
 ### 生产环境 (.env.production)
 ```bash
-VITE_API_BASE_URL=https://tiktokshop-api.onrender.com/api
+VITE_API_BASE_URL=http://localhost:3000/api
 VITE_APP_TITLE=TikTok Shop
 VITE_APP_VERSION=1.0.0
 VITE_NODE_ENV=production
@@ -44,7 +44,7 @@ VITE_DEBUG=false
 
 ### 开发环境 (.env)
 ```bash
-VITE_API_BASE_URL=https://tiktokshop-api.onrender.com/api
+VITE_API_BASE_URL=http://localhost:3000/api
 VITE_APP_TITLE=TikTok Shop Merchant
 VITE_APP_VERSION=1.0.0
 VITE_NODE_ENV=development
@@ -53,7 +53,7 @@ VITE_DEBUG=true
 
 ### 生产环境 (.env.production)
 ```bash
-VITE_API_BASE_URL=https://tiktokshop-api.onrender.com/api
+VITE_API_BASE_URL=http://localhost:3000/api
 VITE_APP_TITLE=TikTok Shop Merchant
 VITE_APP_VERSION=1.0.0
 VITE_NODE_ENV=production
@@ -64,7 +64,7 @@ VITE_DEBUG=false
 
 ### 开发环境 (.env)
 ```bash
-VITE_API_BASE_URL=https://tiktokshop-api.onrender.com/api
+VITE_API_BASE_URL=http://localhost:3000/api
 VITE_APP_TITLE=TikTok Shop Admin
 VITE_APP_VERSION=1.0.0
 VITE_NODE_ENV=development
@@ -73,7 +73,7 @@ VITE_DEBUG=true
 
 ### 生产环境 (.env.production)
 ```bash
-VITE_API_BASE_URL=https://tiktokshop-api.onrender.com/api
+VITE_API_BASE_URL=http://localhost:3000/api
 VITE_APP_TITLE=TikTok Shop Admin
 VITE_APP_VERSION=1.0.0
 VITE_NODE_ENV=production
@@ -85,7 +85,7 @@ VITE_DEBUG=false
 ### 用户前端部署
 在Render Dashboard中设置：
 ```
-VITE_API_BASE_URL=https://tiktokshop-api.onrender.com/api
+VITE_API_BASE_URL=http://localhost:3000/api
 VITE_APP_TITLE=TikTok Shop
 VITE_APP_VERSION=1.0.0
 VITE_NODE_ENV=production
@@ -95,7 +95,7 @@ VITE_DEBUG=false
 ### 商家后台部署
 在Render Dashboard中设置：
 ```
-VITE_API_BASE_URL=https://tiktokshop-api.onrender.com/api
+VITE_API_BASE_URL=http://localhost:3000/api
 VITE_APP_TITLE=TikTok Shop Merchant
 VITE_APP_VERSION=1.0.0
 VITE_NODE_ENV=production
@@ -105,7 +105,7 @@ VITE_DEBUG=false
 ### 管理后台部署
 在Render Dashboard中设置：
 ```
-VITE_API_BASE_URL=https://tiktokshop-api.onrender.com/api
+VITE_API_BASE_URL=http://localhost:3000/api
 VITE_APP_TITLE=TikTok Shop Admin
 VITE_APP_VERSION=1.0.0
 VITE_NODE_ENV=production
@@ -156,7 +156,7 @@ npm run build
 
 | 变量名 | 说明 | 示例值 |
 |--------|------|--------|
-| `VITE_API_BASE_URL` | API服务地址 | `https://tiktokshop-api.onrender.com/api` |
+| `VITE_API_BASE_URL` | API服务地址 | `http://localhost:3000/api` |
 | `VITE_APP_TITLE` | 应用标题 | `TikTok Shop` |
 | `VITE_APP_VERSION` | 应用版本 | `1.0.0` |
 | `VITE_NODE_ENV` | 环境类型 | `development/production/test` |

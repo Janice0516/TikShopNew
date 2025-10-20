@@ -6,7 +6,7 @@ async function testMerchantProductAPI() {
 
     // 1. 商家登录
     console.log('1. 商家登录...');
-    const loginResponse = await axios.post('https://tiktokshop-api.onrender.com/api/merchant/login', {
+    const loginResponse = await axios.post('http://localhost:3000/api/merchant/login', {
       username: 'merchant001',
       password: 'password123'
     });
@@ -16,7 +16,7 @@ async function testMerchantProductAPI() {
 
     // 2. 获取产品列表
     console.log('\n2. 获取产品列表...');
-    const productsResponse = await axios.get('https://tiktokshop-api.onrender.com/api/products');
+    const productsResponse = await axios.get('http://localhost:3000/api/products');
     const products = productsResponse.data.data.list;
     console.log(`✅ 找到 ${products.length} 个产品`);
 
@@ -26,7 +26,7 @@ async function testMerchantProductAPI() {
     console.log(`尝试上架产品: ${firstProduct.name} (ID: ${firstProduct.id})`);
 
     try {
-      const addResponse = await axios.post('https://tiktokshop-api.onrender.com/api/merchant/products', {
+      const addResponse = await axios.post('http://localhost:3000/api/merchant/products', {
         productId: parseInt(firstProduct.id),
         salePrice: 100.00
       }, {
@@ -48,7 +48,7 @@ async function testMerchantProductAPI() {
     // 4. 测试获取商家产品列表
     console.log('\n4. 测试获取商家产品列表...');
     try {
-      const listResponse = await axios.get('https://tiktokshop-api.onrender.com/api/merchant/products', {
+      const listResponse = await axios.get('http://localhost:3000/api/merchant/products', {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'

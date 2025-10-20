@@ -46,12 +46,12 @@ NODE_ENV=production
 然后测试API：
 ```bash
 # 测试商家登录
-curl -X POST https://tiktokshop-api.onrender.com/api/merchant/login \
+curl -X POST http://localhost:3000/api/merchant/login \
   -H "Content-Type: application/json" \
   -d '{"username":"merchant001","password":"password123"}'
 
 # 测试提现列表
-curl https://tiktokshop-api.onrender.com/api/withdrawal/list
+curl http://localhost:3000/api/withdrawal/list
 ```
 
 ## 预期结果

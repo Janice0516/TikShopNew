@@ -78,34 +78,17 @@ const loadTestProducts = async () => {
   productsLoading.value = true
   try {
     const response = await productApi.getProducts({ page: 1, pageSize: 6 })
-    testProducts.value = response.data?.list || []
+    testProducts.value = (response?.list || []).map((product: any) => ({
+      ...product,
+      image: product.mainImage || `https://via.placeholder.com/300x200/409EFF/ffffff?text=${encodeURIComponent(product.name)}`,
+      rating: 4.0, // 固定评分
+      sales: product.sales || 0 // 真实销量
+    }))
     ElMessage.success(`成功加载 ${testProducts.value.length} 个商品！`)
   } catch (error: any) {
     ElMessage.error('加载商品失败！')
-    // 使用默认商品数据
-    testProducts.value = [
-      {
-        id: '1',
-        name: 'iPhone 15 Pro Max',
-        description: '全新A17 Pro芯片，钛金属设计',
-        price: 4999,
-        image: 'https://via.placeholder.com/300x200/409EFF/ffffff?text=iPhone+15+Pro+Max'
-      },
-      {
-        id: '2',
-        name: 'MacBook Pro 16',
-        description: 'M3 Max芯片，专业级性能',
-        price: 19999,
-        image: 'https://via.placeholder.com/300x200/67C23A/ffffff?text=MacBook+Pro+16'
-      },
-      {
-        id: '3',
-        name: 'AirPods Pro 2',
-        description: '主动降噪，空间音频',
-        price: 1899,
-        image: 'https://via.placeholder.com/300x200/E6A23C/ffffff?text=AirPods+Pro+2'
-      }
-    ]
+    // 如果API失败，显示空状态，不使用模拟数据
+    testProducts.value = []
   } finally {
     productsLoading.value = false
   }

@@ -15,11 +15,14 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
   async validate(payload: any) {
     if (payload.type === 'admin') {
-      return { id: payload.adminId, type: payload.type };
+      const id = payload.adminId;
+      return { id, adminId: id, userId: id, merchantId: id, type: 'admin' };
     } else if (payload.type === 'user') {
-      return { id: payload.userId, type: payload.type };
+      const id = payload.userId;
+      return { id, userId: id, type: 'user' };
     } else if (payload.type === 'merchant') {
-      return { id: payload.merchantId, type: payload.type };
+      const id = payload.merchantId;
+      return { id, merchantId: id, userId: id, type: 'merchant' };
     }
     return payload;
   }

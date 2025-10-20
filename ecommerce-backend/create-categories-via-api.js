@@ -3,7 +3,7 @@
 // 通过API创建分类数据（临时解决方案）
 const axios = require('axios');
 
-const API_BASE_URL = 'https://tiktokshop-api.onrender.com/api';
+const API_BASE_URL = 'http://localhost:3000/api';
 
 async function createCategoriesViaAPI() {
   try {

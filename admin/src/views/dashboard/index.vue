@@ -8,7 +8,7 @@
             <el-icon class="stat-icon" color="#409EFF" :size="48"><Goods /></el-icon>
             <div class="stat-info">
               <div class="stat-value">{{ stats.products }}</div>
-              <div class="stat-label">Total Products</div>
+              <div class="stat-label">商品总数</div>
             </div>
           </div>
         </el-card>
@@ -19,7 +19,7 @@
             <el-icon class="stat-icon" color="#67C23A" :size="48"><Shop /></el-icon>
             <div class="stat-info">
               <div class="stat-value">{{ stats.merchants }}</div>
-              <div class="stat-label">Active Merchants</div>
+              <div class="stat-label">活跃商家</div>
             </div>
           </div>
         </el-card>
@@ -30,7 +30,7 @@
             <el-icon class="stat-icon" color="#E6A23C" :size="48"><Document /></el-icon>
             <div class="stat-info">
               <div class="stat-value">{{ stats.orders }}</div>
-              <div class="stat-label">Total Orders</div>
+              <div class="stat-label">订单总数</div>
             </div>
           </div>
         </el-card>
@@ -41,7 +41,7 @@
             <el-icon class="stat-icon" color="#F56C6C" :size="48"><User /></el-icon>
             <div class="stat-info">
               <div class="stat-value">{{ stats.users }}</div>
-              <div class="stat-label">Registered Users</div>
+              <div class="stat-label">注册用户</div>
             </div>
           </div>
         </el-card>
@@ -54,7 +54,7 @@
         <el-card>
           <template #header>
             <div class="card-header">
-              <span>Sales Trend (Last 30 Days)</span>
+              <span>销售趋势 (最近30天)</span>
               <el-button-group>
                 <el-button :type="chartPeriod === '7d' ? 'primary' : ''" @click="chartPeriod = '7d'">7D</el-button>
                 <el-button :type="chartPeriod === '30d' ? 'primary' : ''" @click="chartPeriod = '30d'">30D</el-button>
@@ -68,7 +68,7 @@
       <el-col :span="12">
         <el-card>
           <template #header>
-            <span>Order Status Distribution</span>
+            <span>订单状态分布</span>
           </template>
           <div ref="orderChartRef" class="chart-container"></div>
         </el-card>
@@ -81,26 +81,26 @@
         <el-card>
           <template #header>
             <div class="card-header">
-              <span>Recent Orders</span>
-              <el-button type="primary" @click="goToOrders">View All</el-button>
+              <span>最近订单</span>
+              <el-button type="primary" @click="goToOrders">查看全部</el-button>
             </div>
           </template>
           <el-table :data="recentOrders" style="width: 100%" max-height="300">
-            <el-table-column prop="orderNo" label="Order No" width="120" />
-            <el-table-column prop="customerName" label="Customer" width="100" />
-            <el-table-column prop="totalAmount" label="Amount" width="100">
+            <el-table-column prop="orderNo" label="订单号" width="120" />
+            <el-table-column prop="userName" label="客户" width="100" />
+            <el-table-column prop="totalAmount" label="金额" width="100">
               <template #default="{ row }">
                 RM{{ row.totalAmount }}
               </template>
             </el-table-column>
-            <el-table-column prop="status" label="Status" width="100">
+            <el-table-column prop="status" label="状态" width="100">
               <template #default="{ row }">
                 <el-tag :type="getStatusTagType(row.status)">
                   {{ getStatusName(row.status) }}
                 </el-tag>
               </template>
             </el-table-column>
-            <el-table-column prop="createTime" label="Time" width="120" />
+            <el-table-column prop="createTime" label="时间" width="120" />
           </el-table>
         </el-card>
       </el-col>
@@ -108,23 +108,22 @@
         <el-card>
           <template #header>
             <div class="card-header">
-              <span>Top Products</span>
-              <el-button type="primary" @click="goToProducts">View All</el-button>
+              <span>热销商品</span>
+              <el-button type="primary" @click="goToProducts">查看全部</el-button>
             </div>
           </template>
           <el-table :data="topProducts" style="width: 100%" max-height="300">
-            <el-table-column prop="name" label="Product Name" min-width="150" />
-            <el-table-column prop="sales" label="Sales" width="80" />
-            <el-table-column prop="stock" label="Stock" width="80" />
-            <el-table-column prop="price" label="Price" width="100">
+            <el-table-column prop="name" label="商品名称" min-width="150" />
+            <el-table-column prop="sales" label="销量" width="80" />
+            <el-table-column prop="suggestPrice" label="价格" width="100">
               <template #default="{ row }">
-                RM{{ row.price }}
+                RM{{ row.suggestPrice }}
               </template>
             </el-table-column>
-            <el-table-column prop="status" label="Status" width="80">
+            <el-table-column prop="status" label="状态" width="80">
               <template #default="{ row }">
                 <el-tag :type="row.status === 1 ? 'success' : 'danger'">
-                  {{ row.status === 1 ? 'Active' : 'Inactive' }}
+                  {{ row.status === 1 ? '上架' : '下架' }}
                 </el-tag>
               </template>
             </el-table-column>
@@ -138,46 +137,47 @@
       <el-col :span="24">
         <el-card>
           <template #header>
-            <span>System Information</span>
+            <span>系统信息</span>
           </template>
           <div class="welcome">
-            <h2>🎉 Welcome to E-commerce Admin Dashboard</h2>
-            <p>This is a modern admin dashboard built with Vue3 + Element Plus + TypeScript</p>
+            <h2>🎉 欢迎使用电商管理后台</h2>
+            <p>这是一个基于 Vue3 + Element Plus + TypeScript 构建的现代化管理后台</p>
             <el-divider />
-            <h3>✅ Completed Features:</h3>
+            <h3>✅ 已完成功能：</h3>
             <ul>
-              <li>User Authentication (Login/Logout)</li>
-              <li>Product Management (CRUD Operations)</li>
-              <li>Order Management (List/Details)</li>
-              <li>Merchant Management (Audit Functions)</li>
-              <li>Data Visualization (Charts & Statistics)</li>
-              <li>Responsive Layout</li>
+              <li>用户认证 (登录/登出)</li>
+              <li>商品管理 (增删改查)</li>
+              <li>订单管理 (列表/详情)</li>
+              <li>商家管理 (审核功能)</li>
+              <li>推荐商品管理</li>
+              <li>数据可视化 (图表和统计)</li>
+              <li>响应式布局</li>
             </ul>
             <el-divider />
-            <h3>📊 Real-time Statistics:</h3>
+            <h3>📊 实时统计数据：</h3>
             <el-row :gutter="20">
               <el-col :span="6">
                 <div class="info-item">
                   <div class="info-value">{{ stats.products }}</div>
-                  <div class="info-label">Products</div>
+                  <div class="info-label">商品</div>
                 </div>
               </el-col>
               <el-col :span="6">
                 <div class="info-item">
                   <div class="info-value">{{ stats.merchants }}</div>
-                  <div class="info-label">Merchants</div>
+                  <div class="info-label">商家</div>
                 </div>
               </el-col>
               <el-col :span="6">
                 <div class="info-item">
                   <div class="info-value">{{ stats.orders }}</div>
-                  <div class="info-label">Orders</div>
+                  <div class="info-label">订单</div>
                 </div>
               </el-col>
               <el-col :span="6">
                 <div class="info-item">
                   <div class="info-value">{{ stats.users }}</div>
-                  <div class="info-label">Users</div>
+                  <div class="info-label">用户</div>
                 </div>
               </el-col>
             </el-row>
@@ -227,10 +227,10 @@ const getStatusTagType = (status: string) => {
 // 获取状态名称
 const getStatusName = (status: string) => {
   switch (status) {
-    case 'pending': return 'Pending'
-    case 'shipped': return 'Shipped'
-    case 'completed': return 'Completed'
-    case 'cancelled': return 'Cancelled'
+    case 'pending': return '待处理'
+    case 'shipped': return '已发货'
+    case 'completed': return '已完成'
+    case 'cancelled': return '已取消'
     default: return status
   }
 }
@@ -243,7 +243,7 @@ const initSalesChart = () => {
   
   const option = {
     title: {
-      text: 'Sales Revenue',
+      text: '销售收益',
       left: 'center',
       textStyle: {
         fontSize: 16,
@@ -307,7 +307,7 @@ const initOrderChart = () => {
   
   const option = {
     title: {
-      text: 'Order Status',
+      text: '订单状态',
       left: 'center',
       textStyle: {
         fontSize: 16,
@@ -321,18 +321,18 @@ const initOrderChart = () => {
     legend: {
       orient: 'vertical',
       left: 'left',
-      data: ['Pending', 'Shipped', 'Completed', 'Cancelled']
+      data: ['待处理', '已发货', '已完成', '已取消']
     },
     series: [{
-      name: 'Order Status',
+      name: '订单状态',
       type: 'pie',
       radius: '50%',
       center: ['60%', '50%'],
       data: [
-        { value: 35, name: 'Pending', itemStyle: { color: '#E6A23C' } },
-        { value: 25, name: 'Shipped', itemStyle: { color: '#67C23A' } },
-        { value: 30, name: 'Completed', itemStyle: { color: '#409EFF' } },
-        { value: 10, name: 'Cancelled', itemStyle: { color: '#F56C6C' } }
+        { value: 35, name: '待处理', itemStyle: { color: '#E6A23C' } },
+        { value: 25, name: '已发货', itemStyle: { color: '#67C23A' } },
+        { value: 30, name: '已完成', itemStyle: { color: '#409EFF' } },
+        { value: 10, name: '已取消', itemStyle: { color: '#F56C6C' } }
       ],
       emphasis: {
         itemStyle: {

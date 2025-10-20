@@ -85,7 +85,7 @@ curl -s http://localhost:3001/api/products
 - **调试页面**: http://localhost:3001/debug ✅
 
 ### API服务
-- **后端API**: https://tiktokshop-api.onrender.com ✅
+- **后端API**: http://localhost:3000 ✅
 - **商品数据**: 99个真实商品 ✅
 - **代理配置**: ✅ 正常工作
 

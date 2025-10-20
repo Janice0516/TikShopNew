@@ -17,7 +17,7 @@ fi
 # 创建.env文件
 cat > user-app/.env << EOF
 # API基础URL
-VITE_API_BASE_URL=https://tiktokshop-api.onrender.com/api
+VITE_API_BASE_URL=http://localhost:3000/api
 
 # 应用配置
 VITE_APP_TITLE=TikTok Shop
@@ -32,7 +32,7 @@ echo "✅ 环境变量文件已创建: user-app/.env"
 # 创建生产环境.env文件
 cat > user-app/.env.production << EOF
 # 生产环境API基础URL
-VITE_API_BASE_URL=https://tiktokshop-api.onrender.com/api
+VITE_API_BASE_URL=http://localhost:3000/api
 
 # 应用配置
 VITE_APP_TITLE=TikTok Shop
@@ -46,7 +46,7 @@ echo "✅ 生产环境变量文件已创建: user-app/.env.production"
 
 echo ""
 echo "📋 环境变量配置完成！"
-echo "🔧 API Base URL: https://tiktokshop-api.onrender.com/api"
+echo "🔧 API Base URL: http://localhost:3000/api"
 echo "📱 应用标题: TikTok Shop"
 echo "🏷️  版本: 1.0.0"
 echo ""

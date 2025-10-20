@@ -3,7 +3,7 @@
 ## 开发环境 (.env)
 ```bash
 # 开发环境配置
-VITE_API_BASE_URL=https://tiktokshop-api.onrender.com/api
+VITE_API_BASE_URL=http://localhost:3000/api
 VITE_APP_TITLE=TikTok Shop
 VITE_APP_VERSION=1.0.0
 VITE_NODE_ENV=development
@@ -13,7 +13,7 @@ VITE_DEBUG=true
 ## 生产环境 (.env.production)
 ```bash
 # 生产环境配置
-VITE_API_BASE_URL=https://tiktokshop-api.onrender.com/api
+VITE_API_BASE_URL=http://localhost:3000/api
 VITE_APP_TITLE=TikTok Shop
 VITE_APP_VERSION=1.0.0
 VITE_NODE_ENV=production
@@ -23,7 +23,7 @@ VITE_DEBUG=false
 ## 测试环境 (.env.test)
 ```bash
 # 测试环境配置
-VITE_API_BASE_URL=https://tiktokshop-api.onrender.com/api
+VITE_API_BASE_URL=http://localhost:3000/api
 VITE_APP_TITLE=TikTok Shop (Test)
 VITE_APP_VERSION=1.0.0-test
 VITE_NODE_ENV=test
@@ -46,7 +46,7 @@ VITE_DEBUG=true
 
 | Key | Value |
 |-----|-------|
-| `VITE_API_BASE_URL` | `https://tiktokshop-api.onrender.com/api` |
+| `VITE_API_BASE_URL` | `http://localhost:3000/api` |
 | `VITE_APP_TITLE` | `TikTok Shop` |
 | `VITE_APP_VERSION` | `1.0.0` |
 | `VITE_NODE_ENV` | `production` |

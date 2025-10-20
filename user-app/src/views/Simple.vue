@@ -43,9 +43,11 @@ const products = ref<any[]>([])
 const loadRealProducts = async () => {
   try {
     const response = await productApi.getProducts({ page: 1, pageSize: 6 })
-    products.value = (response?.data?.list || []).map((product: any) => ({
+    products.value = (response?.list || []).map((product: any) => ({
       ...product,
-      image: `https://via.placeholder.com/200x150/409EFF/ffffff?text=${encodeURIComponent(product.name)}`
+      image: product.mainImage || `https://via.placeholder.com/200x150/409EFF/ffffff?text=${encodeURIComponent(product.name)}`,
+      rating: 4.0, // 固定评分
+      sales: product.sales || 0 // 真实销量
     }))
   } catch (error) {
     console.error('加载商品失败:', error)
@@ -57,7 +59,7 @@ const loadProducts = async () => {
   loading.value = true
   try {
     const response = await productApi.getProducts({ page: 1, pageSize: 6 })
-    products.value = response.data?.list || products.value
+    products.value = response?.list || products.value
     message.value = `成功加载 ${products.value.length} 个商品！`
     ElMessage.success('商品加载成功！')
   } catch (error: any) {

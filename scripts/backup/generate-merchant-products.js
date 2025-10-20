@@ -5,7 +5,7 @@ async function generateMerchantProducts() {
     console.log('🚀 生成商家产品数据...');
 
     // 获取产品列表
-    const productsResponse = await axios.get('https://tiktokshop-api.onrender.com/api/products');
+    const productsResponse = await axios.get('http://localhost:3000/api/products');
     const products = productsResponse.data.data.list;
     console.log(`📦 找到 ${products.length} 个产品`);
 

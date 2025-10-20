@@ -82,13 +82,13 @@
 
         <el-table-column :label="$t('products.costPrice')" width="120">
           <template #default="{ row }">
-            ${{ row.costPrice }}
+            RM{{ row.costPrice }}
           </template>
         </el-table-column>
 
         <el-table-column :label="$t('products.suggestedPrice')" width="120">
           <template #default="{ row }">
-            ${{ row.suggestPrice || '-' }}
+            RM{{ row.suggestPrice || '-' }}
           </template>
         </el-table-column>
 
@@ -143,11 +143,11 @@
         </el-form-item>
 
         <el-form-item :label="$t('products.costPrice')">
-          <span>${{ selectedProduct?.costPrice }}</span>
+          <span>RM{{ selectedProduct?.costPrice }}</span>
         </el-form-item>
 
         <el-form-item :label="$t('products.suggestedPrice')">
-          <span>${{ selectedProduct?.suggestPrice || '-' }}</span>
+          <span>RM{{ selectedProduct?.suggestPrice || '-' }}</span>
         </el-form-item>
 
         <el-form-item :label="$t('products.yourPrice')" prop="salePrice">
@@ -158,12 +158,12 @@
             :placeholder="$t('products.yourPrice')"
             @change="calculateProfit"
           />
-          <span style="margin-left: 10px; color: #999;">USD</span>
+          <span style="margin-left: 10px; color: #999;">RM</span>
         </el-form-item>
 
         <el-form-item :label="$t('products.profit')">
           <el-tag type="success" size="large">
-            ${{ calculatedProfit }}
+            RM{{ calculatedProfit }}
           </el-tag>
         </el-form-item>
 
@@ -240,8 +240,8 @@ const profitMargin = computed(() => {
 })
 
 // 获取分类名称
-const getCategoryName = (categoryId: number) => {
-  const category = categories.value.find(c => c.id === categoryId)
+const getCategoryName = (categoryId: number | string) => {
+  const category = categories.value.find(c => c.id == categoryId)  // 使用 == 进行宽松比较
   return category?.name || '-'
 }
 
@@ -267,9 +267,9 @@ const handleSearch = async () => {
     const res = await getPlatformProducts(params)
     console.log('商品API响应:', res)
     
-    if (res && res.data && res.data.list) {
-      productList.value = res.data.list
-      pagination.total = res.data.total || 0
+    if (res && res.list) {
+      productList.value = res.list
+      pagination.total = res.total || 0
       console.log('商品列表加载成功:', productList.value.length, '个商品')
     } else {
       console.error('API响应格式不正确:', res)
@@ -319,8 +319,29 @@ const handleConfirmSelect = async () => {
         }
         
         // 调用真实API
-        await selectProduct(data)
+        const response = await selectProduct(data)
         
+        // 检查响应格式
+        if (response && typeof response === 'object') {
+          if (response.success === false) {
+            // 处理重复添加的情况
+            if (response.code === 'DUPLICATE_PRODUCT') {
+              ElMessage.warning(response.message)
+              // 显示详细信息
+              ElMessage.info(`商品"${response.data.productName}"当前价格：RM${response.data.currentPrice}，状态：${response.data.status}`)
+            } else {
+              ElMessage.error(response.message || t('message.operationFailed'))
+            }
+            return
+          } else if (response.success === true) {
+            ElMessage.success(response.message || t('message.operationSuccess'))
+            priceDialogVisible.value = false
+            handleSearch()
+            return
+          }
+        }
+        
+        // 兼容旧的响应格式
         ElMessage.success(t('message.operationSuccess'))
         priceDialogVisible.value = false
         handleSearch()
@@ -337,19 +358,31 @@ const handleConfirmSelect = async () => {
 const loadCategories = async () => {
   try {
     console.log('开始加载分类...')
+    console.log('API基础URL:', import.meta.env.VITE_API_BASE_URL)
+    
     // 调用真实API
     const res = await getCategories()
     console.log('分类API响应:', res)
+    console.log('响应类型:', typeof res)
+    console.log('响应结构:', Object.keys(res || {}))
     
-    if (res && res.data && res.data.data) {
-      categories.value = res.data.data
-      console.log('分类加载成功:', categories.value.length, '个分类')
+    if (res && res.data && Array.isArray(res.data)) {
+      categories.value = res.data
+      console.log('分类加载成功 (格式1):', categories.value.length, '个分类')
+    } else if (res && Array.isArray(res)) {
+      // 兼容直接返回数组的情况
+      categories.value = res
+      console.log('分类加载成功 (格式2):', categories.value.length, '个分类')
     } else {
       console.error('分类API响应格式不正确:', res)
+      console.error('res存在:', !!res)
+      console.error('res.data存在:', !!(res && res.data))
+      console.error('res.data是数组:', !!(res && res.data && Array.isArray(res.data)))
       ElMessage.error('获取分类失败')
     }
   } catch (error) {
     console.error('Failed to load categories:', error)
+    console.error('错误详情:', error.response?.data || error.message)
     ElMessage.error('获取分类失败: ' + (error.message || '未知错误'))
   }
 }

@@ -5,7 +5,7 @@ async function duplicateProducts() {
     console.log('🚀 开始复制现有产品...');
 
     // 获取现有产品
-    const response = await axios.get('https://tiktokshop-api.onrender.com/api/products');
+    const response = await axios.get('http://localhost:3000/api/products');
     const products = response.data.data.list;
     console.log(`📦 找到 ${products.length} 个现有产品`);
 

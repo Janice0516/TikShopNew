@@ -87,7 +87,7 @@ export function calculateMerchantRating(merchantId: number) {
 // 获取信用评级统计信息
 export function getCreditRatingStats() {
   return request({
-    url: '/credit-rating/stats',
+    url: '/credit-rating/dashboard-stats',
     method: 'get'
   })
 }

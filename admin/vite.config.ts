@@ -4,11 +4,15 @@ import { resolve } from 'path'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  base: '/admin/',
   plugins: [vue()],
   resolve: {
     alias: {
       '@': resolve(__dirname, 'src')
     }
+  },
+  define: {
+    'import.meta.env.VITE_API_BASE_URL': JSON.stringify(process.env.NODE_ENV === 'production' ? 'https://tiktokbusines.store/api' : '/api')
   },
   server: {
     port: 5177,
@@ -23,9 +27,16 @@ export default defineConfig({
     ],
     proxy: {
       '/api': {
-        target: 'https://tiktokshop-api.onrender.com',
+        target: process.env.NODE_ENV === 'production' ? 'https://tiktokbusines.store' : 'http://localhost:3000',
         changeOrigin: true,
-        secure: true
+        secure: false,
+        rewrite: (path) => path.replace(/^\/api/, '/api')
+      },
+      '/upload': {
+        target: process.env.NODE_ENV === 'production' ? 'https://tiktokbusines.store' : 'http://localhost:3000',
+        changeOrigin: true,
+        secure: false,
+        rewrite: (path) => path.replace(/^\/upload/, '/api/upload')
       }
     }
   }

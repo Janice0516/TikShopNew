@@ -3,7 +3,7 @@ const axios = require('axios');
 // 获取现有产品列表
 async function getProducts() {
   try {
-    const response = await axios.get('https://tiktokshop-api.onrender.com/api/products');
+    const response = await axios.get('http://localhost:3000/api/products');
     return response.data.data.list;
   } catch (error) {
     console.error('获取产品列表失败:', error.message);
@@ -14,7 +14,7 @@ async function getProducts() {
 // 商家登录获取token
 async function loginMerchant(username, password) {
   try {
-    const response = await axios.post('https://tiktokshop-api.onrender.com/api/merchant/login', {
+    const response = await axios.post('http://localhost:3000/api/merchant/login', {
       username,
       password
     });
@@ -28,7 +28,7 @@ async function loginMerchant(username, password) {
 // 为商家上架产品
 async function addProductToMerchant(token, productId, salePrice) {
   try {
-    const response = await axios.post('https://tiktokshop-api.onrender.com/api/merchant/products', {
+    const response = await axios.post('http://localhost:3000/api/merchant/products', {
       productId,
       salePrice
     }, {

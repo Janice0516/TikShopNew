@@ -7,7 +7,7 @@ import {
 } from 'typeorm';
 import { Exclude } from 'class-transformer';
 
-@Entity('"user"')
+@Entity('user')
 export class User {
   @PrimaryGeneratedColumn('increment', { type: 'bigint' })
   id: string;

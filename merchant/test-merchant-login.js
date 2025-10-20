@@ -11,7 +11,7 @@ async function testMerchantLogin() {
       password: 'password123'
     };
     
-    const loginResponse = await axios.post('https://tiktokshop-api.onrender.com/api/merchant/login', loginData);
+    const loginResponse = await axios.post('http://localhost:3000/api/merchant/login', loginData);
     console.log('   ✅ 商家登录API正常');
     console.log('   响应状态:', loginResponse.status);
     console.log('   响应数据:', JSON.stringify(loginResponse.data, null, 2));
@@ -19,7 +19,7 @@ async function testMerchantLogin() {
     // 测试商家信息API
     console.log('\n2. 测试商家信息API...');
     const token = loginResponse.data.data.data.token;
-    const profileResponse = await axios.get('https://tiktokshop-api.onrender.com/api/merchant/profile', {
+    const profileResponse = await axios.get('http://localhost:3000/api/merchant/profile', {
       headers: {
         'Authorization': `Bearer ${token}`
       }

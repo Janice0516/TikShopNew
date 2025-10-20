@@ -7,7 +7,7 @@ echo "🚀 生成商家后台环境变量文件..."
 # 创建开发环境 .env 文件
 cat > merchant/.env << 'EOF'
 # 开发环境配置
-VITE_API_BASE_URL=https://tiktokshop-api.onrender.com/api
+VITE_API_BASE_URL=http://localhost:3000/api
 VITE_APP_TITLE=TikTok Shop Merchant
 VITE_APP_VERSION=1.0.0
 VITE_NODE_ENV=development
@@ -19,7 +19,7 @@ echo "✅ 商家后台开发环境 .env 文件已创建"
 # 创建生产环境 .env.production 文件
 cat > merchant/.env.production << 'EOF'
 # 生产环境配置
-VITE_API_BASE_URL=https://tiktokshop-api.onrender.com/api
+VITE_API_BASE_URL=http://localhost:3000/api
 VITE_APP_TITLE=TikTok Shop Merchant
 VITE_APP_VERSION=1.0.0
 VITE_NODE_ENV=production
@@ -31,7 +31,7 @@ echo "✅ 商家后台生产环境 .env.production 文件已创建"
 # 创建测试环境 .env.test 文件
 cat > merchant/.env.test << 'EOF'
 # 测试环境配置
-VITE_API_BASE_URL=https://tiktokshop-api.onrender.com/api
+VITE_API_BASE_URL=http://localhost:3000/api
 VITE_APP_TITLE=TikTok Shop Merchant (Test)
 VITE_APP_VERSION=1.0.0-test
 VITE_NODE_ENV=test

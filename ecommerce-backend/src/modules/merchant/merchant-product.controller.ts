@@ -26,14 +26,14 @@ export class MerchantProductController {
   @Post()
   @ApiOperation({ summary: '商家选品' })
   async selectProduct(@Request() req: any, @Body() selectProductDto: SelectProductDto) {
-    const merchantId = req.user.id;
+    const merchantId = req.user.merchantId || req.user.id;
     return await this.merchantProductService.selectProduct(merchantId, selectProductDto);
   }
 
   @Get()
   @ApiOperation({ summary: '获取商家商品列表' })
   async getMerchantProducts(@Request() req: any, @Query() queryDto: QueryMerchantProductDto) {
-    const merchantId = req.user.id;
+    const merchantId = req.user.merchantId || req.user.id;
     return await this.merchantProductService.getMerchantProducts(merchantId, queryDto);
   }
 
@@ -44,7 +44,7 @@ export class MerchantProductController {
     @Param('id', ParseIntPipe) merchantProductId: number,
     @Body() updateDto: UpdateProductPriceDto
   ) {
-    const merchantId = req.user.id;
+    const merchantId = req.user.merchantId || req.user.id;
     return await this.merchantProductService.updateProductPrice(merchantId, merchantProductId, updateDto);
   }
 
@@ -55,7 +55,7 @@ export class MerchantProductController {
     @Param('id', ParseIntPipe) merchantProductId: number,
     @Body() updateDto: UpdateProductStatusDto
   ) {
-    const merchantId = req.user.id;
+    const merchantId = req.user.merchantId || req.user.id;
     return await this.merchantProductService.updateProductStatus(merchantId, merchantProductId, updateDto);
   }
 
@@ -65,7 +65,7 @@ export class MerchantProductController {
     @Request() req: any,
     @Param('id', ParseIntPipe) merchantProductId: number
   ) {
-    const merchantId = req.user.id;
+    const merchantId = req.user.merchantId || req.user.id;
     return await this.merchantProductService.deleteMerchantProduct(merchantId, merchantProductId);
   }
 }

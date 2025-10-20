@@ -23,9 +23,10 @@ export class Admin {
   @Column({ default: 1 })
   status: number;
 
-  @CreateDateColumn({ name: 'created_at' })
+  // Align with MySQL schema: create_time/update_time
+  @CreateDateColumn({ name: 'create_time', type: 'timestamp' })
   createTime: Date;
 
-  @UpdateDateColumn({ name: 'updated_at' })
+  @UpdateDateColumn({ name: 'update_time', type: 'timestamp' })
   updateTime: Date;
 }

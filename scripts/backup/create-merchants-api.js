@@ -54,7 +54,7 @@ async function createMerchants() {
       };
 
       try {
-        const response = await axios.post('https://tiktokshop-api.onrender.com/api/merchant/register', merchantData);
+        const response = await axios.post('http://localhost:3000/api/merchant/register', merchantData);
         console.log(`✅ 商家 ${merchantId} (${merchant.name}) 创建成功`);
       } catch (error) {
         console.log(`⚠️  商家 ${merchantId} (${merchant.name}) 创建失败: ${error.response?.data?.message || error.message}`);

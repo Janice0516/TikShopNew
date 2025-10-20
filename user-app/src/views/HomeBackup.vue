@@ -170,14 +170,46 @@ const loadCategories = async () => {
     console.error('加载分类失败:', error)
     // 使用默认分类
     categories.value = [
-      { id: 1, name: '电子产品', icon: 'https://via.placeholder.com/60x60/409EFF/ffffff?text=📱' },
-      { id: 2, name: '服装鞋帽', icon: 'https://via.placeholder.com/60x60/67C23A/ffffff?text=👕' },
-      { id: 3, name: '家居生活', icon: 'https://via.placeholder.com/60x60/E6A23C/ffffff?text=🏠' },
-      { id: 4, name: '美妆护肤', icon: 'https://via.placeholder.com/60x60/F56C6C/ffffff?text=💄' },
-      { id: 5, name: '食品饮料', icon: 'https://via.placeholder.com/60x60/909399/ffffff?text=🍎' },
-      { id: 6, name: '运动户外', icon: 'https://via.placeholder.com/60x60/409EFF/ffffff?text=⚽' },
-      { id: 7, name: '图书文具', icon: 'https://via.placeholder.com/60x60/67C23A/ffffff?text=📚' },
-      { id: 8, name: '母婴用品', icon: 'https://via.placeholder.com/60x60/E6A23C/ffffff?text=👶' }
+      { 
+        id: 1, 
+        name: '电子产品', 
+        icon: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=120&h=120&fit=crop&crop=center&auto=format&q=80' 
+      },
+      { 
+        id: 2, 
+        name: '服装鞋帽', 
+        icon: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=120&h=120&fit=crop&crop=center&auto=format&q=80' 
+      },
+      { 
+        id: 3, 
+        name: '家居生活', 
+        icon: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=120&h=120&fit=crop&crop=center&auto=format&q=80' 
+      },
+      { 
+        id: 4, 
+        name: '美妆护肤', 
+        icon: 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=120&h=120&fit=crop&crop=center&auto=format&q=80' 
+      },
+      { 
+        id: 5, 
+        name: '食品饮料', 
+        icon: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=120&h=120&fit=crop&crop=center&auto=format&q=80' 
+      },
+      { 
+        id: 6, 
+        name: '运动户外', 
+        icon: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=120&h=120&fit=crop&crop=center&auto=format&q=80' 
+      },
+      { 
+        id: 7, 
+        name: '图书文具', 
+        icon: 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=120&h=120&fit=crop&crop=center&auto=format&q=80' 
+      },
+      { 
+        id: 8, 
+        name: '母婴用品', 
+        icon: 'https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=120&h=120&fit=crop&crop=center&auto=format&q=80' 
+      }
     ]
   }
 }

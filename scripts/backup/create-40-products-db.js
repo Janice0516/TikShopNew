@@ -79,7 +79,7 @@ async function createProductsViaAPI() {
     for (const productData of productsToCreate) {
       try {
         // 尝试使用公开API
-        const response = await axios.post('https://tiktokshop-api.onrender.com/api/public-products', productData);
+        const response = await axios.post('http://localhost:3000/api/public-products', productData);
         
         if (response.data.code === 200) {
           successCount++;

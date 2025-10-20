@@ -35,4 +35,9 @@ export class RegisterMerchantDto {
   @IsString()
   @IsOptional()
   shopName?: string;
+
+  @ApiProperty({ description: '邀请码', example: 'INVITE123456', required: false })
+  @IsString()
+  @IsOptional()
+  inviteCode?: string;
 }

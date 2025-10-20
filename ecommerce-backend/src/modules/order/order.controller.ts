@@ -32,21 +32,24 @@ export class OrderController {
   @ApiOperation({ summary: '订单列表' })
   findAll(@Request() req, @Query() queryDto: QueryOrderDto) {
     const userType = req.user.type || 'user'; // user or merchant
-    return this.orderService.findAll(req.user.userId, queryDto, userType);
+    const userId = req.user.userId || req.user.merchantId; // 兼容商家token
+    return this.orderService.findAll(+userId, queryDto, userType);
   }
 
   @Get('count')
   @ApiOperation({ summary: '统计订单数量（按状态）' })
   countByStatus(@Request() req) {
     const userType = req.user.type || 'user';
-    return this.orderService.countByStatus(req.user.userId, userType);
+    const userId = req.user.userId || req.user.merchantId; // 兼容商家token
+    return this.orderService.countByStatus(+userId, userType);
   }
 
   @Get(':id')
   @ApiOperation({ summary: '订单详情' })
   findOne(@Param('id') id: string, @Request() req) {
     const userType = req.user.type || 'user';
-    return this.orderService.findOne(+id, req.user.userId, userType);
+    const userId = req.user.userId || req.user.merchantId; // 兼容商家token
+    return this.orderService.findOne(+id, +userId, userType);
   }
 
   @Patch(':id/cancel')
@@ -56,7 +59,8 @@ export class OrderController {
     @Request() req,
     @Body('reason') reason: string,
   ) {
-    return this.orderService.cancel(+id, req.user.userId, reason);
+    const userId = req.user.userId || req.user.merchantId; // 兼容商家token
+    return this.orderService.cancel(+id, +userId, reason);
   }
 
   @Patch(':id/confirm')
@@ -79,9 +83,10 @@ export class OrderController {
     @Body('logisticsCompany') logisticsCompany: string,
     @Body('trackingNumber') trackingNumber: string,
   ) {
+    const userId = req.user.userId || req.user.merchantId; // 兼容商家token
     return this.orderService.ship(
       +id,
-      req.user.userId,
+      +userId,
       logisticsCompany,
       trackingNumber,
     );

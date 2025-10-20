@@ -40,6 +40,15 @@
         <el-input v-model="registerForm.shopName" />
       </el-form-item>
 
+      <el-form-item :label="$t('register.inviteCode')" prop="inviteCode">
+        <el-input 
+          v-model="registerForm.inviteCode" 
+          :placeholder="$t('register.inviteCodePlaceholder')"
+        />
+        <div class="invite-code-tip">
+          {{ $t('register.inviteCodeTip') }}
+        </div>
+      </el-form-item>
 
       <el-form-item>
         <el-button
@@ -66,6 +75,7 @@ import { useRouter } from 'vue-router'
 import { ElMessage, type FormInstance, type FormRules } from 'element-plus'
 import { useI18n } from 'vue-i18n'
 import LanguageSwitcher from '@/components/LanguageSwitcher.vue'
+import { register } from '../../api/merchant'
 
 const { t } = useI18n()
 const router = useRouter()
@@ -76,7 +86,8 @@ const registerForm = reactive({
   merchantName: '',
   contactName: '',
   contactPhone: '',
-  shopName: ''
+  shopName: '',
+  inviteCode: ''
 })
 
 const registerRules: FormRules = {
@@ -103,10 +114,14 @@ const handleRegister = async () => {
     if (valid) {
       loading.value = true
       try {
-        // TODO: 调用注册API
-        await new Promise(resolve => setTimeout(resolve, 1000))
-        ElMessage.success(t('register.registerSuccess'))
-        router.push('/login')
+        // 调用注册API
+        const response = await register(registerForm)
+        if (response.code === 200) {
+          ElMessage.success(response.data.message || t('register.registerSuccess'))
+          router.push('/login')
+        } else {
+          ElMessage.error(response.message || 'Registration failed')
+        }
       } catch (error: any) {
         ElMessage.error(error.message || 'Registration failed')
       } finally {
@@ -182,6 +197,13 @@ const handleRegister = async () => {
 
 .login-link a:hover {
   text-decoration: underline;
+}
+
+.invite-code-tip {
+  font-size: 12px;
+  color: #666;
+  margin-top: 5px;
+  line-height: 1.4;
 }
 </style>
 

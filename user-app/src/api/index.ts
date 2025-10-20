@@ -47,12 +47,12 @@ export const productApi = {
 export const categoryApi = {
   // 获取分类列表
   getCategories: () => {
-    return api.get('/categories')
+    return api.get('/shop/categories')
   },
   
   // 获取分类商品
   getCategoryProducts: (categoryId: string, params?: any) => {
-    return api.get(`/categories/${categoryId}/products`, { params })
+    return api.get(`/shop/categories/${categoryId}/products`, { params })
   }
 }
 

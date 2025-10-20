@@ -6,7 +6,7 @@ async function testMerchantFrontend() {
   try {
     // 1. 测试页面访问
     console.log('1. 测试页面访问...');
-    const pageResponse = await axios.get('https://tikshop-merchant.onrender.com');
+    const pageResponse = await axios.get('http://localhost:5176');
     console.log('   ✅ 页面可访问');
     console.log('   状态码:', pageResponse.status);
     console.log('   内容长度:', pageResponse.data.length);
@@ -22,7 +22,7 @@ async function testMerchantFrontend() {
       
       // 测试JavaScript文件是否可访问
       try {
-        const jsResponse = await axios.get(`https://tikshop-merchant.onrender.com${jsMatch[1]}`);
+        const jsResponse = await axios.get(`http://localhost:5176${jsMatch[1]}`);
         console.log('   ✅ JavaScript文件可访问');
         console.log('   JS文件大小:', jsResponse.data.length);
       } catch (jsError) {
@@ -37,7 +37,7 @@ async function testMerchantFrontend() {
       
       // 测试CSS文件是否可访问
       try {
-        const cssResponse = await axios.get(`https://tikshop-merchant.onrender.com${cssMatch[1]}`);
+        const cssResponse = await axios.get(`http://localhost:5176${cssMatch[1]}`);
         console.log('   ✅ CSS文件可访问');
         console.log('   CSS文件大小:', cssResponse.data.length);
       } catch (cssError) {
@@ -47,7 +47,7 @@ async function testMerchantFrontend() {
 
     // 3. 测试API连接
     console.log('\n3. 测试API连接...');
-    const apiResponse = await axios.get('https://tiktokshop-api.onrender.com/api/health');
+    const apiResponse = await axios.get('http://localhost:3000/api/health');
     console.log('   ✅ API健康检查通过');
     console.log('   API响应:', apiResponse.data);
 

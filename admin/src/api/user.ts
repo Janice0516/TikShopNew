@@ -1,69 +1,78 @@
 import request from '@/utils/request'
 
-// 测试API连接
-export const testConnection = () => {
+// 管理员登录
+export function login(data: any) {
   return request({
-    url: '/test/status',
-    method: 'GET',
-    timeout: 10000
+    url: '/admin/login',
+    method: 'post',
+    data
   })
 }
 
-// 管理员登录
-export const login = (data: any) => {
+// 管理员登录（别名）
+export function loginApi(data: any) {
   return request({
     url: '/admin/login',
-    method: 'POST',
-    data,
-    timeout: 30000  // 增加超时时间
+    method: 'post',
+    data
   })
 }
 
 // 获取管理员信息
-export const getUserInfo = () => {
+export function getUserInfo() {
   return request({
     url: '/admin/profile',
-    method: 'GET'
+    method: 'get'
+  })
+}
+
+// 测试连接
+export function testConnection() {
+  return request({
+    url: '/health',
+    method: 'get'
   })
 }
 
 // 获取用户列表
-export const getUserList = (params: any) => {
+export function getUserList(params: any) {
   return request({
     url: '/admin/users',
-    method: 'GET',
+    method: 'get',
     params
   })
 }
 
 // 获取用户详情
-export const getUserDetail = (id: number) => {
+export function getUserDetail(id: number) {
   return request({
     url: `/admin/users/${id}`,
-    method: 'GET'
+    method: 'get'
+  })
+}
+
+// 用户统计
+export function getUserCount() {
+  return request({
+    url: '/admin/users/count',
+    method: 'get'
   })
 }
 
 // 更新用户状态
-export const updateUserStatus = (id: number, data: any) => {
+export function updateUserStatus(id: number, status: number) {
   return request({
     url: `/admin/users/${id}/status`,
-    method: 'PATCH',
-    data
+    method: 'patch',
+    data: { status }
   })
 }
 
-// 批量更新用户状态
-export const batchUpdateUserStatus = (data: any) => {
+// 重置用户密码
+export function resetUserPassword(id: number, newPassword: string) {
   return request({
-    url: '/admin/users/batch-status',
-    method: 'PATCH',
-    data
+    url: `/admin/users/${id}/reset-password`,
+    method: 'patch',
+    data: { newPassword }
   })
-}
-
-// 登录表单类型
-export interface LoginForm {
-  username: string
-  password: string
 }

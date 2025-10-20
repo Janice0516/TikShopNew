@@ -113,7 +113,8 @@ const handleLogin = async () => {
       try {
         await merchantStore.login(loginForm)
         ElMessage.success(t('login.loginSuccess'))
-        router.push('/')
+        // 登录后跳转到首页
+        router.replace('/')
       } catch (error: any) {
         ElMessage.error(t('login.loginFailed'))
       } finally {

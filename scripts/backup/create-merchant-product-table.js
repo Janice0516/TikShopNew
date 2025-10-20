@@ -5,7 +5,7 @@ async function createMerchantProductTable() {
     console.log('🚀 创建merchant_product表和数据...');
 
     // 使用管理员登录获取token
-    const loginResponse = await axios.post('https://tiktokshop-api.onrender.com/api/admin/login', {
+    const loginResponse = await axios.post('http://localhost:3000/api/admin/login', {
       username: 'admin',
       password: 'admin123'
     });
@@ -19,7 +19,7 @@ async function createMerchantProductTable() {
     console.log('📋 由于API限制，我们将通过其他方式创建数据...');
     
     // 获取商家列表
-    const merchantsResponse = await axios.get('https://tiktokshop-api.onrender.com/api/merchant/list', {
+    const merchantsResponse = await axios.get('http://localhost:3000/api/merchant/list', {
       headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
@@ -30,7 +30,7 @@ async function createMerchantProductTable() {
     console.log(`📊 找到 ${merchants.length} 个商家`);
 
     // 获取产品列表
-    const productsResponse = await axios.get('https://tiktokshop-api.onrender.com/api/products');
+    const productsResponse = await axios.get('http://localhost:3000/api/products');
     const products = productsResponse.data.data.list;
     console.log(`📦 找到 ${products.length} 个产品`);
 

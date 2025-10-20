@@ -13,7 +13,7 @@ async function testRegisterAPI() {
     
     console.log('📤 发送注册请求:', testData);
     
-    const response = await axios.post('https://tiktokshop-api.onrender.com/api/user/register', testData, {
+    const response = await axios.post('http://localhost:3000/api/user/register', testData, {
       headers: {
         'Content-Type': 'application/json'
       },

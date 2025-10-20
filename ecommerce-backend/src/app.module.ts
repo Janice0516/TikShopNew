@@ -27,6 +27,7 @@ import { FundOperation } from './modules/fund-management/entities/fund-operation
 import { FundFreezeRecord } from './modules/fund-management/entities/fund-freeze-record.entity';
 import { FundTransaction } from './modules/fund-management/entities/fund-transaction.entity';
 import { SystemSettings } from './modules/settings/entities/system-settings.entity';
+import { InviteCode } from './modules/invite-code/entities/invite-code.entity';
 
 // 模块
 import { UserModule } from './modules/user/user.module';
@@ -45,6 +46,7 @@ import { CreditRatingModule } from './modules/credit-rating/credit-rating.module
 import { FundManagementModule } from './modules/fund-management/fund-management.module';
 import { HealthModule } from './modules/health/health.module';
 import { SettingsModule } from './modules/settings/settings.module';
+import { InviteCodeModule } from './modules/invite-code/invite-code.module';
 
 @Module({
   imports: [
@@ -83,7 +85,8 @@ import { SettingsModule } from './modules/settings/settings.module';
             FundOperation,
             FundFreezeRecord,
             FundTransaction,
-            SystemSettings
+            SystemSettings,
+            InviteCode
           ],
           autoLoadEntities: true,
           synchronize: false, // 生产环境必须为false
@@ -142,6 +145,7 @@ import { SettingsModule } from './modules/settings/settings.module';
     CreditRatingModule,
     HealthModule,
     SettingsModule,
+    InviteCodeModule,
   ],
 })
 export class AppModule {}

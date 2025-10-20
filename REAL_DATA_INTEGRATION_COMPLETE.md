@@ -28,7 +28,7 @@
 ### API端点
 - **商品API**: `/api/products` - 99个真实商品
 - **分类API**: `/api/category` - 真实分类数据
-- **后端服务**: https://tiktokshop-api.onrender.com
+- **后端服务**: http://localhost:3000
 
 ### 数据特点
 - **商品信息**: 包含名称、描述、价格、图片、库存等

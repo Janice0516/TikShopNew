@@ -33,7 +33,7 @@
         </el-col>
         <el-col :span="6">
           <div class="stat-card">
-            <div class="stat-value" style="color: #409EFF">${{ stats.totalRevenue }}</div>
+            <div class="stat-value" style="color: #409EFF">RM{{ stats.totalRevenue }}</div>
             <div class="stat-label">{{ $t('dashboard.todaySales') }}</div>
           </div>
         </el-col>
@@ -101,20 +101,20 @@
 
         <el-table-column :label="$t('products.costPrice')" width="120">
           <template #default="{ row }">
-            ${{ row.costPrice }}
+            RM{{ row.costPrice }}
           </template>
         </el-table-column>
 
         <el-table-column :label="$t('products.salePrice')" width="120">
           <template #default="{ row }">
-            <span style="color: #409EFF; font-weight: 500">${{ row.salePrice }}</span>
+            <span style="color: #409EFF; font-weight: 500">RM{{ row.salePrice }}</span>
           </template>
         </el-table-column>
 
         <el-table-column :label="$t('products.profit')" width="120">
           <template #default="{ row }">
             <el-tag type="success">
-              ${{ (row.salePrice - row.costPrice).toFixed(2) }}
+              RM{{ (row.salePrice - row.costPrice).toFixed(2) }}
             </el-tag>
           </template>
         </el-table-column>
@@ -191,7 +191,7 @@
         </el-form-item>
 
         <el-form-item :label="$t('products.costPrice')">
-          <span>${{ selectedProduct?.costPrice }}</span>
+          <span>RM{{ selectedProduct?.costPrice }}</span>
         </el-form-item>
 
         <el-form-item :label="$t('products.salePrice')" prop="salePrice">
@@ -201,12 +201,12 @@
             :precision="2"
             :placeholder="$t('products.salePrice')"
           />
-          <span style="margin-left: 10px; color: #999;">USD</span>
+          <span style="margin-left: 10px; color: #999;">RM</span>
         </el-form-item>
 
         <el-form-item :label="$t('products.profit')">
           <el-tag type="success" size="large">
-            ${{ calculatedProfit }}
+            RM{{ calculatedProfit }}
           </el-tag>
         </el-form-item>
       </el-form>
@@ -299,8 +299,8 @@ const handleSearch = async () => {
     const res = await getMerchantProducts(params)
     console.log('商家商品列表API响应:', res);
     
-    productList.value = res.data.list || []
-    pagination.total = res.data.total || 0
+    productList.value = res.list || []
+    pagination.total = res.total || 0
     
     console.log('处理后的商品列表:', productList.value);
     console.log('商品总数:', pagination.total);
