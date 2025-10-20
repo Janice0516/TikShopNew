@@ -109,6 +109,18 @@ const routes: RouteRecordRaw[] = [
         name: 'Settings',
         component: () => import('@/views/settings/index.vue'),
         meta: { title: '系统设置', titleKey: 'settings', icon: 'Setting' }
+      },
+      {
+        path: '/role-management',
+        name: 'RoleManagement',
+        component: () => import('@/views/role-management/index.vue'),
+        meta: { title: '角色管理', titleKey: 'roleManagement', icon: 'User' }
+      },
+      {
+        path: '/admin-account-management',
+        name: 'AdminAccountManagement',
+        component: () => import('@/views/admin-account-management/index.vue'),
+        meta: { title: '管理员账户管理', titleKey: 'adminAccountManagement', icon: 'Avatar' }
       }
     ]
   }

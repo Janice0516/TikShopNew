@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
+import { Role } from '../../auth/entities/role.entity';
 
 @Entity('admin')
 export class Admin {
@@ -19,6 +20,25 @@ export class Admin {
 
   @Column({ length: 20, default: 'admin' })
   role: string;
+
+  @Column({ name: 'role_id', nullable: true, comment: '角色ID' })
+  roleId: string;
+
+  @ManyToOne(() => Role, { nullable: true })
+  @JoinColumn({ name: 'role_id' })
+  roleEntity: Role;
+
+  @Column({ length: 50, nullable: true, comment: '职务' })
+  position: string;
+
+  @Column({ length: 20, nullable: true, comment: '手机号' })
+  phone: string;
+
+  @Column({ length: 100, nullable: true, comment: '邮箱' })
+  email: string;
+
+  @Column({ length: 255, nullable: true, comment: '备注' })
+  remark: string;
 
   @Column({ default: 1 })
   status: number;

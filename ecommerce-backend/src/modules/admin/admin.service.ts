@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, UnauthorizedException, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
@@ -8,6 +8,7 @@ import { Product } from '../product/entities/product.entity';
 import { Merchant } from '../merchant/entities/merchant.entity';
 import { Order } from '../order/entities/order.entity';
 import { User } from '../user/entities/user.entity';
+import { Role } from '../auth/entities/role.entity';
 
 @Injectable()
 export class AdminService {
@@ -22,6 +23,8 @@ export class AdminService {
     private readonly orderRepository: Repository<Order>,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    @InjectRepository(Role)
+    private readonly roleRepository: Repository<Role>,
     private readonly jwtService: JwtService,
   ) {}
 
@@ -273,6 +276,236 @@ export class AdminService {
     } catch (error) {
       console.error('获取管理员列表失败:', error);
       return { code: 500, message: '获取管理员列表失败', data: null };
+    }
+  }
+
+  // ========== 管理员账户管理 ==========
+
+  /**
+   * 创建管理员账户
+   */
+  async createAdmin(adminData: {
+    username: string;
+    password: string;
+    nickname?: string;
+    position?: string;
+    phone?: string;
+    email?: string;
+    roleId?: string;
+    remark?: string;
+  }) {
+    try {
+      // 检查用户名是否已存在
+      const existingAdmin = await this.adminRepository.findOne({ 
+        where: { username: adminData.username } 
+      });
+      if (existingAdmin) {
+        throw new HttpException('用户名已存在', HttpStatus.BAD_REQUEST);
+      }
+
+      // 密码加密
+      const hashedPassword = await bcrypt.hash(adminData.password, 10);
+
+      // 创建管理员
+      const admin = this.adminRepository.create({
+        username: adminData.username,
+        password: hashedPassword,
+        nickname: adminData.nickname,
+        position: adminData.position,
+        phone: adminData.phone,
+        email: adminData.email,
+        roleId: adminData.roleId,
+        remark: adminData.remark,
+        status: 1,
+      });
+
+      const savedAdmin = await this.adminRepository.save(admin);
+      
+      // 返回时排除密码
+      const { password, ...adminWithoutPassword } = savedAdmin;
+      return adminWithoutPassword;
+    } catch (error) {
+      if (error instanceof HttpException) {
+        throw error;
+      }
+      throw new HttpException('创建管理员失败', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  /**
+   * 更新管理员信息
+   */
+  async updateAdmin(id: number, updateData: {
+    nickname?: string;
+    position?: string;
+    phone?: string;
+    email?: string;
+    roleId?: string;
+    remark?: string;
+    status?: number;
+  }) {
+    try {
+      const admin = await this.adminRepository.findOne({ where: { id } });
+      if (!admin) {
+        throw new HttpException('管理员不存在', HttpStatus.NOT_FOUND);
+      }
+
+      Object.assign(admin, updateData);
+      const savedAdmin = await this.adminRepository.save(admin);
+      
+      // 返回时排除密码
+      const { password, ...adminWithoutPassword } = savedAdmin;
+      return adminWithoutPassword;
+    } catch (error) {
+      if (error instanceof HttpException) {
+        throw error;
+      }
+      throw new HttpException('更新管理员失败', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  /**
+   * 重置管理员密码
+   */
+  async resetPassword(id: number, newPassword: string) {
+    try {
+      const admin = await this.adminRepository.findOne({ where: { id } });
+      if (!admin) {
+        throw new HttpException('管理员不存在', HttpStatus.NOT_FOUND);
+      }
+
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+      admin.password = hashedPassword;
+      await this.adminRepository.save(admin);
+
+      return { message: '密码重置成功' };
+    } catch (error) {
+      if (error instanceof HttpException) {
+        throw error;
+      }
+      throw new HttpException('密码重置失败', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  /**
+   * 删除管理员
+   */
+  async deleteAdmin(id: number) {
+    try {
+      const admin = await this.adminRepository.findOne({ where: { id } });
+      if (!admin) {
+        throw new HttpException('管理员不存在', HttpStatus.NOT_FOUND);
+      }
+
+      // 不能删除超级管理员
+      if (admin.username === 'admin') {
+        throw new HttpException('不能删除超级管理员', HttpStatus.BAD_REQUEST);
+      }
+
+      await this.adminRepository.delete(id);
+      return { message: '管理员删除成功' };
+    } catch (error) {
+      if (error instanceof HttpException) {
+        throw error;
+      }
+      throw new HttpException('删除管理员失败', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  /**
+   * 获取管理员详情（包含角色信息）
+   */
+  async getAdminDetail(id: number) {
+    try {
+      const admin = await this.adminRepository.findOne({
+        where: { id },
+        relations: ['roleEntity'],
+      });
+
+      if (!admin) {
+        throw new HttpException('管理员不存在', HttpStatus.NOT_FOUND);
+      }
+
+      // 返回时排除密码
+      const { password, ...adminWithoutPassword } = admin;
+      return adminWithoutPassword;
+    } catch (error) {
+      if (error instanceof HttpException) {
+        throw error;
+      }
+      throw new HttpException('获取管理员详情失败', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  /**
+   * 批量创建业务员账户
+   */
+  async createSalespersonAccounts(salespersonData: Array<{
+    username: string;
+    password: string;
+    nickname: string;
+    phone: string;
+    email?: string;
+    remark?: string;
+  }>) {
+    try {
+      const results = [];
+      
+      for (const data of salespersonData) {
+        try {
+          // 检查用户名是否已存在
+          const existingAdmin = await this.adminRepository.findOne({ 
+            where: { username: data.username } 
+          });
+          if (existingAdmin) {
+            results.push({
+              username: data.username,
+              success: false,
+              message: '用户名已存在'
+            });
+            continue;
+          }
+
+          // 获取业务员角色
+          const salespersonRole = await this.roleRepository.findOne({
+            where: { code: 'SALES_PERSON' }
+          });
+
+          // 密码加密
+          const hashedPassword = await bcrypt.hash(data.password, 10);
+
+          // 创建业务员账户
+          const admin = this.adminRepository.create({
+            username: data.username,
+            password: hashedPassword,
+            nickname: data.nickname,
+            position: '业务员',
+            phone: data.phone,
+            email: data.email,
+            roleId: salespersonRole?.id,
+            remark: data.remark || '业务员账户',
+            status: 1,
+          });
+
+          const savedAdmin = await this.adminRepository.save(admin);
+          results.push({
+            username: data.username,
+            success: true,
+            message: '创建成功',
+            adminId: savedAdmin.id
+          });
+        } catch (error) {
+          results.push({
+            username: data.username,
+            success: false,
+            message: error.message || '创建失败'
+          });
+        }
+      }
+
+      return results;
+    } catch (error) {
+      throw new HttpException('批量创建业务员账户失败', HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 }
