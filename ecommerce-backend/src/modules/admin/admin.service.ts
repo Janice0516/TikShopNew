@@ -438,6 +438,55 @@ export class AdminService {
   }
 
   /**
+   * 获取管理员列表
+   */
+  async getAdmins(query: {
+    page?: number;
+    limit?: number;
+    username?: string;
+    nickname?: string;
+    roleId?: string;
+    status?: number;
+  }) {
+    try {
+      const { page = 1, limit = 10, username, nickname, roleId, status } = query;
+      const skip = (page - 1) * limit;
+
+      const queryBuilder = this.adminRepository.createQueryBuilder('admin')
+        .leftJoinAndSelect('admin.roleEntity', 'role');
+
+      if (username) {
+        queryBuilder.andWhere('admin.username LIKE :username', { username: `%${username}%` });
+      }
+      if (nickname) {
+        queryBuilder.andWhere('admin.nickname LIKE :nickname', { nickname: `%${nickname}%` });
+      }
+      if (roleId) {
+        queryBuilder.andWhere('admin.roleId = :roleId', { roleId });
+      }
+      if (status !== undefined) {
+        queryBuilder.andWhere('admin.status = :status', { status });
+      }
+
+      const [list, total] = await queryBuilder
+        .orderBy('admin.createTime', 'DESC')
+        .skip(skip)
+        .take(limit)
+        .getManyAndCount();
+
+      // 返回时排除密码
+      const adminsWithoutPassword = list.map(admin => {
+        const { password, ...adminWithoutPassword } = admin;
+        return adminWithoutPassword;
+      });
+
+      return { list: adminsWithoutPassword, total, page, limit };
+    } catch (error) {
+      throw new HttpException('获取管理员列表失败', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  /**
    * 批量创建业务员账户
    */
   async createSalespersonAccounts(salespersonData: Array<{

@@ -4,7 +4,7 @@ import { OrderService } from '../order.service';
 import { UpdateOrderRemarkDto, OrderLogisticsDto } from '../dto/order-remark.dto';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../../auth/guards/roles.guard';
-import { Roles } from '../../common/decorators/roles.decorator';
+import { Roles } from '@/common/decorators/roles.decorator';
 
 @ApiTags('订单备注管理')
 @Controller('admin/order-remark')

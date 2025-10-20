@@ -278,7 +278,7 @@ const loading = ref(false)
 const remarkDialogVisible = ref(false)
 const remarkSaving = ref(false)
 const remarkFormRef = ref<FormInstance>()
-const currentOrder = ref({})
+const currentOrder = ref<any>({})
 const remarkForm = reactive({
   adminRemark: '',
   logisticsStatus: '',

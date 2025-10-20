@@ -230,7 +230,7 @@ const roleRules = {
 }
 
 const roleList = ref([])
-const groupedPermissions = ref({})
+const groupedPermissions = ref<Record<string, any[]>>({})
 const pagination = reactive({
   page: 1,
   limit: 10,
@@ -325,7 +325,7 @@ const resetForm = () => {
   roleFormRef.value?.resetFields()
 }
 
-const toggleStatus = async (role) => {
+const toggleStatus = async (role: any) => {
   try {
     const newStatus = role.status === 1 ? 0 : 1
     await updateRole(role.id, { status: newStatus })
@@ -336,7 +336,7 @@ const toggleStatus = async (role) => {
   }
 }
 
-const deleteRole = async (role) => {
+const deleteRole = async (role: any) => {
   try {
     await ElMessageBox.confirm(
       t('rolePermission.deleteConfirm', { name: role.name }),

@@ -4,6 +4,7 @@ export interface RoleForm {
   code: string
   name: string
   description?: string
+  status?: number
   permissionIds?: string[]
 }
 

@@ -1,9 +1,10 @@
 import { Controller, Post, Get, Body, Query, Param, Patch, Delete, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { AdminService } from '../admin.service';
+import { CreateAdminDto, UpdateAdminDto, ResetPasswordDto, QueryAdminDto, CreateSalespersonAccountsDto } from '../dto/admin-account.dto';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../../auth/guards/roles.guard';
-import { Roles } from '../../common/decorators/roles.decorator';
+import { Roles } from '@/common/decorators/roles.decorator';
 
 @ApiTags('管理员账户管理')
 @Controller('admin-accounts')

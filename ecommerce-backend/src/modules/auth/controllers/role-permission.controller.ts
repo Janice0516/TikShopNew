@@ -4,7 +4,7 @@ import { RolePermissionService } from '../services/role-permission.service';
 import { CreateRoleDto, UpdateRoleDto, QueryRoleDto, CreatePermissionDto, UpdatePermissionDto } from '../dto/role-permission.dto';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 import { RolesGuard } from '../guards/roles.guard';
-import { Roles } from '../../common/decorators/roles.decorator';
+import { Roles } from '@/common/decorators/roles.decorator';
 
 @ApiTags('角色权限管理')
 @Controller('role-permission')
