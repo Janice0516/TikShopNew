@@ -58,7 +58,7 @@
             <el-form-item label="默认货币" prop="defaultCurrency">
               <el-select v-model="basicSettings.defaultCurrency" style="width: 200px">
                 <el-option label="人民币 (¥)" value="CNY" />
-                <el-option label="美元 ($)" value="USD" />
+                <el-option label="马来西亚林吉特 (RM)" value="RM" />
                 <el-option label="马来西亚林吉特 (RM)" value="MYR" />
                 <el-option label="新加坡元 (S$)" value="SGD" />
               </el-select>

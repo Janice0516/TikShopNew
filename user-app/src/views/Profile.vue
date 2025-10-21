@@ -2,7 +2,7 @@
   <div class="profile-page">
     <div class="container">
       <div class="profile-header">
-        <h1>个人中心</h1>
+        <h1>{{ t('navigation.profile') }}</h1>
       </div>
       
       <div class="profile-content">
@@ -14,12 +14,12 @@
             </el-avatar>
           </div>
           <div class="user-info">
-            <h2 class="user-name">{{ userInfo.name || '用户' }}</h2>
+            <h2 class="user-name">{{ userInfo.name || t('profile.defaultUser') }}</h2>
             <p class="user-phone">{{ userInfo.phone }}</p>
-            <p class="user-email">{{ userInfo.email || '未设置邮箱' }}</p>
+            <p class="user-email">{{ userInfo.email || t('profile.noEmail') }}</p>
           </div>
           <div class="user-actions">
-            <el-button type="primary" @click="showEditDialog = true">编辑资料</el-button>
+            <el-button type="primary" @click="showEditDialog = true">{{ t('profile.editProfile') }}</el-button>
           </div>
         </div>
         
@@ -30,8 +30,8 @@
               <el-icon size="24"><Document /></el-icon>
             </div>
             <div class="menu-content">
-              <h3>我的订单</h3>
-              <p>查看订单状态</p>
+              <h3>{{ t('navigation.orders') }}</h3>
+              <p>{{ t('profile.viewOrderStatus') }}</p>
             </div>
             <div class="menu-arrow">
               <el-icon><ArrowRight /></el-icon>
@@ -43,8 +43,8 @@
               <el-icon size="24"><ShoppingCart /></el-icon>
             </div>
             <div class="menu-content">
-              <h3>购物车</h3>
-              <p>{{ cartStore.cartCount }}件商品</p>
+              <h3>{{ t('navigation.cart') }}</h3>
+              <p>{{ t('profile.cartItems', { count: cartStore.cartCount }) }}</p>
             </div>
             <div class="menu-arrow">
               <el-icon><ArrowRight /></el-icon>
@@ -56,8 +56,8 @@
               <el-icon size="24"><Location /></el-icon>
             </div>
             <div class="menu-content">
-              <h3>收货地址</h3>
-              <p>管理收货地址</p>
+              <h3>{{ t('profile.shippingAddress') }}</h3>
+              <p>{{ t('profile.manageAddress') }}</p>
             </div>
             <div class="menu-arrow">
               <el-icon><ArrowRight /></el-icon>
@@ -69,8 +69,8 @@
               <el-icon size="24"><Setting /></el-icon>
             </div>
             <div class="menu-content">
-              <h3>设置</h3>
-              <p>账户设置</p>
+              <h3>{{ t('navigation.settings') }}</h3>
+              <p>{{ t('profile.accountSettings') }}</p>
             </div>
             <div class="menu-arrow">
               <el-icon><ArrowRight /></el-icon>
@@ -82,8 +82,8 @@
               <el-icon size="24"><InfoFilled /></el-icon>
             </div>
             <div class="menu-content">
-              <h3>关于我们</h3>
-              <p>了解更多信息</p>
+              <h3>{{ t('navigation.about') }}</h3>
+              <p>{{ t('profile.learnMore') }}</p>
             </div>
             <div class="menu-arrow">
               <el-icon><ArrowRight /></el-icon>
@@ -95,8 +95,8 @@
               <el-icon size="24"><SwitchButton /></el-icon>
             </div>
             <div class="menu-content">
-              <h3>退出登录</h3>
-              <p>安全退出账户</p>
+              <h3>{{ t('navigation.logout') }}</h3>
+              <p>{{ t('profile.safeLogout') }}</p>
             </div>
             <div class="menu-arrow">
               <el-icon><ArrowRight /></el-icon>
@@ -205,6 +205,7 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { useUserStore } from '@/stores/user'
 import { useCartStore } from '@/stores/cart'
 import { 
@@ -219,6 +220,7 @@ import {
 import { ElMessage, ElMessageBox, type FormInstance } from 'element-plus'
 
 const router = useRouter()
+const { t } = useI18n()
 const userStore = useUserStore()
 const cartStore = useCartStore()
 

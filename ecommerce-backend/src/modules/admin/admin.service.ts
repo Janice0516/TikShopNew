@@ -6,6 +6,7 @@ import { JwtService } from '@nestjs/jwt';
 import { Admin } from './entities/admin.entity';
 import { Product } from '../product/entities/product.entity';
 import { Merchant } from '../merchant/entities/merchant.entity';
+import { MerchantProduct } from '../merchant/entities/merchant-product.entity';
 import { Order } from '../order/entities/order.entity';
 import { User } from '../user/entities/user.entity';
 import { Role } from '../auth/entities/role.entity';
@@ -19,6 +20,8 @@ export class AdminService {
     private readonly productRepository: Repository<Product>,
     @InjectRepository(Merchant)
     private readonly merchantRepository: Repository<Merchant>,
+    @InjectRepository(MerchantProduct)
+    private readonly merchantProductRepository: Repository<MerchantProduct>,
     @InjectRepository(Order)
     private readonly orderRepository: Repository<Order>,
     @InjectRepository(User)
@@ -555,6 +558,123 @@ export class AdminService {
       return results;
     } catch (error) {
       throw new HttpException('批量创建业务员账户失败', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  // 获取所有商家列表（用于推荐商品选择）
+  async getMerchants(page: number = 1, pageSize: number = 50, keyword?: string) {
+    try {
+      const skip = (Number(page) - 1) * Number(pageSize);
+
+      const queryBuilder = this.merchantRepository
+        .createQueryBuilder('m')
+        .where('m.status = :status', { status: 1 }); // 只显示激活的商家
+
+      // 关键词搜索
+      if (keyword) {
+        queryBuilder.andWhere('(m.shopName LIKE :keyword OR m.contactName LIKE :keyword)', {
+          keyword: `%${keyword}%`,
+        });
+      }
+
+      // 排序
+      queryBuilder.orderBy('m.createTime', 'DESC');
+
+      const [list, total] = await queryBuilder.skip(skip).take(Number(pageSize)).getManyAndCount();
+
+      const formattedList = list.map((merchant) => ({
+        id: merchant.id,
+        shopName: merchant.shopName,
+        contactName: merchant.contactName,
+        contactPhone: merchant.contactPhone,
+        status: merchant.status,
+        createTime: merchant.createTime,
+      }));
+
+      return {
+        code: 200,
+        message: '获取成功',
+        data: {
+          list: formattedList,
+          total,
+          page: Number(page),
+          pageSize: Number(pageSize),
+          totalPages: Math.ceil(total / Number(pageSize)),
+        },
+      };
+    } catch (error) {
+      return {
+        code: 500,
+        message: error.message || '获取商家列表失败',
+        data: null,
+      };
+    }
+  }
+
+  // 获取所有商品列表（用于推荐商品选择）
+  async getProducts(page: number = 1, pageSize: number = 20, keyword?: string, status?: number, merchantId?: number) {
+    try {
+      const skip = (Number(page) - 1) * Number(pageSize);
+
+      const queryBuilder = this.merchantProductRepository
+        .createQueryBuilder('mp')
+        .leftJoinAndSelect('mp.product', 'p')
+        .leftJoinAndSelect('mp.merchant', 'm')
+        .leftJoinAndSelect('p.category', 'c')
+        .where('mp.status = :status', { status: status || 1 }); // 默认只显示上架商品
+
+      // 按商家筛选
+      if (merchantId) {
+        queryBuilder.andWhere('mp.merchantId = :merchantId', { merchantId });
+      }
+
+      // 关键词搜索
+      if (keyword) {
+        queryBuilder.andWhere('(p.name LIKE :keyword OR m.shopName LIKE :keyword)', {
+          keyword: `%${keyword}%`,
+        });
+      }
+
+      // 排序
+      queryBuilder
+        .orderBy('mp.createTime', 'DESC')
+        .addOrderBy('mp.sales', 'DESC');
+
+      const [list, total] = await queryBuilder.skip(skip).take(Number(pageSize)).getManyAndCount();
+
+      const formattedList = list.map((mp) => ({
+        id: mp.id,
+        merchantId: mp.merchantId,
+        merchantName: mp.merchant.shopName,
+        productId: mp.productId,
+        productName: mp.product.name,
+        productImage: mp.product.mainImage,
+        categoryName: mp.product.category?.name || '',
+        salePrice: mp.salePrice,
+        sales: mp.sales,
+        isPopular: mp.isPopular,
+        isTopDeal: mp.isTopDeal,
+        createTime: mp.createTime,
+        updateTime: mp.updateTime,
+      }));
+
+      return {
+        code: 200,
+        message: '获取成功',
+        data: {
+          list: formattedList,
+          total,
+          page: Number(page),
+          pageSize: Number(pageSize),
+          totalPages: Math.ceil(total / Number(pageSize)),
+        },
+      };
+    } catch (error) {
+      return {
+        code: 500,
+        message: error.message || '获取商品列表失败',
+        data: null,
+      };
     }
   }
 }

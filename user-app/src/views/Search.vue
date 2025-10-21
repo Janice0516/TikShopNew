@@ -6,7 +6,7 @@
         <div class="search-box">
           <el-input
             v-model="searchQuery"
-            placeholder="搜索商品"
+            :placeholder="t('search.searchProducts')"
             @keyup.enter="handleSearch"
             size="large"
           >
@@ -17,15 +17,15 @@
         </div>
         
         <div class="search-info" v-if="searchQuery">
-          <h2>搜索结果: "{{ searchQuery }}"</h2>
-          <span class="result-count">共找到{{ totalResults }}个商品</span>
+          <h2>{{ t('search.searchResults') }}: "{{ searchQuery }}"</h2>
+          <span class="result-count">{{ t('search.foundResults', { count: totalResults }) }}</span>
         </div>
       </div>
       
       <!-- 筛选和排序 -->
       <div class="filter-section" v-if="products.length > 0">
         <div class="filter-left">
-          <el-select v-model="filters.category" placeholder="分类" clearable>
+          <el-select v-model="filters.category" :placeholder="t('search.category')" clearable>
             <el-option
               v-for="category in categories"
               :key="category.id"
@@ -34,7 +34,7 @@
             />
           </el-select>
           
-          <el-select v-model="filters.priceRange" placeholder="价格区间" clearable>
+          <el-select v-model="filters.priceRange" :placeholder="t('search.priceRange')" clearable>
             <el-option label="0-100" value="0-100" />
             <el-option label="100-500" value="100-500" />
             <el-option label="500-1000" value="500-1000" />
@@ -43,12 +43,12 @@
         </div>
         
         <div class="filter-right">
-          <el-select v-model="sortBy" placeholder="排序方式">
-            <el-option label="综合排序" value="default" />
-            <el-option label="价格从低到高" value="price_asc" />
-            <el-option label="价格从高到低" value="price_desc" />
-            <el-option label="销量排序" value="sales" />
-            <el-option label="评分排序" value="rating" />
+          <el-select v-model="sortBy" :placeholder="t('search.sortBy')">
+            <el-option :label="t('search.defaultSort')" value="default" />
+            <el-option :label="t('search.priceAsc')" value="price_asc" />
+            <el-option :label="t('search.priceDesc')" value="price_desc" />
+            <el-option :label="t('search.salesSort')" value="sales" />
+            <el-option :label="t('search.ratingSort')" value="rating" />
           </el-select>
         </div>
       </div>
@@ -79,15 +79,15 @@
       <div class="no-results" v-else-if="!loading && searchQuery">
         <div class="no-results-content">
           <el-icon size="64" color="#ccc"><Search /></el-icon>
-          <h3>没有找到相关商品</h3>
-          <p>请尝试其他关键词或调整筛选条件</p>
-          <el-button type="primary" @click="clearSearch">重新搜索</el-button>
+          <h3>{{ t('search.noResults') }}</h3>
+          <p>{{ t('search.noResultsDesc') }}</p>
+          <el-button type="primary" @click="clearSearch">{{ t('search.searchAgain') }}</el-button>
         </div>
       </div>
       
       <!-- 推荐商品 -->
       <div class="recommendations" v-if="!searchQuery">
-        <h2>推荐商品</h2>
+        <h2>{{ t('search.recommendedProducts') }}</h2>
         <div class="product-grid">
           <ProductCard 
             v-for="product in recommendedProducts" 
@@ -103,6 +103,7 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { productApi, categoryApi } from '@/api'
 import ProductCard from '@/components/ProductCard.vue'
 import { Search } from '@element-plus/icons-vue'
@@ -110,6 +111,7 @@ import { ElMessage } from 'element-plus'
 
 const route = useRoute()
 const router = useRouter()
+const { t } = useI18n()
 
 const searchQuery = ref('')
 const products = ref<any[]>([])

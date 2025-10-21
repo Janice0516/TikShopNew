@@ -48,4 +48,40 @@ export class AdminController {
   async getAdminList(@Query('page') page: number = 1, @Query('pageSize') pageSize: number = 10) {
     return this.adminService.getAdminList(page, pageSize);
   }
+
+  @Get('merchants')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: '获取所有商家列表（用于推荐商品选择）' })
+  async getMerchants(
+    @Query('page') page: string = '1',
+    @Query('pageSize') pageSize: string = '50',
+    @Query('keyword') keyword?: string
+  ) {
+    return this.adminService.getMerchants(
+      parseInt(page, 10),
+      parseInt(pageSize, 10),
+      keyword
+    );
+  }
+
+  @Get('products')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: '获取所有商品列表（用于推荐商品选择）' })
+  async getProducts(
+    @Query('page') page: string = '1',
+    @Query('pageSize') pageSize: string = '20',
+    @Query('keyword') keyword?: string,
+    @Query('status') status: string = '1',
+    @Query('merchantId') merchantId?: string
+  ) {
+    return this.adminService.getProducts(
+      parseInt(page, 10),
+      parseInt(pageSize, 10),
+      keyword,
+      parseInt(status, 10),
+      merchantId ? parseInt(merchantId, 10) : undefined
+    );
+  }
 }

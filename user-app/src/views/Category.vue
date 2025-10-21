@@ -10,7 +10,7 @@
       <!-- 筛选和排序 -->
       <div class="filter-section">
         <div class="filter-left">
-          <el-select v-model="filters.category" placeholder="子分类" clearable>
+          <el-select v-model="filters.category" :placeholder="t('category.subCategory')" clearable>
             <el-option
               v-for="subCategory in subCategories"
               :key="subCategory.id"
@@ -19,7 +19,7 @@
             />
           </el-select>
           
-          <el-select v-model="filters.priceRange" placeholder="价格区间" clearable>
+          <el-select v-model="filters.priceRange" :placeholder="t('category.priceRange')" clearable>
             <el-option label="0-100" value="0-100" />
             <el-option label="100-500" value="100-500" />
             <el-option label="500-1000" value="500-1000" />
@@ -28,12 +28,12 @@
         </div>
         
         <div class="filter-right">
-          <el-select v-model="sortBy" placeholder="排序方式">
-            <el-option label="综合排序" value="default" />
-            <el-option label="价格从低到高" value="price_asc" />
-            <el-option label="价格从高到低" value="price_desc" />
-            <el-option label="销量排序" value="sales" />
-            <el-option label="评分排序" value="rating" />
+          <el-select v-model="sortBy" :placeholder="t('category.sortBy')">
+            <el-option :label="t('category.defaultSort')" value="default" />
+            <el-option :label="t('category.priceAsc')" value="price_asc" />
+            <el-option :label="t('category.priceDesc')" value="price_desc" />
+            <el-option :label="t('category.salesSort')" value="sales" />
+            <el-option :label="t('category.ratingSort')" value="rating" />
           </el-select>
         </div>
       </div>
@@ -41,8 +41,8 @@
       <!-- 商品列表 -->
       <div class="products-section">
         <div class="products-header">
-          <h2>商品列表</h2>
-          <span class="product-count">共{{ totalProducts }}个商品</span>
+          <h2>{{ t('category.productList') }}</h2>
+          <span class="product-count">{{ t('category.totalProducts', { count: totalProducts }) }}</span>
         </div>
         
         <div class="product-grid" v-loading="loading">
@@ -71,11 +71,13 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { categoryApi, productApi } from '@/api'
 import ProductCard from '@/components/ProductCard.vue'
 import { ElMessage } from 'element-plus'
 
 const route = useRoute()
+const { t } = useI18n()
 
 const category = ref<any>({})
 const subCategories = ref<any[]>([])

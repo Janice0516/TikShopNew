@@ -113,5 +113,59 @@ export class UploadController {
       size: file.size,
     }));
   }
+
+  @Post('video')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: '上传视频' })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+    },
+  })
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: './uploads/videos',
+        filename: (req, file, callback) => {
+          const randomName = Array(32)
+            .fill(null)
+            .map(() => Math.round(Math.random() * 16).toString(16))
+            .join('');
+          callback(null, `${randomName}${extname(file.originalname)}`);
+        },
+      }),
+      fileFilter: (req, file, callback) => {
+        if (!file.originalname.match(/\.(mp4|avi|mov|wmv|flv|webm|mkv)$/)) {
+          return callback(
+            new HttpException('只能上传视频文件', HttpStatus.BAD_REQUEST),
+            false,
+          );
+        }
+        callback(null, true);
+      },
+      limits: {
+        fileSize: 100 * 1024 * 1024, // 100MB
+      },
+    }),
+  )
+  uploadVideo(@UploadedFile() file: any) {
+    if (!file) {
+      throw new HttpException('请选择文件', HttpStatus.BAD_REQUEST);
+    }
+
+    return {
+      url: `/uploads/videos/${file.filename}`,
+      filename: file.filename,
+      size: file.size,
+    };
+  }
 }
 

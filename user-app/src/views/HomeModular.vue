@@ -19,7 +19,7 @@
 
         <!-- Top Deals 区域 -->
         <ProductCarousel
-          title="Top deals for you"
+          :title="t('home.topDeals')"
           :products="topDeals"
           :loading="topDealsLoading"
           @product-click="handleProductClick"
@@ -27,7 +27,7 @@
 
         <!-- Popular Items 区域 -->
         <ProductCarousel
-          title="Popular items"
+          :title="t('home.popularItems')"
           :products="popularItems"
           :loading="popularItemsLoading"
           @product-click="handleProductClick"
@@ -36,7 +36,7 @@
         <!-- 优惠商品区域 -->
         <section id="products">
         <ProductGrid
-          title="Savings for you"
+          :title="t('home.savingsForYou')"
           :products="products"
           :loading="loading"
           :show-pagination="true"
@@ -54,6 +54,7 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import AppHeader from '@/components/layout/AppHeader.vue'
 import AppSidebar from '@/components/layout/AppSidebar.vue'
 import CategorySection from '@/components/sections/CategorySection.vue'
@@ -66,6 +67,7 @@ import { usePopularItems } from '@/composables/usePopularItems'
 import type { Category, Product } from '@/composables/useProducts'
 
 const router = useRouter()
+const { t } = useI18n()
 
 // 检测是否为移动设备
 const isMobile = () => {

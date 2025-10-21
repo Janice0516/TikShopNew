@@ -426,7 +426,7 @@
     "loadFailed": "Failed to load credit rating history"
   },
   "currency": {
-    "usd": "USD",
+    "usd": "RM",
     "symbol": "$"
   },
   "validation": {

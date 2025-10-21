@@ -2,18 +2,18 @@
   <div class="orders-page">
     <div class="container">
       <div class="orders-header">
-        <h1>我的订单</h1>
+        <h1>{{ t('navigation.orders') }}</h1>
       </div>
       
       <!-- 订单状态筛选 -->
       <div class="order-filters">
         <el-tabs v-model="activeStatus" @tab-change="handleStatusChange">
-          <el-tab-pane label="全部" name="all" />
-          <el-tab-pane label="待付款" name="pending" />
-          <el-tab-pane label="待发货" name="paid" />
-          <el-tab-pane label="待收货" name="shipped" />
-          <el-tab-pane label="已完成" name="completed" />
-          <el-tab-pane label="已取消" name="cancelled" />
+          <el-tab-pane :label="t('orders.all')" name="all" />
+          <el-tab-pane :label="t('orders.pending')" name="pending" />
+          <el-tab-pane :label="t('orders.paid')" name="paid" />
+          <el-tab-pane :label="t('orders.shipped')" name="shipped" />
+          <el-tab-pane :label="t('orders.completed')" name="completed" />
+          <el-tab-pane :label="t('orders.cancelled')" name="cancelled" />
         </el-tabs>
       </div>
       
@@ -22,7 +22,7 @@
         <div class="order-item" v-for="order in orders" :key="order.id">
           <div class="order-header">
             <div class="order-info">
-              <span class="order-number">订单号: {{ order.orderNumber }}</span>
+              <span class="order-number">{{ t('orders.orderNumber') }}: {{ order.orderNumber }}</span>
               <span class="order-time">{{ formatDate(order.createdAt) }}</span>
             </div>
             <div class="order-status">
@@ -57,9 +57,9 @@
             <div class="order-summary">
               <div class="summary-info">
                 <div class="total-amount">
-                  实付款: <span class="amount">RM{{ order.totalAmount }}</span>
+                  {{ t('orders.actualPayment') }}: <span class="amount">RM{{ order.totalAmount }}</span>
                 </div>
-                <div class="item-count">共{{ getTotalItems(order.items) }}件商品</div>
+                <div class="item-count">{{ t('orders.totalItems', { count: getTotalItems(order.items) }) }}</div>
               </div>
               
               <div class="order-actions">
@@ -69,7 +69,7 @@
                   type="primary"
                   size="small"
                 >
-                  立即付款
+                  {{ t('orders.payNow') }}
                 </el-button>
                 <el-button 
                   v-if="order.status === 'shipped'"
@@ -77,20 +77,20 @@
                   type="success"
                   size="small"
                 >
-                  确认收货
+                  {{ t('orders.confirmReceipt') }}
                 </el-button>
                 <el-button 
                   v-if="['pending', 'paid'].includes(order.status)"
                   @click="cancelOrder(order)"
                   size="small"
                 >
-                  取消订单
+                  {{ t('orders.cancelOrder') }}
                 </el-button>
                 <el-button 
                   @click="goToOrderDetail(order)"
                   size="small"
                 >
-                  查看详情
+                  {{ t('orders.viewDetails') }}
                 </el-button>
               </div>
             </div>
@@ -113,9 +113,9 @@
       <div class="empty-orders" v-if="!loading && orders.length === 0">
         <div class="empty-content">
           <el-icon size="64" color="#ccc"><Document /></el-icon>
-          <h3>暂无订单</h3>
-          <p>您还没有任何订单记录</p>
-          <el-button type="primary" @click="$router.push('/')">去购物</el-button>
+          <h3>{{ t('orders.noOrders') }}</h3>
+          <p>{{ t('orders.noOrdersDesc') }}</p>
+          <el-button type="primary" @click="$router.push('/')">{{ t('orders.goShopping') }}</el-button>
         </div>
       </div>
     </div>
@@ -125,11 +125,13 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { orderApi } from '@/api'
 import { Document } from '@element-plus/icons-vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
 const router = useRouter()
+const { t } = useI18n()
 
 const orders = ref<any[]>([])
 const loading = ref(false)
@@ -139,13 +141,16 @@ const pageSize = ref(10)
 const totalOrders = ref(0)
 const totalPages = ref(0)
 
-// 订单状态映射
-const statusMap = {
-  pending: '待付款',
-  paid: '待发货',
-  shipped: '待收货',
-  completed: '已完成',
-  cancelled: '已取消'
+// 获取状态文本
+const getStatusText = (status: string) => {
+  const statusMap = {
+    pending: t('orders.pending'),
+    paid: t('orders.paid'),
+    shipped: t('orders.shipped'),
+    completed: t('orders.completed'),
+    cancelled: t('orders.cancelled')
+  }
+  return statusMap[status] || status
 }
 
 // 获取状态类型
@@ -158,11 +163,6 @@ const getStatusType = (status: string) => {
     cancelled: 'danger'
   }
   return typeMap[status] || 'info'
-}
-
-// 获取状态文本
-const getStatusText = (status: string) => {
-  return statusMap[status] || status
 }
 
 // 格式化日期

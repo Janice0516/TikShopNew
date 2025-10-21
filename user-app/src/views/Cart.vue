@@ -2,8 +2,8 @@
   <div class="cart-page">
     <div class="container">
       <div class="cart-header">
-        <h1>购物车</h1>
-        <span class="cart-count">共{{ cartStore.cartCount }}件商品</span>
+        <h1>{{ t('navigation.cart') }}</h1>
+        <span class="cart-count">{{ t('cart.totalItems', { count: cartStore.cartCount }) }}</span>
       </div>
       
       <div class="cart-content" v-if="cartStore.cartItems.length > 0">
@@ -48,7 +48,7 @@
                 @click="removeItem(item)"
                 :icon="Delete"
               >
-                删除
+                {{ t('common.delete') }}
               </el-button>
             </div>
           </div>
@@ -61,7 +61,7 @@
               v-model="selectAll" 
               @change="toggleSelectAll"
             >
-              全选
+              {{ t('cart.selectAll') }}
             </el-checkbox>
             <el-button 
               type="danger" 
@@ -69,17 +69,17 @@
               @click="clearSelected"
               :disabled="selectedItems.length === 0"
             >
-              删除选中
+              {{ t('cart.deleteSelected') }}
             </el-button>
           </div>
           
           <div class="summary-content">
             <div class="summary-info">
               <div class="selected-count">
-                已选择{{ selectedItems.length }}件商品
+                {{ t('cart.selectedItems', { count: selectedItems.length }) }}
               </div>
               <div class="total-amount">
-                合计: <span class="amount">RM{{ totalAmount.toFixed(2) }}</span>
+                {{ t('common.total') }}: <span class="amount">RM{{ totalAmount.toFixed(2) }}</span>
               </div>
             </div>
             
@@ -90,7 +90,7 @@
                 @click="goToCheckout"
                 :disabled="selectedItems.length === 0"
               >
-                结算({{ selectedItems.length }})
+                {{ t('cart.checkout', { count: selectedItems.length }) }}
               </el-button>
             </div>
           </div>
@@ -101,9 +101,9 @@
       <div class="empty-cart" v-else>
         <div class="empty-content">
           <el-icon size="64" color="#ccc"><ShoppingCart /></el-icon>
-          <h3>购物车是空的</h3>
-          <p>快去挑选心仪的商品吧</p>
-          <el-button type="primary" @click="$router.push('/')">去购物</el-button>
+          <h3>{{ t('cart.emptyCart') }}</h3>
+          <p>{{ t('cart.emptyCartDesc') }}</p>
+          <el-button type="primary" @click="$router.push('/')">{{ t('cart.goShopping') }}</el-button>
         </div>
       </div>
     </div>
@@ -113,11 +113,13 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { useCartStore } from '@/stores/cart'
 import { Delete, ShoppingCart } from '@element-plus/icons-vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
 const router = useRouter()
+const { t } = useI18n()
 const cartStore = useCartStore()
 
 const selectAll = ref(false)

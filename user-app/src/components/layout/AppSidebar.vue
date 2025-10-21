@@ -14,9 +14,9 @@
           <span class="nav-icon">📂</span>
           <span class="nav-text">{{ $t('navigation.categories') }}</span>
         </div>
-        <div class="nav-item" role="button" tabindex="0" @click="handleMoreClick">
-          <span class="nav-icon">⋯</span>
-          <span class="nav-text">{{ $t('common.more') }}</span>
+        <div class="nav-item" role="button" tabindex="0" @click="handleCustomerServiceClick">
+          <span class="nav-icon">💬</span>
+          <span class="nav-text">{{ $t('common.customerService') }}</span>
         </div>
       </nav>
       
@@ -53,7 +53,9 @@ const scrollToHash = async (hash: string) => {
 
 const handleProductsClick = () => scrollToHash('#products')
 const handleCategoriesClick = () => scrollToHash('#categories')
-const handleMoreClick = () => scrollToHash('#page-footer')
+const handleCustomerServiceClick = () => {
+  window.open('https://direct.lc.chat/19346006/', '_blank', 'noopener,noreferrer')
+}
 const handleLoginClick = () => router.push('/login')
 </script>
 

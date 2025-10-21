@@ -41,7 +41,7 @@
             style="width: 200px"
             @change="calculateFee"
           />
-          <span style="margin-left: 10px; color: #999;">USD</span>
+          <span style="margin-left: 10px; color: #999;">RM</span>
           <div class="form-tip">
             {{ $t('finance.minimumWithdraw') }} RM{{ minWithdrawAmount }}
           </div>

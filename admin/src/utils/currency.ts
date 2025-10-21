@@ -1,6 +1,6 @@
 /**
  * 货币工具函数
- * Currency: USD (US Dollar)
+ * Currency: RM (Malaysian Ringgit)
  */
 
 /**
@@ -13,11 +13,11 @@ export function formatPrice(price: number | string, showSymbol: boolean = true):
   const numPrice = typeof price === 'string' ? parseFloat(price) : price
   
   if (isNaN(numPrice)) {
-    return showSymbol ? '$0.00' : '0.00'
+    return showSymbol ? 'RM0.00' : '0.00'
   }
   
   const formatted = numPrice.toFixed(2)
-  return showSymbol ? `$${formatted}` : formatted
+  return showSymbol ? `RM${formatted}` : formatted
 }
 
 /**
@@ -30,7 +30,7 @@ export function formatPriceWithComma(price: number | string, showSymbol: boolean
   const numPrice = typeof price === 'string' ? parseFloat(price) : price
   
   if (isNaN(numPrice)) {
-    return showSymbol ? '$0.00' : '0.00'
+    return showSymbol ? 'RM0.00' : '0.00'
   }
   
   const formatted = numPrice.toLocaleString('en-US', {
@@ -38,7 +38,7 @@ export function formatPriceWithComma(price: number | string, showSymbol: boolean
     maximumFractionDigits: 2
   })
   
-  return showSymbol ? `$${formatted}` : formatted
+  return showSymbol ? `RM${formatted}` : formatted
 }
 
 /**
@@ -60,7 +60,7 @@ export const CURRENCY_SYMBOL = 'RM'
 /**
  * 货币代码
  */
-export const CURRENCY_CODE = 'MYR'
+export const CURRENCY_CODE = 'RM'
 
 /**
  * 货币名称

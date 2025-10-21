@@ -189,7 +189,7 @@
             :placeholder="$t('settings.selectCurrency')"
             style="width: 300px"
           >
-            <el-option label="USD ($)" value="USD" />
+            <el-option label="RM (RM)" value="RM" />
             <el-option label="EUR (€)" value="EUR" />
             <el-option label="GBP (£)" value="GBP" />
             <el-option label="CNY (¥)" value="CNY" />
@@ -384,7 +384,7 @@ const notificationSettings = reactive({
 // 系统设置
 const systemSettings = reactive({
   timezone: 'UTC+8',
-  currency: 'USD',
+  currency: 'RM',
   dateFormat: 'YYYY-MM-DD'
 })
 

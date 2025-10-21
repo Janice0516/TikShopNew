@@ -114,3 +114,21 @@ export const bannerApi = {
     return api.get('/banners')
   }
 }
+
+// 商家店铺相关API
+export const shopApi = {
+  // 获取商家店铺信息
+  getMerchantShop: (merchantId: string) => {
+    return api.get(`/shop/merchant/${merchantId}`)
+  },
+  
+  // 获取商家商品列表
+  getMerchantProducts: (merchantId: string, params?: any) => {
+    return api.get(`/shop/merchant/${merchantId}/products`, { params })
+  },
+  
+  // 获取商家统计信息
+  getMerchantStats: (merchantId: string) => {
+    return api.get(`/shop/merchant/${merchantId}/stats`)
+  }
+}

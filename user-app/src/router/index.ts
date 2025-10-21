@@ -77,6 +77,12 @@ const router = createRouter({
       meta: { title: '商品详情' }
     },
     {
+      path: '/shop/:id',
+      name: 'ShopDetail',
+      component: () => import('@/views/ShopDetail.vue'),
+      meta: { title: '商家店铺' }
+    },
+    {
       path: '/category/:id',
       name: 'Category',
       component: () => import('@/views/Category.vue'),

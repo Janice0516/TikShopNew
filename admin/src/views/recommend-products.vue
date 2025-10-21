@@ -87,10 +87,16 @@
       <template #header>
         <div class="card-header">
           <span>推荐商品列表</span>
-          <el-button type="primary" @click="showBatchUpdateDialog">
-            <el-icon><Edit /></el-icon>
-            批量设置
-          </el-button>
+          <div class="header-actions">
+            <el-button type="success" @click="showAddRecommendDialog">
+              <el-icon><Plus /></el-icon>
+              添加推荐商品
+            </el-button>
+            <el-button type="primary" @click="showBatchUpdateDialog">
+              <el-icon><Edit /></el-icon>
+              批量设置
+            </el-button>
+          </div>
         </div>
       </template>
 
@@ -268,6 +274,118 @@
       </template>
     </el-dialog>
 
+    <!-- 添加推荐商品对话框 -->
+    <el-dialog
+      v-model="addDialogVisible"
+      title="添加推荐商品"
+      width="800px"
+    >
+      <el-form :model="addForm" :rules="addRules" ref="addFormRef" label-width="120px">
+        <el-form-item label="选择商家" prop="merchantId">
+          <el-select
+            v-model="addForm.merchantId"
+            placeholder="请先选择商家"
+            style="width: 100%"
+            filterable
+            @change="handleMerchantSelect"
+            clearable
+          >
+            <el-option
+              v-for="merchant in availableMerchants"
+              :key="merchant.id"
+              :label="merchant.shopName"
+              :value="merchant.id"
+            >
+              <div class="merchant-option">
+                <div class="merchant-name">{{ merchant.shopName }}</div>
+                <div class="merchant-contact">{{ merchant.contactName }} - {{ merchant.contactPhone }}</div>
+              </div>
+            </el-option>
+          </el-select>
+        </el-form-item>
+        
+        <el-form-item label="选择商品" prop="productId">
+          <el-select
+            v-model="addForm.productId"
+            placeholder="请先选择商家，然后选择商品"
+            style="width: 100%"
+            :disabled="!addForm.merchantId"
+            @change="handleProductSelect"
+            clearable
+          >
+            <el-option
+              v-for="product in availableProducts"
+              :key="product.id"
+              :label="product.productName"
+              :value="product.id"
+            >
+              <div class="product-option">
+                <img :src="product.productImage || '/placeholder.jpg'" class="option-image" />
+                <div class="option-info">
+                  <div class="option-name">{{ product.productName }}</div>
+                  <div class="option-category">{{ product.categoryName }}</div>
+                  <div class="option-price">RM{{ product.salePrice }}</div>
+                </div>
+              </div>
+            </el-option>
+          </el-select>
+        </el-form-item>
+        
+        <el-form-item label="推荐类型" prop="recommendTypes">
+          <el-checkbox-group v-model="addForm.recommendTypes">
+            <el-checkbox label="popular">热门商品</el-checkbox>
+            <el-checkbox label="top_deal">Top Deals</el-checkbox>
+          </el-checkbox-group>
+        </el-form-item>
+        
+        <el-form-item label="推荐理由" prop="recommendReason">
+          <el-input
+            v-model="addForm.recommendReason"
+            type="textarea"
+            :rows="3"
+            placeholder="请输入推荐理由"
+          />
+        </el-form-item>
+        
+        <el-form-item label="推荐优先级" prop="recommendPriority">
+          <el-slider
+            v-model="addForm.recommendPriority"
+            :min="0"
+            :max="100"
+            :step="1"
+            show-input
+          />
+        </el-form-item>
+        
+        <el-form-item label="推荐开始时间">
+          <el-date-picker
+            v-model="addForm.recommendStartTime"
+            type="datetime"
+            placeholder="选择开始时间"
+            format="YYYY-MM-DD HH:mm:ss"
+            value-format="YYYY-MM-DD HH:mm:ss"
+          />
+        </el-form-item>
+        
+        <el-form-item label="推荐结束时间">
+          <el-date-picker
+            v-model="addForm.recommendEndTime"
+            type="datetime"
+            placeholder="选择结束时间"
+            format="YYYY-MM-DD HH:mm:ss"
+            value-format="YYYY-MM-DD HH:mm:ss"
+          />
+        </el-form-item>
+      </el-form>
+      
+      <template #footer>
+        <el-button @click="addDialogVisible = false">取消</el-button>
+        <el-button type="primary" @click="saveAddRecommendProduct" :loading="saving">
+          添加推荐
+        </el-button>
+      </template>
+    </el-dialog>
+
     <!-- 批量设置对话框 -->
     <el-dialog
       v-model="batchDialogVisible"
@@ -315,7 +433,7 @@
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { Search, Refresh, Edit } from '@element-plus/icons-vue'
+import { Search, Refresh, Edit, Plus } from '@element-plus/icons-vue'
 import request from '@/utils/request'
 
 // 响应式数据
@@ -325,8 +443,14 @@ const products = ref([])
 const selectedProducts = ref([])
 const editDialogVisible = ref(false)
 const batchDialogVisible = ref(false)
+const addDialogVisible = ref(false)
 const editingProduct = ref(null)
 const editFormRef = ref()
+const addFormRef = ref()
+const productSearchLoading = ref(false)
+const merchantLoading = ref(false)
+const availableMerchants = ref([])
+const availableProducts = ref([])
 
 // 统计数据
 const stats = ref({
@@ -367,8 +491,31 @@ const batchForm = reactive({
   recommendPriority: 0
 })
 
+// 添加推荐商品表单
+const addForm = reactive({
+  merchantId: null,
+  productId: null,
+  recommendTypes: [],
+  recommendReason: '',
+  recommendPriority: 0,
+  recommendStartTime: '',
+  recommendEndTime: ''
+})
+
 // 表单验证规则
 const editRules = {
+  recommendTypes: [
+    { required: true, message: '请选择至少一种推荐类型', trigger: 'change' }
+  ]
+}
+
+const addRules = {
+  merchantId: [
+    { required: true, message: '请选择商家', trigger: 'change' }
+  ],
+  productId: [
+    { required: true, message: '请选择要推荐的商品', trigger: 'change' }
+  ],
   recommendTypes: [
     { required: true, message: '请选择至少一种推荐类型', trigger: 'change' }
   ]
@@ -532,6 +679,146 @@ const formatDate = (dateString) => {
   return new Date(dateString).toLocaleString('zh-CN')
 }
 
+// 添加推荐商品相关方法
+const showAddRecommendDialog = async () => {
+  addForm.merchantId = null
+  addForm.productId = null
+  addForm.recommendTypes = []
+  addForm.recommendReason = ''
+  addForm.recommendPriority = 0
+  addForm.recommendStartTime = ''
+  addForm.recommendEndTime = ''
+  availableMerchants.value = []
+  availableProducts.value = []
+  
+  // 加载商家列表
+  await loadMerchants()
+  
+  addDialogVisible.value = true
+}
+
+const loadMerchants = async () => {
+  merchantLoading.value = true
+  try {
+    const response = await request.get('/admin/merchants', {
+      params: {
+        page: 1,
+        pageSize: 100 // 获取所有商家
+      }
+    })
+    
+    if (response.data.code === 200) {
+      availableMerchants.value = response.data.data.list || []
+    }
+  } catch (error) {
+    console.error('加载商家列表失败:', error)
+    ElMessage.error('加载商家列表失败')
+  } finally {
+    merchantLoading.value = false
+  }
+}
+
+const handleMerchantSelect = async (merchantId) => {
+  if (!merchantId) {
+    availableProducts.value = []
+    addForm.productId = null
+    return
+  }
+  
+  productSearchLoading.value = true
+  try {
+    const response = await request.get('/admin/products', {
+      params: {
+        merchantId: merchantId,
+        page: 1,
+        pageSize: 100, // 获取该商家的所有商品
+        status: 1 // 只显示上架商品
+      }
+    })
+    
+    if (response.data.code === 200) {
+      availableProducts.value = response.data.data.list || []
+    }
+  } catch (error) {
+    console.error('加载商品列表失败:', error)
+    ElMessage.error('加载商品列表失败')
+  } finally {
+    productSearchLoading.value = false
+  }
+}
+
+const searchProducts = async (query) => {
+  if (!query) {
+    availableProducts.value = []
+    return
+  }
+  
+  productSearchLoading.value = true
+  try {
+    const response = await request.get('/admin/products', {
+      params: {
+        keyword: query,
+        page: 1,
+        pageSize: 20,
+        status: 1 // 只搜索上架商品
+      }
+    })
+    
+    if (response.data.code === 200) {
+      availableProducts.value = response.data.data.list || []
+    }
+  } catch (error) {
+    console.error('搜索商品失败:', error)
+    ElMessage.error('搜索商品失败')
+  } finally {
+    productSearchLoading.value = false
+  }
+}
+
+const handleProductSelect = (productId) => {
+  const selectedProduct = availableProducts.value.find(p => p.id === productId)
+  if (selectedProduct) {
+    // 可以在这里预填充一些信息
+    console.log('选中商品:', selectedProduct)
+  }
+}
+
+const saveAddRecommendProduct = async () => {
+  if (!addFormRef.value) return
+  
+  const valid = await addFormRef.value.validate()
+  if (!valid) return
+  
+  saving.value = true
+  try {
+    const updateData = {
+      isPopular: addForm.recommendTypes.includes('popular'),
+      isTopDeal: addForm.recommendTypes.includes('top_deal'),
+      recommendReason: addForm.recommendReason,
+      recommendPriority: addForm.recommendPriority,
+      recommendStartTime: addForm.recommendStartTime,
+      recommendEndTime: addForm.recommendEndTime
+    }
+    
+    const response = await request.put(`/admin/recommend-products/${addForm.productId}`, updateData)
+    const data = response.data
+    
+    if (data.code === 200) {
+      ElMessage.success('添加推荐成功')
+      addDialogVisible.value = false
+      loadRecommendProducts()
+      loadStats()
+    } else {
+      ElMessage.error(data.message || '添加推荐失败')
+    }
+  } catch (error) {
+    console.error('添加推荐失败:', error)
+    ElMessage.error('添加推荐失败')
+  } finally {
+    saving.value = false
+  }
+}
+
 // 生命周期
 onMounted(() => {
   loadRecommendProducts()
@@ -691,6 +978,62 @@ onMounted(() => {
     margin-top: 20px;
     display: flex;
     justify-content: center;
+  }
+}
+
+// 添加推荐商品相关样式
+.header-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.merchant-option {
+  padding: 5px 0;
+  
+  .merchant-name {
+    font-weight: 500;
+    color: #303133;
+    margin-bottom: 2px;
+  }
+  
+  .merchant-contact {
+    color: #909399;
+    font-size: 0.9em;
+  }
+}
+
+.product-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  
+  .option-image {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 4px;
+  }
+  
+  .option-info {
+    flex: 1;
+    
+    .option-name {
+      font-weight: 500;
+      color: #303133;
+      margin-bottom: 2px;
+    }
+    
+    .option-category {
+      color: #909399;
+      font-size: 0.9em;
+      margin-bottom: 2px;
+    }
+    
+    .option-price {
+      color: #e74c3c;
+      font-weight: bold;
+      font-size: 0.9em;
+    }
   }
 }
 </style>

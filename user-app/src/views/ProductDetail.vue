@@ -2,20 +2,59 @@
   <div class="product-detail">
     <div class="container">
       <div class="product-content">
-        <!-- 商品图片 -->
+        <!-- 商品图片轮播 -->
         <div class="product-images">
-          <div class="main-image">
-            <img :src="product.image" :alt="product.name" />
+          <div class="main-image-container">
+            <div class="main-image" @click="openImageModal">
+              <img :src="currentImage" :alt="product.name" />
+              <div class="image-overlay" v-if="allImages.length > 1">
+                <div class="image-counter">
+                  {{ currentImageIndex + 1 }} / {{ allImages.length }}
+                </div>
+                <div class="zoom-icon">🔍</div>
+              </div>
+            </div>
+            
+            <!-- 左右切换按钮 -->
+            <div class="nav-buttons" v-if="allImages.length > 1">
+              <button 
+                class="nav-btn prev-btn" 
+                @click="prevImage"
+                :disabled="currentImageIndex === 0"
+              >
+                ‹
+              </button>
+              <button 
+                class="nav-btn next-btn" 
+                @click="nextImage"
+                :disabled="currentImageIndex === allImages.length - 1"
+              >
+                ›
+              </button>
+            </div>
           </div>
-          <div class="thumbnail-images" v-if="product.images && product.images.length > 1">
-            <img 
-              v-for="(image, index) in product.images" 
-              :key="index"
-              :src="image" 
-              :alt="product.name"
-              @click="currentImage = image"
-              :class="{ active: currentImage === image }"
-            />
+          
+          <!-- 缩略图导航 -->
+          <div class="thumbnail-container" v-if="allImages.length > 1">
+            <div class="thumbnail-scroll" ref="thumbnailScroll">
+              <div class="thumbnail-list">
+                <div 
+                  v-for="(image, index) in allImages" 
+                  :key="index"
+                  class="thumbnail-item"
+                  :class="{ active: currentImageIndex === index }"
+                  @click="selectImage(index)"
+                >
+                  <img :src="image" :alt="product.name" />
+                  <div class="thumbnail-overlay" v-if="index === 0 && product.video">
+                    <div class="play-icon">▶</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="scroll-indicator" v-if="showScrollIndicator">
+              <div class="scroll-arrow right" @click="scrollThumbnails('right')">›</div>
+            </div>
           </div>
         </div>
         
@@ -30,7 +69,7 @@
               RM{{ product.originalPrice }}
             </div>
             <div class="discount" v-if="product.originalPrice">
-              省RM{{ (product.originalPrice - product.price).toFixed(2) }}
+              {{ t('productDetail.save') }}RM{{ (product.originalPrice - product.price).toFixed(2) }}
             </div>
           </div>
           
@@ -42,11 +81,27 @@
               text-color="#ff9900"
               score-template="{value}"
             />
-            <span class="rating-count">({{ product.reviewCount }}条评价)</span>
+            <span class="rating-count">({{ product.reviewCount }}{{ t('productDetail.reviews') }})</span>
+          </div>
+          
+          <!-- 商家信息 -->
+          <div class="merchant-info" v-if="product.merchantName">
+            <div class="merchant-header">
+              <span class="merchant-label">{{ t('productDetail.merchant') }}：</span>
+              <span class="merchant-name" @click="goToShop">{{ product.merchantName }}</span>
+              <el-button 
+                type="primary" 
+                size="small" 
+                @click="goToShop"
+                class="shop-btn"
+              >
+                {{ t('productDetail.enterShop') }}
+              </el-button>
+            </div>
           </div>
           
           <div class="product-specs" v-if="product.specs">
-            <h3>商品规格</h3>
+            <h3>{{ t('productDetail.specifications') }}</h3>
             <div class="spec-list">
               <div v-for="(value, key) in product.specs" :key="key" class="spec-item">
                 <span class="spec-label">{{ key }}:</span>
@@ -57,7 +112,7 @@
           
           <div class="product-actions">
             <div class="quantity-selector">
-              <label>数量:</label>
+              <label>{{ t('common.quantity') }}:</label>
               <el-input-number 
                 v-model="quantity" 
                 :min="1" 
@@ -73,7 +128,7 @@
                 @click="addToCart"
                 :loading="addingToCart"
               >
-                加入购物车
+                {{ t('home.addToCart') }}
               </el-button>
               <el-button 
                 type="danger" 
@@ -81,7 +136,7 @@
                 @click="buyNow"
                 :loading="buyingNow"
               >
-                立即购买
+                {{ t('home.buyNow') }}
               </el-button>
             </div>
           </div>
@@ -91,10 +146,10 @@
       <!-- 商品详情 -->
       <div class="product-details">
         <el-tabs v-model="activeTab">
-          <el-tab-pane label="商品详情" name="details">
+          <el-tab-pane :label="t('productDetail.productDetails')" name="details">
             <div class="detail-content" v-html="product.detailContent"></div>
           </el-tab-pane>
-          <el-tab-pane label="用户评价" name="reviews">
+          <el-tab-pane :label="t('productDetail.userReviews')" name="reviews">
             <div class="reviews-content">
               <div v-for="review in product.reviews" :key="review.id" class="review-item">
                 <div class="review-header">
@@ -109,22 +164,79 @@
         </el-tabs>
       </div>
     </div>
+    
+    <!-- 图片查看模态框 -->
+    <el-dialog
+      v-model="imageModalVisible"
+      :show-close="false"
+      :close-on-click-modal="true"
+      :close-on-press-escape="true"
+      width="90%"
+      class="image-modal"
+    >
+      <div class="modal-content">
+        <div class="modal-image-container">
+          <img :src="currentImage" :alt="product.name" class="modal-image" />
+          
+          <!-- 模态框导航按钮 -->
+          <div class="modal-nav-buttons" v-if="allImages.length > 1">
+            <button 
+              class="modal-nav-btn prev-btn" 
+              @click="prevImage"
+              :disabled="currentImageIndex === 0"
+            >
+              ‹
+            </button>
+            <button 
+              class="modal-nav-btn next-btn" 
+              @click="nextImage"
+              :disabled="currentImageIndex === allImages.length - 1"
+            >
+              ›
+            </button>
+          </div>
+          
+          <!-- 关闭按钮 -->
+          <button class="close-btn" @click="imageModalVisible = false">×</button>
+        </div>
+        
+        <!-- 模态框缩略图 -->
+        <div class="modal-thumbnails" v-if="allImages.length > 1">
+          <div 
+            v-for="(image, index) in allImages" 
+            :key="index"
+            class="modal-thumbnail"
+            :class="{ active: currentImageIndex === index }"
+            @click="selectImage(index)"
+          >
+            <img :src="image" :alt="product.name" />
+          </div>
+        </div>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { productApi } from '@/api'
 import { useCartStore } from '@/stores/cart'
 import { ElMessage } from 'element-plus'
 
 const route = useRoute()
 const router = useRouter()
+const { t } = useI18n()
 const cartStore = useCartStore()
 
 const product = ref<any>({})
 const currentImage = ref('')
+const currentImageIndex = ref(0)
+const allImages = ref<string[]>([])
+const imageModalVisible = ref(false)
+const thumbnailScroll = ref<HTMLElement>()
+const showScrollIndicator = ref(false)
 const quantity = ref(1)
 const activeTab = ref('details')
 const addingToCart = ref(false)
@@ -137,8 +249,39 @@ const loadProductDetail = async () => {
     const response = await productApi.getProductDetail(productId)
     product.value = response
     
-    // 设置默认图片
-    currentImage.value = product.value.image || ''
+    // 处理图片数据
+    const images: string[] = []
+    
+    // 添加主图
+    if (product.value.image) {
+      images.push(product.value.image)
+    }
+    
+    // 添加附图
+    if (product.value.images) {
+      try {
+        const additionalImages = JSON.parse(product.value.images)
+        if (Array.isArray(additionalImages)) {
+          images.push(...additionalImages)
+        }
+      } catch (error) {
+        console.error('解析附图失败:', error)
+      }
+    }
+    
+    // 如果没有图片，使用默认图片
+    if (images.length === 0) {
+      images.push('https://via.placeholder.com/400x400/409EFF/ffffff?text=商品图片')
+    }
+    
+    allImages.value = images
+    currentImage.value = images[0]
+    currentImageIndex.value = 0
+    
+    // 检查是否需要显示滚动指示器
+    setTimeout(() => {
+      checkScrollIndicator()
+    }, 100)
     
     // 设置默认规格
     if (product.value.specs) {
@@ -175,7 +318,9 @@ const loadProductDetail = async () => {
         }
       ]
     }
+    allImages.value = [product.value.image]
     currentImage.value = product.value.image
+    currentImageIndex.value = 0
   }
 }
 
@@ -205,6 +350,67 @@ const buyNow = async () => {
   }
 }
 
+// 跳转到商家店铺
+const goToShop = () => {
+  if (product.value.merchantId) {
+    router.push(`/shop/${product.value.merchantId}`)
+  }
+}
+
+// 图片轮播相关方法
+const selectImage = (index: number) => {
+  currentImageIndex.value = index
+  currentImage.value = allImages.value[index]
+}
+
+const prevImage = () => {
+  if (currentImageIndex.value > 0) {
+    currentImageIndex.value--
+    currentImage.value = allImages.value[currentImageIndex.value]
+  }
+}
+
+const nextImage = () => {
+  if (currentImageIndex.value < allImages.value.length - 1) {
+    currentImageIndex.value++
+    currentImage.value = allImages.value[currentImageIndex.value]
+  }
+}
+
+const openImageModal = () => {
+  imageModalVisible.value = true
+}
+
+const checkScrollIndicator = () => {
+  if (thumbnailScroll.value) {
+    const container = thumbnailScroll.value
+    const list = container.querySelector('.thumbnail-list') as HTMLElement
+    if (list) {
+      showScrollIndicator.value = list.scrollWidth > container.clientWidth
+    }
+  }
+}
+
+const scrollThumbnails = (direction: 'left' | 'right') => {
+  if (thumbnailScroll.value) {
+    const container = thumbnailScroll.value
+    const scrollAmount = 100
+    const currentScroll = container.scrollLeft
+    
+    if (direction === 'right') {
+      container.scrollTo({
+        left: currentScroll + scrollAmount,
+        behavior: 'smooth'
+      })
+    } else {
+      container.scrollTo({
+        left: currentScroll - scrollAmount,
+        behavior: 'smooth'
+      })
+    }
+  }
+}
+
 onMounted(() => {
   loadProductDetail()
 })
@@ -224,34 +430,188 @@ onMounted(() => {
 }
 
 .product-images {
-  .main-image {
+  .main-image-container {
+    position: relative;
     width: 100%;
     height: 400px;
     margin-bottom: 20px;
-    border-radius: 8px;
+    border-radius: 12px;
     overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     
-    img {
+    .main-image {
       width: 100%;
       height: 100%;
-      object-fit: cover;
+      position: relative;
+      cursor: pointer;
+      
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+      }
+      
+      &:hover img {
+        transform: scale(1.05);
+      }
+      
+      .image-overlay {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        
+        .image-counter {
+          background: rgba(0, 0, 0, 0.6);
+          color: white;
+          padding: 6px 12px;
+          border-radius: 20px;
+          font-size: 12px;
+          font-weight: 500;
+        }
+        
+        .zoom-icon {
+          background: rgba(0, 0, 0, 0.6);
+          color: white;
+          width: 32px;
+          height: 32px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 16px;
+        }
+      }
+    }
+    
+    .nav-buttons {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      padding: 0 15px;
+      pointer-events: none;
+      
+      .nav-btn {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.9);
+        border: none;
+        font-size: 20px;
+        font-weight: bold;
+        color: #333;
+        cursor: pointer;
+        pointer-events: all;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        
+        &:hover:not(:disabled) {
+          background: white;
+          transform: scale(1.1);
+        }
+        
+        &:disabled {
+          opacity: 0.3;
+          cursor: not-allowed;
+        }
+      }
     }
   }
   
-  .thumbnail-images {
-    display: flex;
-    gap: 10px;
+  .thumbnail-container {
+    position: relative;
     
-    img {
-      width: 80px;
-      height: 80px;
-      object-fit: cover;
-      border-radius: 4px;
-      cursor: pointer;
-      border: 2px solid transparent;
+    .thumbnail-scroll {
+      overflow-x: auto;
+      overflow-y: hidden;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
       
-      &.active {
-        border-color: $primary-color;
+      &::-webkit-scrollbar {
+        display: none;
+      }
+      
+      .thumbnail-list {
+        display: flex;
+        gap: 8px;
+        padding: 5px 0;
+        
+        .thumbnail-item {
+          position: relative;
+          flex-shrink: 0;
+          width: 80px;
+          height: 80px;
+          border-radius: 8px;
+          overflow: hidden;
+          cursor: pointer;
+          border: 3px solid transparent;
+          transition: all 0.3s ease;
+          
+          &:hover {
+            transform: scale(1.05);
+          }
+          
+          &.active {
+            border-color: #409eff;
+            box-shadow: 0 0 0 2px rgba(64, 158, 255, 0.3);
+          }
+          
+          img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+          }
+          
+          .thumbnail-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            
+            .play-icon {
+              color: white;
+              font-size: 24px;
+              font-weight: bold;
+            }
+          }
+        }
+      }
+    }
+    
+    .scroll-indicator {
+      position: absolute;
+      right: -15px;
+      top: 50%;
+      transform: translateY(-50%);
+      
+      .scroll-arrow {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.9);
+        border: none;
+        font-size: 16px;
+        font-weight: bold;
+        color: #333;
+        cursor: pointer;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s ease;
+        
+        &:hover {
+          background: white;
+          transform: scale(1.1);
+        }
       }
     }
   }
@@ -307,6 +667,40 @@ onMounted(() => {
     
     .rating-count {
       color: $text-secondary;
+    }
+  }
+  
+  .merchant-info {
+    margin-bottom: 30px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+    
+    .merchant-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      
+      .merchant-label {
+        color: $text-secondary;
+        font-size: 14px;
+      }
+      
+      .merchant-name {
+        color: $primary-color;
+        font-weight: 500;
+        cursor: pointer;
+        transition: color 0.3s ease;
+        
+        &:hover {
+          color: darken($primary-color, 10%);
+        }
+      }
+      
+      .shop-btn {
+        margin-left: auto;
+      }
     }
   }
   
@@ -410,7 +804,7 @@ onMounted(() => {
     gap: 20px;
   }
   
-  .product-images .main-image {
+  .product-images .main-image-container {
     height: 300px;
   }
   
@@ -424,6 +818,140 @@ onMounted(() => {
   
   .product-info .product-actions .action-buttons {
     flex-direction: column;
+  }
+}
+
+/* 图片模态框样式 */
+.image-modal {
+  :deep(.el-dialog) {
+    background: rgba(0, 0, 0, 0.9);
+    border-radius: 0;
+    margin: 0;
+    max-height: 100vh;
+    height: 100vh;
+  }
+  
+  :deep(.el-dialog__body) {
+    padding: 0;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.modal-content {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  
+  .modal-image-container {
+    position: relative;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    
+    .modal-image {
+      max-width: 90%;
+      max-height: 80vh;
+      object-fit: contain;
+      border-radius: 8px;
+    }
+    
+    .modal-nav-buttons {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      padding: 0 30px;
+      
+      .modal-nav-btn {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.9);
+        border: none;
+        font-size: 24px;
+        font-weight: bold;
+        color: #333;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        
+        &:hover:not(:disabled) {
+          background: white;
+          transform: scale(1.1);
+        }
+        
+        &:disabled {
+          opacity: 0.3;
+          cursor: not-allowed;
+        }
+      }
+    }
+    
+    .close-btn {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.9);
+      border: none;
+      font-size: 24px;
+      font-weight: bold;
+      color: #333;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+      
+      &:hover {
+        background: white;
+        transform: scale(1.1);
+      }
+    }
+  }
+  
+  .modal-thumbnails {
+    display: flex;
+    gap: 10px;
+    padding: 20px;
+    overflow-x: auto;
+    max-width: 100%;
+    
+    .modal-thumbnail {
+      flex-shrink: 0;
+      width: 60px;
+      height: 60px;
+      border-radius: 6px;
+      overflow: hidden;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: all 0.3s ease;
+      
+      &:hover {
+        transform: scale(1.1);
+      }
+      
+      &.active {
+        border-color: #409eff;
+        box-shadow: 0 0 0 2px rgba(64, 158, 255, 0.3);
+      }
+      
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
   }
 }
 </style>

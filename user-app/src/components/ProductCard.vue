@@ -22,6 +22,12 @@
           RM{{ product.originalPrice }}
         </div>
       </div>
+      
+      <!-- 商家信息 -->
+      <div class="merchant-info" v-if="product.merchantName" @click.stop="goToShop">
+        <span class="merchant-name">{{ product.merchantName }}</span>
+        <span class="shop-link">进入店铺 →</span>
+      </div>
     </div>
   </div>
 </template>
@@ -55,6 +61,13 @@ const cartStore = useCartStore()
 // 跳转到商品详情页
 const goToProduct = () => {
   router.push(`/product/${props.product.id}`)
+}
+
+// 跳转到商家店铺
+const goToShop = () => {
+  if (props.product.merchantId) {
+    router.push(`/shop/${props.product.merchantId}`)
+  }
 }
 
 // 格式化评分显示
@@ -202,6 +215,38 @@ const formatRating = (rating: number) => {
   
   .dark-theme & {
     color: #666;
+  }
+}
+
+.merchant-info {
+  margin-top: 8px;
+  padding: 6px 8px;
+  background: #f8f9fa;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  
+  &:hover {
+    background: #e9ecef;
+    
+    .shop-link {
+      color: $primary-color;
+    }
+  }
+  
+  .merchant-name {
+    font-size: 12px;
+    color: #666;
+    font-weight: 500;
+  }
+  
+  .shop-link {
+    font-size: 11px;
+    color: #999;
+    transition: color 0.3s ease;
   }
 }
 
