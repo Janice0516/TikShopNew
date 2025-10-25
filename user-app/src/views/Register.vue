@@ -1,84 +1,65 @@
 <template>
-  <div class="register-page">
-    <div class="register-container">
-      <div class="register-form">
-        <div class="register-header">
-          <h1>TikTok Shop</h1>
-          <p>创建新账户，开始购物之旅</p>
-        </div>
-        
-        <el-form
-          ref="registerFormRef"
-          :model="registerForm"
-          :rules="registerRules"
-          @submit.prevent="handleRegister"
-        >
-          <el-form-item prop="phone">
-            <el-input
-              v-model="registerForm.phone"
+  <div class="register-container">
+    <div class="register-card">
+      <div class="register-header">
+        <h1 class="register-title">TikTok Shop</h1>
+        <p class="register-subtitle">创建新账户,开始购物之旅</p>
+      </div>
+      
+      <form @submit.prevent="handleRegister" class="register-form">
+        <!-- 手机号 -->
+        <div class="form-group">
+          <div class="input-wrapper">
+            <i class="input-icon">📱</i>
+            <input
+              v-model="formData.phone"
+              type="tel"
               placeholder="请输入手机号"
-              :prefix-icon="Phone"
-              size="large"
+              class="form-input"
+              required
             />
-          </el-form-item>
-          
-          <el-form-item prop="verifyCode">
-            <div class="verify-code-group">
-              <el-input
-                v-model="registerForm.verifyCode"
-                placeholder="请输入验证码"
-                :prefix-icon="Message"
-                size="large"
-              />
-              <el-button 
-                :disabled="countdown > 0"
-                @click="sendVerifyCode"
-                class="verify-btn"
-              >
-                {{ countdown > 0 ? `${countdown}s` : '发送验证码' }}
-              </el-button>
-            </div>
-          </el-form-item>
-          
-          <el-form-item prop="password">
-            <el-input
-              v-model="registerForm.password"
+          </div>
+        </div>
+
+        <!-- 密码 -->
+        <div class="form-group">
+          <div class="input-wrapper">
+            <i class="input-icon">🔒</i>
+            <input
+              v-model="formData.password"
               type="password"
               placeholder="请输入密码"
-              :prefix-icon="Lock"
-              size="large"
-              show-password
+              class="form-input"
+              required
             />
-          </el-form-item>
-          
-          <el-form-item prop="confirmPassword">
-            <el-input
-              v-model="registerForm.confirmPassword"
+          </div>
+        </div>
+
+        <!-- 确认密码 -->
+        <div class="form-group">
+          <div class="input-wrapper">
+            <i class="input-icon">🔒</i>
+            <input
+              v-model="formData.confirmPassword"
               type="password"
               placeholder="请确认密码"
-              :prefix-icon="Lock"
-              size="large"
-              show-password
+              class="form-input"
+              required
             />
-          </el-form-item>
-          
-          <el-form-item>
-            <el-button
-              type="primary"
-              size="large"
-              :loading="loading"
-              @click="handleRegister"
-              class="register-btn"
-            >
-              注册
-            </el-button>
-          </el-form-item>
-        </el-form>
-        
-        <div class="register-footer">
-          <p>已有账户？<router-link to="/login">立即登录</router-link></p>
+          </div>
         </div>
-      </div>
+
+        <!-- 注册按钮 -->
+        <button type="submit" class="register-btn" :disabled="loading">
+          {{ loading ? '注册中...' : '注册' }}
+        </button>
+
+        <!-- 登录链接 -->
+        <div class="login-link">
+          <span>已有账户?</span>
+          <router-link to="/login" class="link">立即登录</router-link>
+        </div>
+      </form>
     </div>
   </div>
 </template>
@@ -86,96 +67,61 @@
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
-import { useUserStore } from '@/stores/user'
-import { Phone, Lock, Message } from '@element-plus/icons-vue'
-import { ElMessage, type FormInstance } from 'element-plus'
+import { ElMessage } from 'element-plus'
+import { userApi } from '@/api'
 
 const router = useRouter()
-const userStore = useUserStore()
-
-const registerFormRef = ref<FormInstance>()
 const loading = ref(false)
-const countdown = ref(0)
 
-const registerForm = reactive({
+const formData = reactive({
   phone: '',
-  verifyCode: '',
   password: '',
   confirmPassword: ''
 })
 
-const registerRules = {
-  phone: [
-    { required: true, message: '请输入手机号', trigger: 'blur' },
-    { pattern: /^1[3-9]\d{9}$/, message: '请输入正确的手机号', trigger: 'blur' }
-  ],
-  verifyCode: [
-    { required: true, message: '请输入验证码', trigger: 'blur' },
-    { len: 6, message: '验证码为6位数字', trigger: 'blur' }
-  ],
-  password: [
-    { required: true, message: '请输入密码', trigger: 'blur' },
-    { min: 6, message: '密码长度不能少于6位', trigger: 'blur' }
-  ],
-  confirmPassword: [
-    { required: true, message: '请确认密码', trigger: 'blur' },
-    {
-      validator: (rule: any, value: string, callback: Function) => {
-        if (value !== registerForm.password) {
-          callback(new Error('两次输入的密码不一致'))
-        } else {
-          callback()
-        }
-      },
-      trigger: 'blur'
-    }
-  ]
-}
-
-// 发送验证码
-const sendVerifyCode = () => {
-  if (!registerForm.phone) {
-    ElMessage.warning('请先输入手机号')
-    return
-  }
-  
-  if (!/^1[3-9]\d{9}$/.test(registerForm.phone)) {
-    ElMessage.warning('请输入正确的手机号')
-    return
-  }
-  
-  // 模拟发送验证码
-  ElMessage.success('验证码已发送')
-  countdown.value = 60
-  
-  const timer = setInterval(() => {
-    countdown.value--
-    if (countdown.value <= 0) {
-      clearInterval(timer)
-    }
-  }, 1000)
-}
-
 const handleRegister = async () => {
-  if (!registerFormRef.value) return
-  
+  // 验证密码
+  if (formData.password !== formData.confirmPassword) {
+    ElMessage.error('两次输入的密码不一致')
+    return
+  }
+
+  // 验证手机号格式
+  const phoneRegex = /^1[3-9]\d{9}$/
+  if (!phoneRegex.test(formData.phone)) {
+    ElMessage.error('请输入正确的手机号')
+    return
+  }
+
+  // 验证密码长度
+  if (formData.password.length < 6) {
+    ElMessage.error('密码长度不能少于6位')
+    return
+  }
+
   try {
-    await registerFormRef.value.validate()
     loading.value = true
     
-    await userStore.register(registerForm.phone, registerForm.password, registerForm.verifyCode)
-    ElMessage.success('注册成功')
-    router.push('/')
-  } catch (error) {
+    const response = await userApi.register({
+      phone: formData.phone,
+      password: formData.password
+    })
+
+    if (response) {
+      ElMessage.success('注册成功！')
+      router.push('/login')
+    }
+  } catch (error: any) {
     console.error('注册失败:', error)
+    ElMessage.error(error.message || '注册失败，请重试')
   } finally {
     loading.value = false
   }
 }
 </script>
 
-<style scoped lang="scss">
-.register-page {
+<style scoped>
+.register-container {
   min-height: 100vh;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   display: flex;
@@ -184,88 +130,119 @@ const handleRegister = async () => {
   padding: 20px;
 }
 
-.register-container {
+.register-card {
+  background: white;
+  border-radius: 20px;
+  padding: 40px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
   width: 100%;
   max-width: 400px;
-}
-
-.register-form {
-  background: #fff;
-  padding: 40px;
-  border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
 
 .register-header {
   text-align: center;
   margin-bottom: 30px;
-  
-  h1 {
-    font-size: 28px;
-    font-weight: bold;
-    color: $primary-color;
-    margin: 0 0 10px 0;
-  }
-  
-  p {
-    color: $text-secondary;
-    margin: 0;
-  }
 }
 
-.verify-code-group {
+.register-title {
+  color: #667eea;
+  font-size: 28px;
+  font-weight: bold;
+  margin: 0 0 10px 0;
+}
+
+.register-subtitle {
+  color: #666;
+  font-size: 14px;
+  margin: 0;
+}
+
+.register-form {
   display: flex;
-  gap: 10px;
-  
-  .el-input {
-    flex: 1;
-  }
-  
-  .verify-btn {
-    white-space: nowrap;
-  }
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-group {
+  position: relative;
+}
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-icon {
+  position: absolute;
+  left: 15px;
+  font-size: 16px;
+  z-index: 1;
+}
+
+.form-input {
+  width: 100%;
+  padding: 15px 15px 15px 45px;
+  border: 2px solid #e1e5e9;
+  border-radius: 10px;
+  font-size: 16px;
+  transition: border-color 0.3s ease;
+  box-sizing: border-box;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #667eea;
 }
 
 .register-btn {
-  width: 100%;
-  height: 45px;
+  background: #667eea;
+  color: white;
+  border: none;
+  padding: 15px;
+  border-radius: 10px;
   font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 10px;
 }
 
-.register-footer {
+.register-btn:hover:not(:disabled) {
+  background: #5a6fd8;
+}
+
+.register-btn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.login-link {
   text-align: center;
   margin-top: 20px;
-  
-  p {
-    color: $text-secondary;
-    margin: 0;
-    
-    a {
-      color: $primary-color;
-      text-decoration: none;
-      
-      &:hover {
-        text-decoration: underline;
-      }
-    }
-  }
+  color: #666;
+  font-size: 14px;
 }
 
+.login-link .link {
+  color: #667eea;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.login-link .link:hover {
+  text-decoration: underline;
+}
+
+/* 响应式设计 */
 @media (max-width: 480px) {
-  .register-form {
+  .register-card {
     padding: 30px 20px;
+    margin: 10px;
   }
   
-  .register-header h1 {
+  .register-title {
     font-size: 24px;
-  }
-  
-  .verify-code-group {
-    flex-direction: column;
-    
-    .verify-btn {
-      width: 100%;
-    }
   }
 }
 </style>

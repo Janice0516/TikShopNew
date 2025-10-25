@@ -1,0 +1,318 @@
+{
+  "header": {
+    "getApp": "Get App",
+    "login": "Login"
+  },
+  "sidebar": {
+    "sell": "Categories",
+    "more": "Customer Service",
+    "login": "Login",
+    "startShopping": "Start Shopping",
+    "makeMoney": "Make Money with Us",
+    "companyInfo": "Company Info",
+    "customerSupport": "Customer Support",
+    "policyLegal": "Policy & Legal"
+  },
+  "breadcrumb": {
+    "home": "TikTok Shop"
+  },
+  "product": {
+    "addToCart": "Add to Cart",
+    "buyNow": "Buy Now",
+    "previousImage": "Previous Image",
+    "nextImage": "Next Image",
+    "color": "Color",
+    "size": "Size",
+    "material": "Material",
+    "option": "Option"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Error occurred",
+    "success": "Operation successful",
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "save": "Save",
+    "edit": "Edit",
+    "delete": "Delete",
+    "search": "Search",
+    "filter": "Filter",
+    "defaultShop": "Premium Shop",
+    "sort": "Sort",
+    "price": "Price",
+    "quantity": "Quantity",
+    "total": "Total",
+    "subtotal": "Subtotal",
+    "shipping": "Shipping",
+    "tax": "Tax",
+    "discount": "Discount",
+    "free": "Free",
+    "more": "More",
+    "less": "Less",
+    "viewAll": "View All",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "close": "Close",
+    "open": "Open",
+    "yes": "Yes",
+    "no": "No",
+    "ok": "OK",
+    "retry": "Retry",
+    "refresh": "Refresh",
+    "reset": "Reset",
+    "submit": "Submit",
+    "upload": "Upload",
+    "download": "Download",
+    "print": "Print",
+    "share": "Share",
+    "copy": "Copy",
+    "paste": "Paste",
+    "cut": "Cut",
+    "undo": "Undo",
+    "redo": "Redo",
+    "selectAll": "Select All",
+    "deselectAll": "Deselect All",
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive",
+      "pending": "Pending",
+      "shipped": "Shipped",
+      "completed": "Completed",
+      "cancelled": "Cancelled",
+      "processing": "Processing",
+      "approved": "Approved",
+      "rejected": "Rejected",
+      "draft": "Draft",
+      "published": "Published",
+      "archived": "Archived"
+    }
+  },
+  "admin": {
+    "dashboard": {
+      "title": "Dashboard",
+      "totalUsers": "Total Users",
+      "totalMerchants": "Total Merchants",
+      "totalProducts": "Total Products",
+      "totalOrders": "Total Orders",
+      "recentOrders": "Recent Orders",
+      "topProducts": "Top Products",
+      "systemStats": "System Statistics"
+    },
+    "products": {
+      "title": "Product Management",
+      "addProduct": "Add Product",
+      "editProduct": "Edit Product",
+      "deleteProduct": "Delete Product",
+      "productName": "Product Name",
+      "productPrice": "Product Price",
+      "productCategory": "Product Category",
+      "productStatus": "Product Status",
+      "productStock": "Product Stock",
+      "productSales": "Product Sales"
+    },
+    "merchants": {
+      "title": "Merchant Management",
+      "addMerchant": "Add Merchant",
+      "editMerchant": "Edit Merchant",
+      "deleteMerchant": "Delete Merchant",
+      "merchantName": "Merchant Name",
+      "merchantEmail": "Merchant Email",
+      "merchantPhone": "Merchant Phone",
+      "merchantStatus": "Merchant Status",
+      "merchantBalance": "Merchant Balance"
+    },
+    "orders": {
+      "title": "Order Management",
+      "orderId": "Order ID",
+      "orderStatus": "Order Status",
+      "orderAmount": "Order Amount",
+      "orderDate": "Order Date",
+      "customerName": "Customer Name",
+      "customerEmail": "Customer Email",
+      "shippingAddress": "Shipping Address",
+      "orderItems": "Order Items",
+      "orderTotal": "Order Total",
+      "shippingFee": "Shipping Fee",
+      "taxFee": "Tax Fee",
+      "discountAmount": "Discount Amount"
+    },
+    "users": {
+      "title": "User Management",
+      "addUser": "Add User",
+      "editUser": "Edit User",
+      "deleteUser": "Delete User",
+      "userName": "Username",
+      "userEmail": "User Email",
+      "userPhone": "User Phone",
+      "userStatus": "User Status",
+      "userRole": "User Role",
+      "lastLogin": "Last Login"
+    },
+    "settings": {
+      "title": "System Settings",
+      "general": "General Settings",
+      "payment": "Payment Settings",
+      "shipping": "Shipping Settings",
+      "notification": "Notification Settings",
+      "security": "Security Settings",
+      "backup": "Backup Settings"
+    }
+  },
+  "merchant": {
+    "dashboard": {
+      "title": "Merchant Dashboard",
+      "totalSales": "Total Sales",
+      "totalOrders": "Total Orders",
+      "totalProducts": "Total Products",
+      "totalCustomers": "Total Customers",
+      "recentOrders": "Recent Orders",
+      "topProducts": "Top Products",
+      "salesChart": "Sales Chart"
+    },
+    "products": {
+      "title": "My Products",
+      "addProduct": "Add Product",
+      "editProduct": "Edit Product",
+      "deleteProduct": "Delete Product",
+      "selectProducts": "Select Products",
+      "productName": "Product Name",
+      "productPrice": "Product Price",
+      "productCategory": "Product Category",
+      "productStatus": "Product Status",
+      "productStock": "Product Stock",
+      "productSales": "Product Sales"
+    },
+    "orders": {
+      "title": "Order Management",
+      "orderId": "Order ID",
+      "orderStatus": "Order Status",
+      "orderAmount": "Order Amount",
+      "orderDate": "Order Date",
+      "customerName": "Customer Name",
+      "customerEmail": "Customer Email",
+      "shippingAddress": "Shipping Address",
+      "orderItems": "Order Items",
+      "orderTotal": "Order Total"
+    },
+    "withdrawal": {
+      "title": "Withdrawal Management",
+      "withdrawalAmount": "Withdrawal Amount",
+      "withdrawalStatus": "Withdrawal Status",
+      "withdrawalDate": "Withdrawal Date",
+      "bankAccount": "Bank Account",
+      "withdrawalFee": "Withdrawal Fee"
+    },
+    "creditRating": {
+      "title": "Credit Rating",
+      "currentRating": "Current Rating",
+      "ratingHistory": "Rating History",
+      "ratingFactors": "Rating Factors",
+      "improvementSuggestions": "Improvement Suggestions"
+    }
+  },
+  "user": {
+    "profile": {
+      "title": "Profile",
+      "editProfile": "Edit Profile",
+      "changePassword": "Change Password",
+      "personalInfo": "Personal Information",
+      "shippingAddress": "Shipping Address",
+      "paymentMethods": "Payment Methods",
+      "preferences": "Preferences"
+    },
+    "orders": {
+      "title": "My Orders",
+      "orderHistory": "Order History",
+      "orderDetails": "Order Details",
+      "orderStatus": "Order Status",
+      "trackOrder": "Track Order",
+      "cancelOrder": "Cancel Order",
+      "returnOrder": "Return Order",
+      "reviewOrder": "Review Order"
+    },
+    "cart": {
+      "title": "Shopping Cart",
+      "addToCart": "Add to Cart",
+      "removeFromCart": "Remove from Cart",
+      "updateQuantity": "Update Quantity",
+      "checkout": "Checkout",
+      "emptyCart": "Cart is empty",
+      "continueShopping": "Continue Shopping"
+    },
+    "favorites": {
+      "title": "My Favorites",
+      "addToFavorites": "Add to Favorites",
+      "removeFromFavorites": "Remove from Favorites",
+      "emptyFavorites": "Favorites is empty"
+    }
+  },
+  "errors": {
+    "networkError": "Network Error",
+    "serverError": "Server Error",
+    "notFound": "Page Not Found",
+    "unauthorized": "Unauthorized Access",
+    "forbidden": "Forbidden Access",
+    "validationError": "Validation Error",
+    "timeout": "Request Timeout",
+    "unknownError": "Unknown Error",
+    "productNotFound": "Product Not Found",
+    "categoryNotFound": "Category Not Found",
+    "userNotFound": "User Not Found",
+    "merchantNotFound": "Merchant Not Found",
+    "orderNotFound": "Order Not Found",
+    "invalidCredentials": "Invalid Username or Password",
+    "emailAlreadyExists": "Email Already Exists",
+    "phoneAlreadyExists": "Phone Number Already Exists",
+    "insufficientBalance": "Insufficient Balance",
+    "stockInsufficient": "Insufficient Stock",
+    "paymentFailed": "Payment Failed",
+    "shippingFailed": "Shipping Failed"
+  },
+  "messages": {
+    "success": {
+      "productAdded": "Product Added Successfully",
+      "productUpdated": "Product Updated Successfully",
+      "productDeleted": "Product Deleted Successfully",
+      "orderPlaced": "Order Placed Successfully",
+      "orderCancelled": "Order Cancelled Successfully",
+      "paymentSuccess": "Payment Successful",
+      "profileUpdated": "Profile Updated Successfully",
+      "passwordChanged": "Password Changed Successfully",
+      "loginSuccess": "Login Successful",
+      "logoutSuccess": "Logout Successful",
+      "registrationSuccess": "Registration Successful"
+    },
+    "info": {
+      "noData": "No Data Available",
+      "loading": "Loading...",
+      "processing": "Processing...",
+      "saving": "Saving...",
+      "uploading": "Uploading...",
+      "downloading": "Downloading..."
+    },
+    "warning": {
+      "unsavedChanges": "Unsaved Changes",
+      "lowStock": "Low Stock",
+      "expiredSession": "Session Expired",
+      "invalidInput": "Invalid Input"
+    }
+  },
+  "validation": {
+    "required": "This field is required",
+    "email": "Please enter a valid email address",
+    "phone": "Please enter a valid phone number",
+    "password": "Password must be at least 8 characters",
+    "confirmPassword": "Passwords do not match",
+    "minLength": "Length cannot be less than {min} characters",
+    "maxLength": "Length cannot exceed {max} characters",
+    "minValue": "Value cannot be less than {min}",
+    "maxValue": "Value cannot be greater than {max}",
+    "numeric": "Please enter a number",
+    "positive": "Please enter a positive number",
+    "url": "Please enter a valid URL",
+    "date": "Please enter a valid date"
+  }
+}
+
+

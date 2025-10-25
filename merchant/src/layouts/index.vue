@@ -1,249 +1,202 @@
 <template>
-  <div class="app-wrapper">
+  <div class="merchant-layout">
     <!-- 侧边栏 -->
-    <div class="sidebar-container">
-      <div class="logo">
-        <el-icon><Shop /></el-icon>
-        <h1>{{ $t('login.title') }}</h1>
+    <div class="sidebar">
+      <div class="sidebar-header">
+        <h2>TiktokShop Merchant</h2>
       </div>
-      <el-menu
-        :default-active="activeMenu"
-        class="sidebar-menu"
-        background-color="#304156"
-        text-color="#bfcbd9"
-        active-text-color="#409EFF"
-        :router="true"
-      >
-        <template v-for="route in menuRoutes" :key="route.path">
-          <!-- 一级菜单 -->
-          <el-menu-item
-            v-if="!route.children && !route.meta?.hidden"
-            :index="route.path"
-          >
-            <el-icon v-if="route.meta?.icon">
-              <component :is="route.meta.icon" />
-            </el-icon>
-            <span>{{ $t(route.meta?.title as string || '') }}</span>
-          </el-menu-item>
-
-          <!-- 子菜单 -->
-          <el-sub-menu
-            v-if="route.children && !route.meta?.hidden"
-            :index="route.path"
-          >
-            <template #title>
-              <el-icon v-if="route.meta?.icon">
-                <component :is="route.meta.icon" />
-              </el-icon>
-              <span>{{ $t(route.meta?.title as string || '') }}</span>
-            </template>
-            <el-menu-item
-              v-for="child in route.children"
-              :key="child.path"
-              :index="route.path + '/' + child.path"
-            >
-              {{ $t(child.meta?.title as string || '') }}
-            </el-menu-item>
-          </el-sub-menu>
-        </template>
-      </el-menu>
+      <nav class="sidebar-nav">
+        <ul>
+          <li v-for="route in menuRoutes" :key="route.path" :class="{ active: $route.path === route.path }">
+            <router-link :to="route.path" class="nav-link">
+              <i :class="route.icon"></i>
+              <span>{{ $t(route.label) }}</span>
+            </router-link>
+          </li>
+        </ul>
+      </nav>
     </div>
 
     <!-- 主内容区 -->
-    <div class="main-container">
+    <div class="main-content">
       <!-- 顶部导航 -->
-      <div class="navbar">
-        <div class="navbar-left">
-          <span class="page-title">{{ currentPageTitle }}</span>
+      <header class="header">
+        <div class="header-left">
+          <h1>{{ $t(currentPageTitle) }}</h1>
         </div>
-        <div class="navbar-right">
-          <LanguageSwitcher />
-          
-          <el-dropdown @command="handleCommand">
-            <span class="user-info">
-              <el-avatar :size="32">
-                <el-icon><User /></el-icon>
-              </el-avatar>
-              <span class="username">{{ merchantStore.merchantInfo?.username || 'Merchant' }}</span>
-            </span>
-            <template #dropdown>
-              <el-dropdown-menu>
-                <el-dropdown-item command="logout">
-                  <el-icon><SwitchButton /></el-icon>
-                  {{ $t('common.logout') }}
-                </el-dropdown-item>
-              </el-dropdown-menu>
-            </template>
-          </el-dropdown>
+        <div class="header-right">
+          <div class="language-switcher">
+            <select v-model="currentLocale" @change="changeLanguage">
+              <option value="zh">中文</option>
+              <option value="en">English</option>
+              <option value="ms">Bahasa Melayu</option>
+            </select>
+          </div>
+          <div class="user-info">
+            <span>Merchant</span>
+          </div>
         </div>
-      </div>
+      </header>
 
-      <!-- 内容区 -->
-      <div class="app-main">
-        <router-view v-slot="{ Component }">
-          <transition name="fade-transform" mode="out-in">
-            <component :is="Component" />
-          </transition>
-        </router-view>
-      </div>
+      <!-- 页面内容 -->
+      <main class="content">
+        <router-view />
+      </main>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { ref, computed, watch } from 'vue'
+import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { ElMessageBox } from 'element-plus'
-import { useMerchantStore } from '@/stores/merchant'
-import LanguageSwitcher from '@/components/LanguageSwitcher.vue'
+import { setLanguage } from '@/i18n'
 
 const route = useRoute()
-const router = useRouter()
-const { t } = useI18n()
-const merchantStore = useMerchantStore()
+const { locale } = useI18n()
 
-// 菜单路由
-const menuRoutes = computed(() => {
-  return router.options.routes
-    .find((r) => r.path === '/')
-    ?.children || []
-})
+const currentLocale = ref(locale.value)
 
-// 当前激活的菜单
-const activeMenu = computed(() => {
-  const { meta, path } = route
-  if (meta?.activeMenu) {
-    return meta.activeMenu as string
-  }
-  return path
-})
+// 菜单路由配置
+const menuRoutes = [
+  { path: '/dashboard', label: 'nav.dashboard', icon: 'icon-dashboard' },
+  { path: '/products/my-products', label: 'nav.myProducts', icon: 'icon-products' },
+  { path: '/products/select-products', label: 'nav.selectProducts', icon: 'icon-add' },
+  { path: '/orders/pending', label: 'nav.orders', icon: 'icon-orders' },
+  { path: '/finance/earnings', label: 'nav.finance', icon: 'icon-finance' },
+  { path: '/shop', label: 'nav.shop', icon: 'icon-shop' },
+  { path: '/credit-rating', label: 'nav.creditRating', icon: 'icon-credit' },
+  { path: '/settings', label: 'nav.settings', icon: 'icon-settings' }
+]
 
-// 当前页面标题
+// 当前页面标题 - 修复逻辑错误
 const currentPageTitle = computed(() => {
-  return t(route.meta?.title as string || '')
+  // 修复：使用route.path而不是route.path === route.path
+  const currentRoute = menuRoutes.find(r => r.path === route.path)
+  return currentRoute?.label || 'nav.dashboard'
 })
 
-// 处理下拉菜单命令
-const handleCommand = (command: string) => {
-  if (command === 'logout') {
-    ElMessageBox.confirm(
-      t('message.confirmDelete'),
-      t('common.warning'),
-      {
-        confirmButtonText: t('common.confirm'),
-        cancelButtonText: t('common.cancel'),
-        type: 'warning'
-      }
-    ).then(() => {
-      merchantStore.logout()
-      router.push('/login')
-    })
-  }
+// 切换语言
+const changeLanguage = (event: Event) => {
+  const target = event.target as HTMLSelectElement
+  const newLocale = target.value
+  setLanguage(newLocale)
+  currentLocale.value = newLocale
 }
+
+// 监听路由变化
+watch(() => route.path, (newPath) => {
+  // 更新当前页面标题
+}, { immediate: true })
 </script>
 
 <style scoped>
-.app-wrapper {
+.merchant-layout {
   display: flex;
-  width: 100%;
   height: 100vh;
+  background-color: #f5f5f5;
 }
 
-.sidebar-container {
-  width: var(--sidebar-width);
-  background-color: #304156;
-  height: 100vh;
-  overflow-y: auto;
-}
-
-.logo {
-  height: var(--header-height);
+.sidebar {
+  width: 250px;
+  background-color: #2c3e50;
+  color: white;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #2b3a4a;
-  gap: 10px;
+  flex-direction: column;
 }
 
-.logo .el-icon {
-  font-size: 24px;
-  color: #409EFF;
+.sidebar-header {
+  padding: 20px;
+  border-bottom: 1px solid #34495e;
 }
 
-.logo h1 {
+.sidebar-header h2 {
+  margin: 0;
   font-size: 18px;
-  color: #fff;
+  font-weight: bold;
+}
+
+.sidebar-nav {
+  flex: 1;
+  padding: 20px 0;
+}
+
+.sidebar-nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.sidebar-nav li {
   margin: 0;
 }
 
-.sidebar-menu {
-  border-right: none;
+.nav-link {
+  display: flex;
+  align-items: center;
+  padding: 12px 20px;
+  color: #ecf0f1;
+  text-decoration: none;
+  transition: background-color 0.3s;
 }
 
-.main-container {
+.nav-link:hover {
+  background-color: #34495e;
+}
+
+.nav-link.active {
+  background-color: #3498db;
+}
+
+.nav-link i {
+  margin-right: 10px;
+  width: 20px;
+}
+
+.main-content {
   flex: 1;
   display: flex;
   flex-direction: column;
-  height: 100vh;
-  overflow: hidden;
 }
 
-.navbar {
-  height: var(--header-height);
-  background: #fff;
-  box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
+.header {
+  background-color: white;
+  padding: 0 30px;
+  height: 60px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 20px;
+  border-bottom: 1px solid #e0e0e0;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-.navbar-left .page-title {
-  font-size: 18px;
-  font-weight: 500;
-  color: #333;
+.header-left h1 {
+  margin: 0;
+  font-size: 24px;
+  color: #2c3e50;
 }
 
-.navbar-right {
+.header-right {
   display: flex;
   align-items: center;
   gap: 20px;
 }
 
+.language-switcher select {
+  padding: 5px 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: white;
+}
+
 .user-info {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  cursor: pointer;
-}
-
-.username {
+  color: #666;
   font-size: 14px;
-  color: #333;
 }
 
-.app-main {
+.content {
   flex: 1;
-  padding: 20px;
-  background-color: #f0f2f5;
+  padding: 30px;
   overflow-y: auto;
 }
-
-/* 路由过渡动画 */
-.fade-transform-leave-active,
-.fade-transform-enter-active {
-  transition: all 0.3s;
-}
-
-.fade-transform-enter-from {
-  opacity: 0;
-  transform: translateX(-30px);
-}
-
-.fade-transform-leave-to {
-  opacity: 0;
-  transform: translateX(30px);
-}
 </style>
-

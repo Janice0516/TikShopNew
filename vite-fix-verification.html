@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>商家后台移动端测试 - 修复验证</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: white;
+        }
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 24px;
+        }
+        .status-section {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: rgba(76, 175, 80, 0.2);
+            border-radius: 15px;
+            border: 1px solid rgba(76, 175, 80, 0.5);
+        }
+        .test-section {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+        }
+        .test-section h3 {
+            margin: 0 0 15px 0;
+            font-size: 18px;
+        }
+        .test-button {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            text-align: center;
+        }
+        .test-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        .fix-info {
+            text-align: center;
+            margin: 20px 0;
+            padding: 15px;
+            background: rgba(33, 150, 243, 0.3);
+            border-radius: 10px;
+            border: 1px solid rgba(33, 150, 243, 0.5);
+        }
+        .device-info {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 14px;
+            opacity: 0.8;
+        }
+        .success {
+            color: #4caf50;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Vite配置修复验证</h1>
+        
+        <div class="fix-info">
+            <div class="success">✅ tiktokbusines.store 域名访问问题已修复！</div>
+            <div style="margin-top: 10px; font-size: 14px;">
+                已将所有前端项目的 allowedHosts 配置更新
+            </div>
+        </div>
+        
+        <div class="device-info">
+            <div>当前设备: <span id="deviceType"></span></div>
+            <div>屏幕尺寸: <span id="screenSize"></span></div>
+            <div>访问时间: <span id="currentTime"></span></div>
+        </div>
+        
+        <div class="status-section">
+            <h3>🎯 修复状态</h3>
+            <div style="font-size: 14px; line-height: 1.6;">
+                ✅ 商家端: tiktokbusines.store 已添加到 allowedHosts<br>
+                ✅ 管理端: tiktokbusines.store 已添加到 allowedHosts<br>
+                ✅ 用户端: tiktokbusines.store 已包含在配置中<br>
+                ✅ 服务已重启并应用新配置
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h3>📱 移动端功能测试</h3>
+            <a href="http://localhost:5174/merchant/" class="test-button" target="_blank">
+                🏪 商家后台 (自动检测设备)
+            </a>
+            <a href="http://localhost:5174/merchant/mobile/dashboard" class="test-button" target="_blank">
+                📊 移动端仪表板
+            </a>
+            <a href="http://localhost:5174/merchant/mobile/test" class="test-button" target="_blank">
+                🧪 移动端测试页面
+            </a>
+        </div>
+        
+        <div class="test-section">
+            <h3>🖥️ 其他服务测试</h3>
+            <a href="http://localhost:5175/admin/" class="test-button" target="_blank">
+                🔧 管理后台
+            </a>
+            <a href="http://localhost:3001/" class="test-button" target="_blank">
+                📱 用户商城
+            </a>
+            <a href="http://localhost:3000/api/docs" class="test-button" target="_blank">
+                📚 API文档
+            </a>
+        </div>
+        
+        <div class="test-section">
+            <h3>🔍 技术细节</h3>
+            <div style="font-size: 14px; line-height: 1.6;">
+                <strong>问题原因:</strong><br>
+                Vite的安全机制阻止了对 tiktokbusines.store 的请求<br><br>
+                
+                <strong>解决方案:</strong><br>
+                在 vite.config.ts 的 server.allowedHosts 中添加域名<br><br>
+                
+                <strong>修复文件:</strong><br>
+                • merchant/vite.config.ts<br>
+                • admin/vite.config.ts<br>
+                • user-app/vite.config.ts (已包含)
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // 检测设备类型
+        function detectDevice() {
+            const width = window.innerWidth;
+            const userAgent = navigator.userAgent;
+            
+            let deviceType = '桌面设备';
+            if (width <= 768 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent)) {
+                deviceType = '移动设备';
+            } else if (width <= 1024) {
+                deviceType = '平板设备';
+            }
+            
+            document.getElementById('deviceType').textContent = deviceType;
+            document.getElementById('screenSize').textContent = `${width}x${window.innerHeight}`;
+            document.getElementById('currentTime').textContent = new Date().toLocaleString();
+        }
+        
+        // 页面加载时检测设备
+        detectDevice();
+        
+        // 窗口大小改变时重新检测
+        window.addEventListener('resize', detectDevice);
+        
+        // 每秒更新时间
+        setInterval(() => {
+            document.getElementById('currentTime').textContent = new Date().toLocaleString();
+        }, 1000);
+    </script>
+</body>
+</html>

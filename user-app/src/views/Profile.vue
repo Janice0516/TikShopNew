@@ -154,49 +154,51 @@
     </el-dialog>
     
     <!-- 设置对话框 -->
-    <el-dialog v-model="showSettingsDialog" title="设置" width="500px">
+    <el-dialog v-model="showSettingsDialog" :title="t('settings.title')" width="500px">
       <el-form label-width="100px">
-        <el-form-item label="语言">
-          <el-select v-model="settings.language" placeholder="选择语言">
-            <el-option label="简体中文" value="zh-CN" />
-            <el-option label="English" value="en-US" />
+        <el-form-item :label="t('settings.language')">
+          <el-select v-model="settings.language" :placeholder="t('settings.language')">
+            <el-option :label="t('settings.languages.zh-CN')" value="zh-CN" />
+            <el-option :label="t('settings.languages.en-US')" value="en-US" />
+            <el-option :label="t('settings.languages.ms-MY')" value="ms-MY" />
           </el-select>
         </el-form-item>
-        <el-form-item label="主题">
-          <el-select v-model="settings.theme" placeholder="选择主题">
-            <el-option label="浅色" value="light" />
-            <el-option label="深色" value="dark" />
+        <el-form-item :label="t('settings.theme')">
+          <el-select v-model="settings.theme" :placeholder="t('settings.theme')">
+            <el-option :label="t('settings.themes.light')" value="light" />
+            <el-option :label="t('settings.themes.dark')" value="dark" />
+            <el-option :label="t('settings.themes.auto')" value="auto" />
           </el-select>
         </el-form-item>
-        <el-form-item label="通知">
+        <el-form-item :label="t('settings.notifications')">
           <el-switch v-model="settings.notifications" />
         </el-form-item>
       </el-form>
       
       <template #footer>
-        <el-button @click="showSettingsDialog = false">取消</el-button>
-        <el-button type="primary" @click="saveSettings">保存</el-button>
+        <el-button @click="showSettingsDialog = false">{{ t('common.cancel') }}</el-button>
+        <el-button type="primary" @click="saveSettings">{{ t('common.save') }}</el-button>
       </template>
     </el-dialog>
     
     <!-- 关于我们对话框 -->
-    <el-dialog v-model="showAboutDialog" title="关于我们" width="500px">
+    <el-dialog v-model="showAboutDialog" :title="t('settings.about')" width="500px">
       <div class="about-content">
         <div class="app-info">
           <h3>TikTok Shop</h3>
-          <p>版本: 1.0.0</p>
-          <p>您的购物首选平台</p>
+          <p>{{ t('settings.version') }}: 1.0.0</p>
+          <p>{{ t('home.subtitle') }}</p>
         </div>
         
         <div class="contact-info">
-          <h4>联系我们</h4>
-          <p>邮箱: support@tikshop.com</p>
-          <p>电话: 400-123-4567</p>
+          <h4>{{ t('navigation.contact') }}</h4>
+          <p>{{ t('footer.email') }}: support@tikshop.com</p>
+          <p>{{ t('footer.phone') }}: 400-123-4567</p>
         </div>
       </div>
       
       <template #footer>
-        <el-button @click="showAboutDialog = false">关闭</el-button>
+        <el-button @click="showAboutDialog = false">{{ t('common.close') }}</el-button>
       </template>
     </el-dialog>
   </div>
@@ -318,7 +320,7 @@ const saveProfile = async () => {
 
 // 添加地址
 const addAddress = () => {
-  ElMessage.info('添加地址功能待开发')
+  router.push('/address/add')
 }
 
 // 删除地址

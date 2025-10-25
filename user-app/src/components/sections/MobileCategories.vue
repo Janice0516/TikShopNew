@@ -10,7 +10,11 @@
           @click="handleCategoryClick(category)"
         >
           <div class="category-icon">
-            <img :src="category.icon" :alt="category.name" />
+            <img 
+              :src="category.icon" 
+              :alt="category.name" 
+              @error="handleImageError"
+            />
           </div>
           <span class="category-name">{{ category.name }}</span>
         </div>
@@ -54,6 +58,14 @@ const showRightArrow = ref(true)
 const handleCategoryClick = (category: Category) => {
   emit('categoryClick', category)
   router.push(`/category/${category.id}`)
+}
+
+// 图片错误处理
+const handleImageError = (event: Event) => {
+  const img = event.target as HTMLImageElement
+  console.warn('分类图标加载失败:', img.src)
+  // 设置默认图标
+  img.src = 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=120&h=120&fit=crop&crop=center&auto=format&q=80'
 }
 
 const scrollCategories = (direction: 'left' | 'right') => {
@@ -123,6 +135,10 @@ onUnmounted(() => {
   }
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */
+  
+  /* 触屏优化 */
+  touch-action: pan-x;
+  overscroll-behavior-x: contain;
 }
 
 .category-item {
@@ -134,8 +150,17 @@ onUnmounted(() => {
   flex-shrink: 0; /* 防止收缩 */
   width: 80px; /* 固定宽度 */
   
+  /* 触屏优化 */
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  
   &:hover {
     transform: scale(1.05);
+  }
+  
+  &:active {
+    transform: scale(0.95);
+    transition: transform 0.1s ease;
   }
   
   .category-icon {

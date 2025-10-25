@@ -309,7 +309,7 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
-import { getRechargeList, auditRecharge, getRechargeStats } from '@/api/recharge'
+import { getRechargeAuditList, getRechargeAuditCount, approveRecharge, rejectRecharge } from '@/api/recharge-audit'
 
 const loading = ref(false)
 const auditLoading = ref(false)
@@ -404,8 +404,16 @@ const formatDate = (date: string) => {
 // 获取统计数据
 const loadStats = async () => {
   try {
-    const res = await getRechargeStats()
-    stats.value = res.data
+    const res = await getRechargeAuditCount()
+    const payload = (res && res.data && res.data.data) ? res.data.data : res.data
+    if (payload) {
+      stats.value = {
+        pendingCount: payload.pendingRecharges || 0,
+        approvedCount: payload.approvedRecharges || 0,
+        rejectedCount: payload.rejectedRecharges || 0,
+        totalAmount: String(payload.totalAmount ?? '0.00')
+      }
+    }
   } catch (error) {
     console.error('Failed to load stats:', error)
   }
@@ -420,10 +428,28 @@ const loadRechargeList = async () => {
       page: pagination.page,
       pageSize: pagination.pageSize
     }
-    
-    const res = await getRechargeList(params)
-    rechargeList.value = res.data.list
-    pagination.total = res.data.total
+    const res = await getRechargeAuditList(params)
+    const actualData = (res && res.data && res.data.data) ? res.data.data : res.data
+    const rawList = (actualData && actualData.list) ? actualData.list : []
+    // 字段映射为页面展示所需结构
+    rechargeList.value = rawList.map((item: any) => ({
+      id: item.id,
+      merchant: {
+        merchantName: item.merchantName,
+        merchantUid: String(item.merchantId || '')
+      },
+      amount: item.rechargeAmount,
+      paymentMethod: item.paymentMethod,
+      paymentReference: item.paymentReference,
+      status: item.status,
+      adminName: item.processedBy ? `管理员#${item.processedBy}` : null,
+      auditTime: item.processedAt,
+      createdAt: item.createTime,
+      updatedAt: item.updateTime,
+      auditReason: item.adminRemark,
+      remark: item.remark || ''
+    }))
+    pagination.total = (actualData && typeof actualData.total === 'number') ? actualData.total : 0
   } catch (error) {
     console.error('Failed to load recharge list:', error)
   } finally {
@@ -496,20 +522,19 @@ const handleSubmitAudit = async () => {
 
   auditLoading.value = true
   try {
-    await auditRecharge({
-      id: auditForm.id,
-      status: auditForm.status,
-      auditReason: auditForm.auditReason
-    })
-
-    ElMessage.success(auditForm.status === 1 ? '审核通过成功' : '审核拒绝成功')
+    if (auditForm.status === 1) {
+      await approveRecharge(auditForm.id, auditForm.auditReason)
+      ElMessage.success('审核通过成功')
+    } else {
+      await rejectRecharge(auditForm.id, auditForm.auditReason)
+      ElMessage.success('审核拒绝成功')
+    }
     auditDialogVisible.value = false
-    
     // 刷新数据
     loadStats()
     loadRechargeList()
   } catch (error: any) {
-    ElMessage.error(error.message || '审核失败')
+    ElMessage.error(error?.message || '审核失败')
   } finally {
     auditLoading.value = false
   }

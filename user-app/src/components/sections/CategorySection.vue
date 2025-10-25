@@ -10,7 +10,11 @@
           @click="handleCategoryClick(category)"
         >
           <div class="category-icon">
-            <img :src="category.icon" :alt="category.name" />
+            <img 
+              :src="getCategoryIcon(category)" 
+              :alt="category.name" 
+              @error="handleImageError"
+            />
           </div>
           <span class="category-name">{{ category.name }}</span>
         </div>
@@ -56,6 +60,27 @@ const canScrollRight = computed(() => {
 
 const handleCategoryClick = (category: Category) => {
   emit('categoryClick', category)
+}
+
+// 获取分类图标
+const getCategoryIcon = (category: Category) => {
+  // 优先使用 imageUrl，其次使用 icon
+  if ((category as any).imageUrl) {
+    return (category as any).imageUrl;
+  }
+  if (category.icon) {
+    return category.icon;
+  }
+  // 默认图标
+  return 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=120&h=120&fit=crop&crop=center&auto=format&q=80';
+}
+
+// 图片错误处理
+const handleImageError = (event: Event) => {
+  const img = event.target as HTMLImageElement
+  console.warn('分类图标加载失败:', img.src)
+  // 设置默认图标
+  img.src = 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=120&h=120&fit=crop&crop=center&auto=format&q=80'
 }
 
 const scrollRight = () => {
@@ -140,6 +165,7 @@ onUnmounted(() => {
     transform: translateY(-2px);
   }
 }
+
 
 .category-icon {
   width: 60px;

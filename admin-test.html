@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>邀请码API测试</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .success { color: green; }
+        .error { color: red; }
+        .info { color: blue; }
+        pre { background: #f5f5f5; padding: 10px; border-radius: 3px; overflow-x: auto; }
+        button { padding: 10px 20px; margin: 5px; background: #007bff; color: white; border: none; border-radius: 3px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+    </style>
+</head>
+<body>
+    <h1>邀请码API测试页面</h1>
+    
+    <div class="test-section">
+        <h2>1. 管理员登录测试</h2>
+        <button onclick="testLogin()">测试登录</button>
+        <div id="login-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>2. 邀请码列表API测试</h2>
+        <button onclick="testInviteCodeList()">测试邀请码列表</button>
+        <div id="list-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>3. 邀请码统计API测试</h2>
+        <button onclick="testInviteCodeStats()">测试邀请码统计</button>
+        <div id="stats-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>4. 前端响应解析测试</h2>
+        <button onclick="testResponseParsing()">测试响应解析</button>
+        <div id="parsing-result"></div>
+    </div>
+
+    <script>
+        let token = '';
+        
+        async function testLogin() {
+            const resultDiv = document.getElementById('login-result');
+            resultDiv.innerHTML = '<div class="info">正在测试登录...</div>';
+            
+            try {
+                const response = await fetch('https://tiktokbusines.store/api/admin/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        username: 'admin',
+                        password: 'admin123'
+                    })
+                });
+                
+                const data = await response.json();
+                console.log('登录响应:', data);
+                
+                if (data.token) {
+                    token = data.token;
+                    resultDiv.innerHTML = `
+                        <div class="success">✅ 登录成功</div>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="error">❌ 登录失败</div>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="error">❌ 登录请求失败</div>
+                    <pre>${error.message}</pre>
+                `;
+            }
+        }
+        
+        async function testInviteCodeList() {
+            const resultDiv = document.getElementById('list-result');
+            resultDiv.innerHTML = '<div class="info">正在测试邀请码列表...</div>';
+            
+            if (!token) {
+                resultDiv.innerHTML = '<div class="error">❌ 请先登录</div>';
+                return;
+            }
+            
+            try {
+                const response = await fetch('https://tiktokbusines.store/api/invite-code?page=1&limit=5', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                const data = await response.json();
+                console.log('邀请码列表响应:', data);
+                
+                resultDiv.innerHTML = `
+                    <div class="success">✅ 邀请码列表API正常</div>
+                    <div class="info">响应结构: code=${data.code}, total=${data.data?.total || 'N/A'}</div>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="error">❌ 邀请码列表请求失败</div>
+                    <pre>${error.message}</pre>
+                `;
+            }
+        }
+        
+        async function testInviteCodeStats() {
+            const resultDiv = document.getElementById('stats-result');
+            resultDiv.innerHTML = '<div class="info">正在测试邀请码统计...</div>';
+            
+            if (!token) {
+                resultDiv.innerHTML = '<div class="error">❌ 请先登录</div>';
+                return;
+            }
+            
+            try {
+                const response = await fetch('https://tiktokbusines.store/api/invite-code/stats', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                const data = await response.json();
+                console.log('邀请码统计响应:', data);
+                
+                resultDiv.innerHTML = `
+                    <div class="success">✅ 邀请码统计API正常</div>
+                    <div class="info">响应结构: code=${data.code}, total=${data.data?.total || 'N/A'}</div>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="error">❌ 邀请码统计请求失败</div>
+                    <pre>${error.message}</pre>
+                `;
+            }
+        }
+        
+        async function testResponseParsing() {
+            const resultDiv = document.getElementById('parsing-result');
+            resultDiv.innerHTML = '<div class="info">正在测试响应解析...</div>';
+            
+            if (!token) {
+                resultDiv.innerHTML = '<div class="error">❌ 请先登录</div>';
+                return;
+            }
+            
+            try {
+                // 模拟axios响应格式
+                const response = await fetch('https://tiktokbusines.store/api/invite-code?page=1&limit=3', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                const data = await response.json();
+                
+                // 模拟axios的响应对象结构
+                const mockAxiosResponse = {
+                    data: data,
+                    status: response.status,
+                    statusText: response.statusText,
+                    headers: response.headers,
+                    config: {},
+                    request: {}
+                };
+                
+                console.log('模拟axios响应:', mockAxiosResponse);
+                
+                // 测试前端代码的解析逻辑
+                let parsedData = null;
+                let error = null;
+                
+                try {
+                    if (mockAxiosResponse.data.code === 200) {
+                        parsedData = {
+                            items: mockAxiosResponse.data.data.items,
+                            total: mockAxiosResponse.data.data.total
+                        };
+                    } else {
+                        error = 'API返回错误: ' + mockAxiosResponse.data.message;
+                    }
+                } catch (e) {
+                    error = '解析错误: ' + e.message;
+                }
+                
+                if (parsedData) {
+                    resultDiv.innerHTML = `
+                        <div class="success">✅ 响应解析成功</div>
+                        <div class="info">解析结果: ${parsedData.items.length} 个邀请码, 总计 ${parsedData.total}</div>
+                        <pre>${JSON.stringify(parsedData, null, 2)}</pre>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="error">❌ 响应解析失败</div>
+                        <div class="error">错误: ${error}</div>
+                        <pre>${JSON.stringify(mockAxiosResponse, null, 2)}</pre>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="error">❌ 响应解析测试失败</div>
+                    <pre>${error.message}</pre>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>

@@ -11,8 +11,8 @@ export const useUserStore = defineStore('user', () => {
   const login = async (loginForm: LoginForm) => {
     try {
       const res = await loginApi(loginForm)
-      // 处理嵌套的data结构
-      const data = res.data.data || res.data
+      // 修复：直接访问 res.data，因为API返回的是 {token, userInfo}
+      const data = res.data
       token.value = data.token
       userInfo.value = data.userInfo
       localStorage.setItem('token', data.token)

@@ -157,10 +157,31 @@ const handleSearch = async () => {
       sort: sortBy.value
     }
     
-    const response = await productApi.searchProducts(searchQuery.value, params)
-    products.value = response.products || []
-    totalResults.value = response.total || 0
-    totalPages.value = Math.ceil(totalResults.value / pageSize.value)
+    // 使用正确的API端点进行搜索
+    const response = await fetch(`/api/shop/products?keyword=${encodeURIComponent(searchQuery.value)}&page=${currentPage.value}&pageSize=${pageSize.value}`)
+    const data = await response.json()
+    
+    if (data && data.list) {
+      products.value = data.list.map((product: any) => ({
+        id: product.id,
+        name: product.name,
+        description: product.description,
+        price: product.price,
+        image: product.image || 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300&h=200&fit=crop&crop=center&auto=format&q=80',
+        rating: product.rating || 4.5,
+        reviewCount: product.sales || 0,
+        sales: product.sales || 0,
+        stock: product.stock || 0,
+        brand: product.brand,
+        merchantName: product.merchantName
+      }))
+      totalResults.value = data.total || 0
+      totalPages.value = Math.ceil(totalResults.value / pageSize.value)
+    } else {
+      products.value = []
+      totalResults.value = 0
+      totalPages.value = 0
+    }
     
     // 更新URL
     router.replace({ query: { q: searchQuery.value } })
@@ -175,9 +196,13 @@ const handleSearch = async () => {
         name: `搜索结果: ${searchQuery.value}`,
         description: '这是搜索结果的商品',
         price: 99.99,
-        image: 'https://via.placeholder.com/300x200/409EFF/ffffff?text=搜索结果',
+        image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300&h=200&fit=crop&crop=center&auto=format&q=80',
         rating: 4.5,
-        reviewCount: 128
+        reviewCount: 128,
+        sales: 128,
+        stock: 10,
+        brand: 'Brand A',
+        merchantName: 'Merchant A'
       }
     ]
     totalResults.value = products.value.length
@@ -190,8 +215,9 @@ const handleSearch = async () => {
 // 加载分类
 const loadCategories = async () => {
   try {
-    const response = await categoryApi.getCategories()
-    categories.value = response || []
+    const response = await fetch('/api/shop/categories')
+    const data = await response.json()
+    categories.value = data || []
   } catch (error) {
     console.error('加载分类失败:', error)
     categories.value = []
@@ -201,8 +227,27 @@ const loadCategories = async () => {
 // 加载推荐商品
 const loadRecommendedProducts = async () => {
   try {
-    const response = await productApi.getProducts({ limit: 8, sort: 'popular' })
-    recommendedProducts.value = response.products || []
+    // 使用正确的API端点
+    const response = await fetch('/api/shop/products?limit=8&page=1')
+    const data = await response.json()
+    
+    if (data && data.list) {
+      recommendedProducts.value = data.list.map((product: any) => ({
+        id: product.id,
+        name: product.name,
+        description: product.description,
+        price: product.price,
+        image: product.image || 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300&h=200&fit=crop&crop=center&auto=format&q=80',
+        rating: product.rating || 4.5,
+        reviewCount: product.sales || 0,
+        sales: product.sales || 0,
+        stock: product.stock || 0,
+        brand: product.brand,
+        merchantName: product.merchantName
+      }))
+    } else {
+      throw new Error('No products data')
+    }
   } catch (error) {
     console.error('加载推荐商品失败:', error)
     recommendedProducts.value = [
@@ -211,18 +256,26 @@ const loadRecommendedProducts = async () => {
         name: '推荐商品1',
         description: '精选好物',
         price: 99.99,
-        image: 'https://via.placeholder.com/300x200/409EFF/ffffff?text=推荐商品1',
+        image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300&h=200&fit=crop&crop=center&auto=format&q=80',
         rating: 4.5,
-        reviewCount: 128
+        reviewCount: 128,
+        sales: 128,
+        stock: 10,
+        brand: 'Brand A',
+        merchantName: 'Merchant A'
       },
       {
         id: '2',
         name: '推荐商品2',
         description: '精选好物',
         price: 199.99,
-        image: 'https://via.placeholder.com/300x200/67C23A/ffffff?text=推荐商品2',
+        image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=300&h=200&fit=crop&crop=center&auto=format&q=80',
         rating: 4.3,
-        reviewCount: 89
+        reviewCount: 89,
+        sales: 89,
+        stock: 15,
+        brand: 'Brand B',
+        merchantName: 'Merchant B'
       }
     ]
   }

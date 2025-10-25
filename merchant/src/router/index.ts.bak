@@ -1,0 +1,299 @@
+import { createRouter, createWebHistory } from 'vue-router'
+import type { RouteRecordRaw } from 'vue-router'
+import { useMerchantStore } from '@/stores/merchant'
+
+const routes: RouteRecordRaw[] = [
+  {
+    path: '/login',
+    name: 'Login',
+    component: () => import('@/views/login/index.vue'),
+    meta: { title: 'login.title', requiresAuth: false }
+  },
+  {
+    path: '/register',
+    name: 'Register',
+    component: () => import('@/views/register/index.vue'),
+    meta: { title: 'register.title', requiresAuth: false }
+  },
+  // 移动端专用路由
+  {
+    path: '/mobile',
+    component: () => import('@/layouts/MobileLayout.vue'),
+    redirect: '/mobile/dashboard',
+    children: [
+      {
+        path: 'dashboard',
+        name: 'MobileDashboard',
+        component: () => import('@/views/mobile/Dashboard.vue'),
+        meta: { title: 'nav.dashboard', icon: 'DataAnalysis' }
+      },
+      {
+        path: 'products',
+        name: 'MobileProducts',
+        redirect: '/mobile/products/select-products',
+        meta: { title: 'nav.products', icon: 'Goods' },
+        children: [
+          {
+            path: 'my-products',
+            name: 'MobileMyProducts',
+            component: () => import('@/views/mobile/products/MyProducts.vue'),
+            meta: { title: 'nav.myProducts' }
+          },
+          {
+            path: 'select-products',
+            name: 'MobileSelectProducts',
+            component: () => import('@/views/mobile/products/SelectProducts.vue'),
+            meta: { title: 'nav.selectProducts' }
+          }
+        ]
+      },
+      {
+        path: 'orders',
+        name: 'MobileOrders',
+        redirect: '/mobile/orders/pending',
+        meta: { title: 'nav.orders', icon: 'Document' },
+        children: [
+          {
+            path: 'pending',
+            name: 'MobilePendingOrders',
+            component: () => import('@/views/mobile/orders/Pending.vue'),
+            meta: { title: 'nav.pendingOrders' }
+          },
+          {
+            path: 'all',
+            name: 'MobileAllOrders',
+            component: () => import('@/views/mobile/orders/All.vue'),
+            meta: { title: 'nav.allOrders' }
+          },
+          {
+            path: ':id',
+            name: 'MobileOrderDetail',
+            component: () => import('@/views/mobile/orders/Detail.vue'),
+            meta: { title: 'orders.orderDetails', hidden: true }
+          }
+        ]
+      },
+      {
+        path: 'finance',
+        name: 'MobileFinance',
+        redirect: '/mobile/finance/earnings',
+        meta: { title: 'nav.finance', icon: 'Money' },
+        children: [
+          {
+            path: 'earnings',
+            name: 'MobileEarnings',
+            component: () => import('@/views/mobile/finance/Earnings.vue'),
+            meta: { title: 'nav.earnings' }
+          },
+          {
+            path: 'recharge',
+            name: 'MobileRecharge',
+            component: () => import('@/views/mobile/finance/Recharge.vue'),
+            meta: { title: 'nav.recharge' }
+          },
+          {
+            path: 'withdraw',
+            name: 'MobileWithdraw',
+            component: () => import('@/views/mobile/finance/Withdraw.vue'),
+            meta: { title: 'nav.withdraw' }
+          }
+        ]
+      },
+      {
+        path: 'shop',
+        name: 'MobileShop',
+        component: () => import('@/views/mobile/Shop.vue'),
+        meta: { title: 'nav.shop', icon: 'Shop' }
+      },
+      {
+        path: 'credit-rating',
+        name: 'MobileCreditRating',
+        component: () => import('@/views/mobile/CreditRating.vue'),
+        meta: { title: 'nav.creditRating', icon: 'Star' }
+      },
+      {
+        path: 'settings',
+        name: 'MobileSettings',
+        component: () => import('@/views/mobile/Settings.vue'),
+        meta: { title: 'nav.settings', icon: 'Setting' }
+      },
+      {
+        path: 'test',
+        name: 'MobileTest',
+        component: () => import('@/views/mobile/Test.vue'),
+        meta: { title: '测试页面', icon: 'Setting' }
+      }
+    ]
+  },
+  // 桌面端路由
+  {
+    path: '/',
+    component: () => import('@/layouts/index.vue'),
+    children: [
+      {
+        path: '',
+        redirect: '/dashboard'
+      },
+      {
+        path: '/dashboard',
+        name: 'Dashboard',
+        component: () => import('@/views/dashboard/index.vue'),
+        meta: { title: 'nav.dashboard', icon: 'DataAnalysis' }
+      },
+      {
+        path: '/products',
+        name: 'Products',
+        redirect: '/products/select-products',
+        meta: { title: 'nav.products', icon: 'Goods' },
+        children: [
+          {
+            path: 'my-products',
+            name: 'MyProducts',
+            component: () => import('@/views/products/my-products.vue'),
+            meta: { title: 'nav.myProducts' }
+          },
+          {
+            path: 'select-products',
+            name: 'SelectProducts',
+            component: () => import('@/views/products/select-products.vue'),
+            meta: { title: 'nav.selectProducts' }
+          }
+        ]
+      },
+      {
+        path: '/orders',
+        name: 'Orders',
+        redirect: '/orders/pending',
+        meta: { title: 'nav.orders', icon: 'Document' },
+        children: [
+          {
+            path: 'pending',
+            name: 'PendingOrders',
+            component: () => import('@/views/orders/pending.vue'),
+            meta: { title: 'nav.pendingOrders' }
+          },
+          {
+            path: 'all',
+            name: 'AllOrders',
+            component: () => import('@/views/orders/all.vue'),
+            meta: { title: 'nav.allOrders' }
+          },
+          {
+            path: ':id',
+            name: 'OrderDetail',
+            component: () => import('@/views/orders/detail.vue'),
+            meta: { title: 'orders.orderDetails', hidden: true }
+          }
+        ]
+      },
+      {
+        path: '/finance',
+        name: 'Finance',
+        redirect: '/finance/earnings',
+        meta: { title: 'nav.finance', icon: 'Money' },
+        children: [
+          {
+            path: 'earnings',
+            name: 'Earnings',
+            component: () => import('@/views/finance/earnings.vue'),
+            meta: { title: 'nav.earnings' }
+          },
+          {
+            path: 'recharge',
+            name: 'Recharge',
+            component: () => import('@/views/finance/recharge.vue'),
+            meta: { title: 'nav.recharge' }
+          },
+          {
+            path: 'withdraw',
+            name: 'Withdraw',
+            component: () => import('@/views/withdrawal/index.vue'),
+            meta: { title: 'nav.withdraw' }
+          }
+        ]
+      },
+      {
+        path: '/shop',
+        name: 'Shop',
+        component: () => import('@/views/shop/index.vue'),
+        meta: { title: 'nav.shop', icon: 'Shop' }
+      },
+      {
+        path: '/credit-rating',
+        name: 'CreditRating',
+        component: () => import('@/views/credit-rating/index.vue'),
+        meta: { title: 'nav.creditRating', icon: 'Star' }
+      },
+      {
+        path: '/settings',
+        name: 'Settings',
+        component: () => import('@/views/settings/index.vue'),
+        meta: { title: 'nav.settings', icon: 'Setting' }
+      }
+    ]
+  }
+]
+
+const router = createRouter({
+  history: createWebHistory(import.meta.env.BASE_URL),
+  routes
+})
+
+// 检测是否为移动设备
+const isMobile = () => {
+  return window.innerWidth <= 768 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+}
+
+// 路由守卫
+router.beforeEach((to, from, next) => {
+  const merchantStore = useMerchantStore()
+  
+  // 设置页面标题
+  document.title = to.meta.title ? `${to.meta.title} - 商家管理后台` : '商家管理后台'
+  
+  // 防止重定向循环：检查是否已经在重定向过程中
+  if (from.path === to.path) {
+    next()
+    return
+  }
+  
+  // 如果不需要认证，直接通过
+  if (to.meta.requiresAuth === false) {
+    next()
+    return
+  }
+  
+  // 检查是否已登录
+  if (!merchantStore.token) {
+    next('/login')
+    return
+  }
+  
+  // 移动端自动跳转逻辑（仅在已登录状态下）
+  if (isMobile()) {
+    // 如果是桌面端路由且是移动设备，跳转到移动端
+    if (!to.path.startsWith('/mobile') && to.path !== '/mobile') {
+      // 特殊处理：根路径直接跳转到移动端首页
+      if (to.path === '/' || to.path === '/dashboard') {
+        next('/mobile/dashboard')
+        return
+      }
+      // 其他桌面端路由跳转到对应的移动端路由
+      const mobilePath = `/mobile${to.path}`
+      next(mobilePath)
+      return
+    }
+  } else {
+    // 如果是移动端路由且是桌面设备，跳转到桌面端
+    if (to.path.startsWith('/mobile')) {
+      const desktopPath = to.path.replace('/mobile', '') || '/dashboard'
+      next(desktopPath)
+      return
+    }
+  }
+  
+  next()
+})
+
+export default router
+

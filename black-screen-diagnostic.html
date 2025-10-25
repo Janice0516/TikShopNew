@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>商家后台黑屏问题诊断</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: white;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+        .problem-section {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: rgba(244, 67, 54, 0.2);
+            border-radius: 15px;
+            border: 1px solid rgba(244, 67, 54, 0.5);
+        }
+        .solution-section {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: rgba(76, 175, 80, 0.2);
+            border-radius: 15px;
+            border: 1px solid rgba(76, 175, 80, 0.5);
+        }
+        .test-section {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+        }
+        .test-section h3 {
+            margin: 0 0 15px 0;
+            font-size: 18px;
+        }
+        .test-button {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            text-align: center;
+        }
+        .test-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        .code-block {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 14px;
+            margin: 10px 0;
+            overflow-x: auto;
+        }
+        .step {
+            margin: 15px 0;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            border-left: 4px solid #409eff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 商家后台黑屏问题诊断</h1>
+        
+        <div class="problem-section">
+            <h3>❌ 问题描述</h3>
+            <p>商家后台页面显示黑屏，没有内容加载。这通常是由以下几个原因造成的：</p>
+            <ul style="line-height: 1.8;">
+                <li><strong>JavaScript错误</strong>：Vue应用启动失败</li>
+                <li><strong>CSS问题</strong>：样式导致内容不可见</li>
+                <li><strong>路由问题</strong>：页面路由配置错误</li>
+                <li><strong>网络问题</strong>：资源加载失败</li>
+                <li><strong>浏览器缓存</strong>：缓存导致的问题</li>
+            </ul>
+        </div>
+        
+        <div class="solution-section">
+            <h3>✅ 解决方案</h3>
+            
+            <div class="step">
+                <strong>步骤1：检查浏览器控制台</strong>
+                <div class="code-block">
+                    1. 按 F12 打开开发者工具<br>
+                    2. 点击 Console 标签页<br>
+                    3. 查看是否有红色错误信息<br>
+                    4. 截图保存错误信息
+                </div>
+            </div>
+            
+            <div class="step">
+                <strong>步骤2：检查网络请求</strong>
+                <div class="code-block">
+                    1. 在开发者工具中点击 Network 标签页<br>
+                    2. 刷新页面 (Ctrl+F5)<br>
+                    3. 查看是否有红色的失败请求<br>
+                    4. 检查 main.ts 和 App.vue 是否正常加载
+                </div>
+            </div>
+            
+            <div class="step">
+                <strong>步骤3：清除浏览器缓存</strong>
+                <div class="code-block">
+                    1. 按 Ctrl+Shift+Delete 打开清除数据对话框<br>
+                    2. 选择"缓存的图片和文件"<br>
+                    3. 点击"清除数据"<br>
+                    4. 或者使用无痕模式测试
+                </div>
+            </div>
+            
+            <div class="step">
+                <strong>步骤4：强制刷新页面</strong>
+                <div class="code-block">
+                    1. 按 Ctrl+F5 强制刷新<br>
+                    2. 或者按 Ctrl+Shift+R<br>
+                    3. 这会绕过缓存重新加载所有资源
+                </div>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h3>🧪 快速测试</h3>
+            <a href="http://localhost:5174/merchant/" class="test-button" target="_blank">
+                🏪 商家后台主页 (新标签页)
+            </a>
+            <a href="http://localhost:5174/merchant/mobile/test" class="test-button" target="_blank">
+                🧪 移动端测试页面
+            </a>
+            <button class="test-button" onclick="testDirectAccess()">
+                🔗 直接访问测试
+            </button>
+        </div>
+        
+        <div class="test-section">
+            <h3>🛠️ 开发者工具</h3>
+            <div style="font-size: 14px; line-height: 1.6;">
+                <strong>如果问题仍然存在，请尝试：</strong><br><br>
+                
+                <strong>1. 检查Vue应用挂载：</strong><br>
+                在控制台输入：<code>document.getElementById('app')</code><br>
+                应该返回一个div元素<br><br>
+                
+                <strong>2. 检查Vue实例：</strong><br>
+                在控制台输入：<code>window.__VUE_DEVTOOLS_GLOBAL_HOOK__</code><br>
+                应该返回Vue开发者工具对象<br><br>
+                
+                <strong>3. 检查路由：</strong><br>
+                在控制台输入：<code>window.location.pathname</code><br>
+                应该显示当前路径<br><br>
+                
+                <strong>4. 手动测试Vue：</strong><br>
+                在控制台输入：<code>Vue.createApp({template: '&lt;div&gt;测试&lt;/div&gt;'}).mount('#app')</code>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h3>📞 技术支持</h3>
+            <div style="font-size: 14px; line-height: 1.6;">
+                如果以上方法都无法解决问题，请提供以下信息：<br><br>
+                • 浏览器类型和版本<br>
+                • 控制台错误截图<br>
+                • Network标签页截图<br>
+                • 操作系统信息<br>
+                • 访问URL
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function testDirectAccess() {
+            // 测试直接访问各个组件
+            const tests = [
+                'http://localhost:5174/merchant/src/main.ts',
+                'http://localhost:5174/merchant/src/App.vue',
+                'http://localhost:5174/merchant/src/router/index.ts'
+            ];
+            
+            tests.forEach(url => {
+                fetch(url)
+                    .then(response => {
+                        console.log(`${url}: ${response.ok ? '✅' : '❌'} (${response.status})`);
+                    })
+                    .catch(error => {
+                        console.log(`${url}: ❌ (${error.message})`);
+                    });
+            });
+            
+            alert('测试结果已输出到控制台，请按F12查看');
+        }
+        
+        // 页面加载时自动检查
+        window.addEventListener('load', function() {
+            console.log('🔍 商家后台诊断页面已加载');
+            console.log('📱 当前设备:', navigator.userAgent);
+            console.log('🌐 当前URL:', window.location.href);
+            console.log('📏 屏幕尺寸:', window.innerWidth + 'x' + window.innerHeight);
+        });
+    </script>
+</body>
+</html>

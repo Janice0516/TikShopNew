@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>商家后台黑屏问题快速修复</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: white;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+        .fix-section {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: rgba(76, 175, 80, 0.2);
+            border-radius: 15px;
+            border: 1px solid rgba(76, 175, 80, 0.5);
+        }
+        .fix-section h3 {
+            margin: 0 0 15px 0;
+            font-size: 18px;
+        }
+        .fix-button {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            text-align: center;
+        }
+        .fix-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        .fix-button.primary {
+            background: rgba(64, 158, 255, 0.3);
+            border: 1px solid rgba(64, 158, 255, 0.5);
+        }
+        .fix-button.success {
+            background: rgba(76, 175, 80, 0.3);
+            border: 1px solid rgba(76, 175, 80, 0.5);
+        }
+        .fix-button.warning {
+            background: rgba(255, 152, 0, 0.3);
+            border: 1px solid rgba(255, 152, 0, 0.5);
+        }
+        .status {
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 14px;
+            background: rgba(0, 0, 0, 0.3);
+        }
+        .step {
+            margin: 15px 0;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            border-left: 4px solid #409eff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 商家后台黑屏问题快速修复</h1>
+        
+        <div class="fix-section">
+            <h3>⚡ 一键修复方案</h3>
+            <button class="fix-button primary" onclick="quickFix()">
+                🔧 执行快速修复
+            </button>
+            <div id="fixStatus" class="status" style="display: none;">
+                正在执行修复...
+            </div>
+        </div>
+        
+        <div class="fix-section">
+            <h3>🔍 问题诊断</h3>
+            <button class="fix-button warning" onclick="diagnoseProblem()">
+                🔍 诊断问题
+            </button>
+            <div id="diagnosticResult" class="status" style="display: none;">
+                正在诊断...
+            </div>
+        </div>
+        
+        <div class="fix-section">
+            <h3>📱 测试访问</h3>
+            <a href="http://localhost:5174/merchant/" class="fix-button success" target="_blank">
+                🏪 商家后台主页
+            </a>
+            <a href="http://localhost:5174/merchant/login" class="fix-button success" target="_blank">
+                🔐 登录页面
+            </a>
+            <a href="http://localhost:5174/merchant/mobile/test" class="fix-button success" target="_blank">
+                🧪 移动端测试
+            </a>
+        </div>
+        
+        <div class="fix-section">
+            <h3>🛠️ 手动修复步骤</h3>
+            
+            <div class="step">
+                <strong>步骤1：清除浏览器缓存</strong>
+                <p>按 Ctrl+Shift+Delete，选择"缓存的图片和文件"，点击清除</p>
+            </div>
+            
+            <div class="step">
+                <strong>步骤2：强制刷新页面</strong>
+                <p>按 Ctrl+F5 或 Ctrl+Shift+R 强制刷新</p>
+            </div>
+            
+            <div class="step">
+                <strong>步骤3：检查开发者工具</strong>
+                <p>按 F12，查看 Console 标签页是否有错误信息</p>
+            </div>
+            
+            <div class="step">
+                <strong>步骤4：尝试无痕模式</strong>
+                <p>使用浏览器的无痕/隐私模式访问</p>
+            </div>
+            
+            <div class="step">
+                <strong>步骤5：重启服务</strong>
+                <p>在终端执行：pm2 restart merchant-frontend</p>
+            </div>
+        </div>
+        
+        <div class="fix-section">
+            <h3>📞 如果问题仍然存在</h3>
+            <div style="font-size: 14px; line-height: 1.6;">
+                请提供以下信息：<br><br>
+                • 浏览器类型和版本<br>
+                • 控制台错误截图<br>
+                • 访问的URL<br>
+                • 操作系统信息<br>
+                • 问题发生的具体时间
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        async function quickFix() {
+            const statusDiv = document.getElementById('fixStatus');
+            statusDiv.style.display = 'block';
+            statusDiv.innerHTML = '正在执行快速修复...';
+            
+            try {
+                // 清除本地存储
+                localStorage.clear();
+                sessionStorage.clear();
+                
+                // 清除缓存
+                if ('caches' in window) {
+                    const cacheNames = await caches.keys();
+                    await Promise.all(cacheNames.map(name => caches.delete(name)));
+                }
+                
+                statusDiv.innerHTML = '✅ 快速修复完成！<br>• 已清除本地存储<br>• 已清除浏览器缓存<br>• 请刷新页面测试';
+                statusDiv.style.background = 'rgba(76, 175, 80, 0.3)';
+                
+            } catch (error) {
+                statusDiv.innerHTML = '❌ 修复失败: ' + error.message;
+                statusDiv.style.background = 'rgba(244, 67, 54, 0.3)';
+            }
+        }
+        
+        async function diagnoseProblem() {
+            const resultDiv = document.getElementById('diagnosticResult');
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = '正在诊断问题...';
+            
+            const tests = [
+                { name: '商家端服务', url: 'http://localhost:5174/merchant/' },
+                { name: 'Vite客户端', url: 'http://localhost:5174/merchant/@vite/client' },
+                { name: '主入口文件', url: 'http://localhost:5174/merchant/src/main.ts' },
+                { name: '登录页面', url: 'http://localhost:5174/merchant/src/views/login/index.vue' }
+            ];
+            
+            let results = [];
+            
+            for (const test of tests) {
+                try {
+                    const response = await fetch(test.url);
+                    results.push(`${test.name}: ${response.ok ? '✅' : '❌'} (${response.status})`);
+                } catch (error) {
+                    results.push(`${test.name}: ❌ (${error.message})`);
+                }
+            }
+            
+            resultDiv.innerHTML = results.join('<br>');
+            resultDiv.style.background = 'rgba(33, 150, 243, 0.3)';
+        }
+        
+        // 页面加载时自动诊断
+        window.addEventListener('load', function() {
+            console.log('🔍 商家后台修复页面已加载');
+            console.log('📱 当前设备:', navigator.userAgent);
+            console.log('🌐 当前URL:', window.location.href);
+        });
+    </script>
+</body>
+</html>

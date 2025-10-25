@@ -2,9 +2,7 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import { resolve } from 'path'
 
-// https://vitejs.dev/config/
 export default defineConfig({
-  base: '/merchant/',
   plugins: [vue()],
   resolve: {
     alias: {
@@ -12,23 +10,36 @@ export default defineConfig({
     }
   },
   server: {
-    port: 5176,
     host: '0.0.0.0',
-    open: true,
-    allowedHosts: [
-      'localhost',
-      '127.0.0.1',
-      '192.168.0.121',
-      'tiktokshop-merchant.loca.lt',
-      '.loca.lt'
-    ],
+    port: 5174,
+    allowedHosts: ['tiktokbusines.store', '.store'],
     proxy: {
       '/api': {
-        target: process.env.NODE_ENV === 'production' ? 'https://tiktokbusines.store' : 'http://localhost:3000',
+        target: 'http://127.0.0.1:3000',
         changeOrigin: true,
-        secure: false,
-        rewrite: (path) => path.replace(/^\/api/, '/api')
+        secure: false
+      }
+    },
+    middlewareMode: false,
+    fs: {
+      allow: ['..']
+    }
+  },
+  preview: {
+    host: '0.0.0.0',
+    port: 5174,
+    allowedHosts: ['tiktokbusines.store', '.store'],
+    proxy: {
+      '/api': {
+        target: 'http://127.0.0.1:3000',
+        changeOrigin: true,
+        secure: false
       }
     }
+  },
+  base: '/merchant/',
+  build: {
+    outDir: 'dist',
+    assetsDir: 'assets'
   }
 })

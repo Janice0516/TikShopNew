@@ -34,7 +34,7 @@
         >
           <!-- 商品图片 -->
           <div class="product-image-container">
-            <img :src="product.image" :alt="product.name" class="product-image" />
+            <img :src="product.image" :alt="getTranslatedProduct(product).name" class="product-image" />
             
             <!-- 促销标签 -->
             <div v-if="product.badge" class="product-badge">
@@ -55,13 +55,13 @@
             </div>
             
             <!-- 商品名称 -->
-            <h3 class="product-name">{{ product.name }}</h3>
+            <h3 class="product-name">{{ getTranslatedProduct(product).name }}</h3>
             
             <!-- 评分和销量 -->
             <div class="product-rating">
               <div class="rating-stars">
                 <span class="stars">{{ formatStars(product.rating) }}</span>
-                <span class="rating-value">{{ product.rating }}</span>
+                <span class="rating-value">{{ product.rating.toFixed(1) }}</span>
               </div>
               <div class="sales-count">
                 {{ formatSales(product.sales) }} sold
@@ -86,6 +86,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { useProductTranslations } from '@/utils/productTranslations'
 
 interface Product {
   id: string | number
@@ -108,6 +109,9 @@ interface Props {
 }
 
 const props = defineProps<Props>()
+
+// 使用商品翻译功能
+const { getTranslatedProduct } = useProductTranslations()
 
 const emit = defineEmits<{
   productClick: [product: Product]

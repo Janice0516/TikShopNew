@@ -35,6 +35,14 @@
             style="width: 150px;"
           />
         </el-form-item>
+        <el-form-item label="推荐码">
+          <el-input 
+            v-model="queryForm.inviteCode" 
+            placeholder="请输入推荐码" 
+            clearable
+            style="width: 150px;"
+          />
+        </el-form-item>
         <el-form-item label="商家状态">
           <el-select 
             v-model="queryForm.status" 
@@ -51,10 +59,10 @@
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="handleQuery" :icon="Search">
-            搜索
+            {{ $t('common.search') }}
           </el-button>
           <el-button @click="handleReset">
-            重置
+            {{ $t('common.reset') }}
           </el-button>
         </el-form-item>
       </el-form>
@@ -67,6 +75,9 @@
         <el-table-column prop="shopName" label="店铺名称" min-width="150" />
         <el-table-column prop="contactName" label="联系人" width="100" />
         <el-table-column prop="contactPhone" label="联系电话" width="120" />
+        <el-table-column prop="inviteCode" label="推荐码" width="120" show-overflow-tooltip />
+        <el-table-column prop="salespersonName" label="推荐人" width="100" />
+        <el-table-column prop="salespersonPhone" label="推荐人电话" width="120" />
         <el-table-column prop="status" label="状态" width="100">
           <template #default="{ row }">
             <el-tag :type="getStatusType(row.status)">
@@ -94,14 +105,14 @@
                 link
                 @click="handleAudit(row, 1)"
               >
-                通过
+                {{ $t('common.status.approved') }}
               </el-button>
               <el-button
                 type="danger"
                 link
                 @click="handleAudit(row, 2)"
               >
-                拒绝
+                {{ $t('common.status.rejected') }}
               </el-button>
             </template>
             <el-button
@@ -109,7 +120,7 @@
               link
               @click="handleEdit(row)"
             >
-              编辑
+              {{ $t('common.edit') }}
             </el-button>
             <el-button
               type="warning"
@@ -241,6 +252,7 @@ const queryForm = reactive({
   merchantName: '' as string,
   contactName: '' as string,
   contactPhone: '' as string,
+  inviteCode: '' as string,
   status: 'all' as string | number
 })
 
@@ -327,45 +339,44 @@ const handleQuery = async () => {
       pageSize: pagination.pageSize
     }
     
-    // 添加所有搜索参数
-    if (queryForm.username.trim()) {
-      params.username = queryForm.username.trim()
-    }
-    if (queryForm.merchantName.trim()) {
-      params.merchantName = queryForm.merchantName.trim()
-    }
-    if (queryForm.contactName.trim()) {
-      params.contactName = queryForm.contactName.trim()
-    }
-    if (queryForm.contactPhone.trim()) {
-      params.contactPhone = queryForm.contactPhone.trim()
-    }
-    if (queryForm.status !== 'all') {
-      params.status = queryForm.status
-    }
+    // 后端只支持 keyword：优先用商家名称/联系人/用户名
+    const parts: string[] = []
+    if (queryForm.merchantName.trim()) parts.push(queryForm.merchantName.trim())
+    if (queryForm.contactName.trim()) parts.push(queryForm.contactName.trim())
+    if (queryForm.username.trim()) parts.push(queryForm.username.trim())
+    if (queryForm.contactPhone.trim()) parts.push(queryForm.contactPhone.trim())
+    if (queryForm.inviteCode.trim()) parts.push(queryForm.inviteCode.trim())
+    const keyword = parts.join(' ').trim()
+    if (keyword) params.keyword = keyword
     
     const res = await getMerchantList(params)
     console.log('API响应:', res) // 调试日志
     // 处理嵌套的数据结构
     if (res.data && res.data.data && res.data.data.data) {
-      // 三层嵌套: res.data.data.data
       tableData.value = res.data.data.data.list || []
       pagination.total = res.data.data.data.total || 0
     } else if (res.data && res.data.data) {
-      // 两层嵌套: res.data.data
       tableData.value = res.data.data.list || []
       pagination.total = res.data.data.total || 0
     } else if (res.data && res.data.list) {
-      // 一层嵌套: res.data
       tableData.value = res.data.list || []
       pagination.total = res.data.total || 0
     } else {
       tableData.value = []
       pagination.total = 0
     }
-  } catch (error) {
+  } catch (error: any) {
     console.error('查询失败：', error)
-    ElMessage.error('查询失败，请稍后重试')
+    // 更友好的错误提示
+    const status = error?.response?.status
+    if (status === 401) {
+      ElMessage.error('未登录或令牌失效，请重新登录')
+    } else if (status === 403) {
+      ElMessage.error('没有权限执行该操作')
+    } else {
+      const msg = error?.response?.data?.message || '查询失败，请稍后重试'
+      ElMessage.error(msg)
+    }
   } finally {
     loading.value = false
   }
@@ -377,6 +388,7 @@ const handleReset = () => {
   queryForm.merchantName = ''
   queryForm.contactName = ''
   queryForm.contactPhone = ''
+  queryForm.inviteCode = ''
   queryForm.status = 'all'
   pagination.page = 1
   handleQuery()

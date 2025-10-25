@@ -28,7 +28,7 @@ import LanguageSwitcher from '../LanguageSwitcher.vue'
   top: 0;
   left: 0;
   right: 0;
-  height: 60px;
+  height: 80px;
   background: #fff;
   border-bottom: 1px solid #e5e5e5;
   z-index: 1000;
@@ -38,9 +38,7 @@ import LanguageSwitcher from '../LanguageSwitcher.vue'
 
 .header-content {
   width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 20px;
+  padding: 0 20px 0 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -49,6 +47,7 @@ import LanguageSwitcher from '../LanguageSwitcher.vue'
 .header-left {
   display: flex;
   align-items: center;
+  margin-left: 0;
 }
 
 .logo {
@@ -57,9 +56,10 @@ import LanguageSwitcher from '../LanguageSwitcher.vue'
 }
 
 .logo-image {
-  height: 40px;
+  height: 50px;
   width: auto;
   max-width: 200px;
+  object-fit: contain;
 }
 
 .header-right {

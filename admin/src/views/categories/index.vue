@@ -16,7 +16,7 @@
         <el-form :model="searchForm" inline>
           <el-form-item label="状态">
             <el-select v-model="searchForm.status" placeholder="请选择状态" clearable>
-              <el-option label="全部" :value="undefined" />
+              <el-option label="全部" :value="null" />
               <el-option label="启用" :value="1" />
               <el-option label="禁用" :value="0" />
             </el-select>
@@ -47,9 +47,9 @@
         <el-table-column prop="name" label="分类名称" min-width="200">
           <template #default="{ row }">
             <div class="category-name">
-              <el-icon v-if="row.icon" class="category-icon">
-                <component :is="row.icon" />
-              </el-icon>
+              <!-- 优先使用 imageUrl 或 URL 字符串渲染为图片，其次使用类名 -->
+              <img v-if="getIconUrl(row)" :src="getIconUrl(row)" class="category-icon-img" alt="" />
+              <i v-else-if="getIconClass(row)" :class="getIconClass(row)" class="category-icon-class"></i>
               <span>{{ row.name }}</span>
             </div>
           </template>
@@ -136,7 +136,7 @@
           <el-input-number v-model="form.sort" :min="0" />
         </el-form-item>
         <el-form-item label="图标" prop="icon">
-          <el-input v-model="form.icon" placeholder="请输入图标名称" />
+          <el-input v-model="form.icon" placeholder="请输入图标名称或图片URL" />
         </el-form-item>
         <el-form-item label="状态" prop="status">
           <el-radio-group v-model="form.status">
@@ -179,7 +179,7 @@ const formRef = ref<FormInstance>()
 
 // 搜索表单
 const searchForm = reactive({
-  status: undefined
+  status: null
 })
 
 // 表单数据
@@ -211,7 +211,13 @@ const rules: FormRules = {
 const fetchCategories = async () => {
   loading.value = true
   try {
-    const res = await getCategoryList(searchForm)
+    // 只传递有效的参数
+    const params: any = {}
+    if (searchForm.status !== null && searchForm.status !== undefined) {
+      params.status = searchForm.status
+    }
+    
+    const res = await getCategoryList(params)
     // 处理嵌套的data结构
     const actualData = res.data?.data || res.data
     categoryList.value = actualData
@@ -242,7 +248,7 @@ const handleSearch = () => {
 
 // 重置搜索
 const handleReset = () => {
-  searchForm.status = undefined
+  searchForm.status = null
   fetchCategories()
 }
 
@@ -265,7 +271,16 @@ const handleAddChild = (row: any) => {
 // 编辑分类
 const handleEdit = (row: any) => {
   isEdit.value = true
-  Object.assign(form, row)
+  console.log('原始行数据:', row)
+  // 只复制需要的字段，避免复制自动生成的字段
+  form.id = row.id
+  form.parentId = row.parentId || 0
+  form.name = row.name || ''
+  form.level = row.level || 1
+  form.sort = row.sort || 0
+  form.icon = row.icon || ''
+  form.status = row.status !== undefined ? row.status : 1
+  console.log('填充后的表单数据:', form)
   dialogVisible.value = true
 }
 
@@ -313,7 +328,18 @@ const handleSubmit = async () => {
       submitting.value = true
       try {
         if (isEdit.value) {
-          await updateCategory(form.id, form)
+          // 只发送后端需要的字段，排除自动生成的字段
+          const updateData = {
+            parentId: form.parentId,
+            name: form.name,
+            level: form.level,
+            sort: form.sort,
+            icon: form.icon,
+            status: form.status
+          }
+          console.log('发送的更新数据:', updateData)
+          console.log('分类ID:', form.id)
+          await updateCategory(form.id, updateData)
           ElMessage.success('更新成功')
         } else {
           await createCategory(form)
@@ -322,6 +348,7 @@ const handleSubmit = async () => {
         dialogVisible.value = false
         fetchCategories()
       } catch (error) {
+        console.error('提交失败:', error)
         ElMessage.error(isEdit.value ? '更新失败' : '创建失败')
       } finally {
         submitting.value = false
@@ -379,6 +406,26 @@ onMounted(() => {
   fetchCategories()
   fetchParentCategories()
 })
+
+// 辅助：判断并返回图标URL或类名
+function isUrl(str: string | null | undefined) {
+  if (!str) return false
+  return (str.indexOf('http://') === 0) || (str.indexOf('https://') === 0) || (str.indexOf('/') === 0)
+}
+
+function getIconUrl(row: any): string {
+  const url = row?.imageUrl || row?.icon
+  if (typeof url === 'string' && isUrl(url)) return url
+  return ''
+}
+
+function getIconClass(row: any): string {
+  // 优先使用显式的 iconClass；如果 icon 是非URL字符串，则作为类名
+  if (row?.iconClass) return row.iconClass
+  const icon = row?.icon
+  if (icon && typeof icon === 'string' && !isUrl(icon)) return icon
+  return ''
+}
 </script>
 
 <style scoped>
@@ -405,7 +452,14 @@ onMounted(() => {
   gap: 8px;
 }
 
-.category-icon {
+.category-icon-img {
+  width: 20px;
+  height: 20px;
+  border-radius: 2px;
+  object-fit: cover;
+}
+
+.category-icon-class {
   font-size: 16px;
   color: #409EFF;
 }

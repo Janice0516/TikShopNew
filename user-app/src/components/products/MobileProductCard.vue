@@ -1,7 +1,7 @@
 <template>
   <div class="mobile-product-card" @click="handleClick">
     <div class="product-image-container">
-      <img :src="product.image" :alt="product.name" class="product-image" />
+      <img :src="product.image" :alt="translatedProduct.name" class="product-image" />
       
       <!-- Store Badge -->
       <div v-if="product.merchantName" class="store-badge">
@@ -16,15 +16,15 @@
     </div>
     
     <div class="product-info">
-      <h3 class="product-name">{{ product.name }}</h3>
+      <h3 class="product-name">{{ translatedProduct.name }}</h3>
       
       <div class="product-rating">
         <div class="stars">
-          <span v-for="i in 5" :key="i" class="star" :class="{ filled: i <= Math.floor(product.rating) }">
+          <span v-for="i in 5" :key="`star-${i}`" class="star" :class="{ filled: i <= Math.floor(product.rating) }">
             ★
           </span>
         </div>
-        <span class="rating-value">{{ product.rating }}</span>
+        <span class="rating-value">{{ product.rating.toFixed(1) }}</span>
       </div>
       
       <div class="product-sales">
@@ -43,7 +43,8 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, defineEmits } from 'vue'
+import { computed } from 'vue'
+import { useProductTranslations } from '@/utils/productTranslations'
 
 interface Product {
   id: string | number
@@ -63,6 +64,10 @@ const props = defineProps<{
   product: Product
 }>()
 
+// 使用商品翻译功能
+const { getTranslatedProduct } = useProductTranslations()
+const translatedProduct = computed(() => getTranslatedProduct(props.product))
+
 const emit = defineEmits<{
   click: [product: Product]
 }>()
@@ -81,18 +86,28 @@ const formatSales = (sales: number): string => {
 
 <style scoped lang="scss">
 .mobile-product-card {
-  background: #fff;
+  background: #1a1a1a; // Dark background to match TikTok Shop
   border-radius: 12px;
   overflow: hidden;
   cursor: pointer;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  color: #fff; // White text for dark background
   flex-shrink: 0; /* 防止收缩 */
   width: 160px; /* 固定宽度，适合横向滚动 */
+  
+  /* 触屏优化 */
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
   
   &:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  }
+  
+  &:active {
+    transform: scale(0.98);
+    transition: transform 0.1s ease;
   }
 }
 
@@ -157,7 +172,7 @@ const formatSales = (sales: number): string => {
   .product-name {
     font-size: 14px;
     font-weight: 500;
-    color: #1f2937;
+    color: #fff; // White text for dark background
     margin: 0 0 8px 0;
     line-height: 1.3;
     display: -webkit-box;
@@ -189,14 +204,14 @@ const formatSales = (sales: number): string => {
     
     .rating-value {
       font-size: 12px;
-      color: #6b7280;
+      color: #ccc; // Light gray for dark background
       font-weight: 500;
     }
   }
   
   .product-sales {
     font-size: 12px;
-    color: #6b7280;
+    color: #ccc; // Light gray for dark background
     margin-bottom: 8px;
   }
   
@@ -219,7 +234,7 @@ const formatSales = (sales: number): string => {
     
     .original-price {
       font-size: 12px;
-      color: #9ca3af;
+      color: #999; // Lighter gray for dark background
       text-decoration: line-through;
       margin-left: 4px;
     }

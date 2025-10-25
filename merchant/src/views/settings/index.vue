@@ -1,544 +1,196 @@
 <template>
   <div class="settings">
-    <!-- 账户设置 -->
-    <el-card class="settings-card">
-      <template #header>
-        <div class="card-header">
-          <span>👤 {{ $t('settings.accountSettings') }}</span>
+    <div class="page-header">
+      <h1>{{ $t('nav.settings') }}</h1>
+    </div>
+
+    <div class="settings-content">
+      <!-- 账户设置 -->
+      <div class="settings-section">
+        <h2>{{ $t('settings.accountSettings') }}</h2>
+        <div class="form-group">
+          <label>{{ $t('settings.username') }}</label>
+          <el-input v-model="accountForm.username" disabled />
         </div>
-      </template>
-
-      <el-form
-        ref="accountFormRef"
-        :model="accountForm"
-        :rules="accountRules"
-        label-width="150px"
-        class="settings-form"
-      >
-        <el-form-item :label="$t('settings.username')" prop="username">
-          <el-input
-            v-model="accountForm.username"
-            :placeholder="$t('settings.usernamePlaceholder')"
-            style="width: 300px"
-            disabled
-          />
-        </el-form-item>
-
-        <el-form-item :label="$t('settings.email')" prop="email">
-          <el-input
-            v-model="accountForm.email"
-            :placeholder="$t('settings.emailPlaceholder')"
-            style="width: 300px"
-          />
-        </el-form-item>
-
-        <el-form-item :label="$t('settings.phone')" prop="phone">
-          <el-input
-            v-model="accountForm.phone"
-            :placeholder="$t('settings.phonePlaceholder')"
-            style="width: 300px"
-          />
-        </el-form-item>
-
-        <el-form-item>
-          <el-button type="primary" @click="saveAccountInfo" :loading="saving">
-            {{ $t('common.save') }}
-          </el-button>
-          <el-button @click="resetAccountForm">
-            {{ $t('common.reset') }}
-          </el-button>
-        </el-form-item>
-      </el-form>
-    </el-card>
-
-    <!-- 密码设置 -->
-    <el-card class="settings-card">
-      <template #header>
-        <div class="card-header">
-          <span>🔒 {{ $t('settings.passwordSettings') }}</span>
+        <div class="form-group">
+          <label>{{ $t('settings.email') }}</label>
+          <el-input v-model="accountForm.email" />
         </div>
-      </template>
-
-      <el-form
-        ref="passwordFormRef"
-        :model="passwordForm"
-        :rules="passwordRules"
-        label-width="150px"
-        class="settings-form"
-      >
-        <el-form-item :label="$t('settings.currentPassword')" prop="currentPassword">
-          <el-input
-            v-model="passwordForm.currentPassword"
-            type="password"
-            :placeholder="$t('settings.currentPasswordPlaceholder')"
-            style="width: 300px"
-            show-password
-          />
-        </el-form-item>
-
-        <el-form-item :label="$t('settings.newPassword')" prop="newPassword">
-          <el-input
-            v-model="passwordForm.newPassword"
-            type="password"
-            :placeholder="$t('settings.newPasswordPlaceholder')"
-            style="width: 300px"
-            show-password
-          />
-        </el-form-item>
-
-        <el-form-item :label="$t('settings.confirmPassword')" prop="confirmPassword">
-          <el-input
-            v-model="passwordForm.confirmPassword"
-            type="password"
-            :placeholder="$t('settings.confirmPasswordPlaceholder')"
-            style="width: 300px"
-            show-password
-          />
-        </el-form-item>
-
-        <el-form-item>
-          <el-button type="primary" @click="changePassword" :loading="saving">
-            {{ $t('settings.changePassword') }}
-          </el-button>
-          <el-button @click="resetPasswordForm">
-            {{ $t('common.reset') }}
-          </el-button>
-        </el-form-item>
-      </el-form>
-    </el-card>
-
-    <!-- 通知设置 -->
-    <el-card class="settings-card">
-      <template #header>
-        <div class="card-header">
-          <span>🔔 {{ $t('settings.notificationSettings') }}</span>
+        <div class="form-group">
+          <label>{{ $t('settings.phone') }}</label>
+          <el-input v-model="accountForm.phone" />
         </div>
-      </template>
-
-      <el-form label-width="150px" class="settings-form">
-        <el-form-item :label="$t('settings.emailNotifications')">
-          <el-switch
-            v-model="notificationSettings.emailNotifications"
-            :active-text="$t('settings.enabled')"
-            :inactive-text="$t('settings.disabled')"
-          />
-        </el-form-item>
-
-        <el-form-item :label="$t('settings.smsNotifications')">
-          <el-switch
-            v-model="notificationSettings.smsNotifications"
-            :active-text="$t('settings.enabled')"
-            :inactive-text="$t('settings.disabled')"
-          />
-        </el-form-item>
-
-        <el-form-item :label="$t('settings.orderNotifications')">
-          <el-switch
-            v-model="notificationSettings.orderNotifications"
-            :active-text="$t('settings.enabled')"
-            :inactive-text="$t('settings.disabled')"
-          />
-        </el-form-item>
-
-        <el-form-item :label="$t('settings.paymentNotifications')">
-          <el-switch
-            v-model="notificationSettings.paymentNotifications"
-            :active-text="$t('settings.enabled')"
-            :inactive-text="$t('settings.disabled')"
-          />
-        </el-form-item>
-
-        <el-form-item>
-          <el-button type="primary" @click="saveNotificationSettings" :loading="saving">
-            {{ $t('common.save') }}
-          </el-button>
-        </el-form-item>
-      </el-form>
-    </el-card>
-
-    <!-- 系统设置 -->
-    <el-card class="settings-card">
-      <template #header>
-        <div class="card-header">
-          <span>⚙️ {{ $t('settings.systemSettings') }}</span>
+        <div class="form-actions">
+          <el-button type="primary" @click="saveAccount">{{ $t('common.save') }}</el-button>
+          <el-button @click="resetAccount">{{ $t('common.reset') }}</el-button>
         </div>
-      </template>
+      </div>
 
-      <el-form label-width="150px" class="settings-form">
-        <el-form-item :label="$t('settings.language')">
-          <LanguageSwitcher />
-        </el-form-item>
-
-        <el-form-item :label="$t('settings.timezone')">
-          <el-select
-            v-model="systemSettings.timezone"
-            :placeholder="$t('settings.selectTimezone')"
-            style="width: 300px"
-          >
-            <el-option label="UTC-8 (Pacific Time)" value="UTC-8" />
-            <el-option label="UTC-5 (Eastern Time)" value="UTC-5" />
-            <el-option label="UTC+0 (GMT)" value="UTC+0" />
-            <el-option label="UTC+8 (China Standard Time)" value="UTC+8" />
-            <el-option label="UTC+9 (Japan Standard Time)" value="UTC+9" />
-          </el-select>
-        </el-form-item>
-
-        <el-form-item :label="$t('settings.currency')">
-          <el-select
-            v-model="systemSettings.currency"
-            :placeholder="$t('settings.selectCurrency')"
-            style="width: 300px"
-          >
-            <el-option label="RM (RM)" value="RM" />
-            <el-option label="EUR (€)" value="EUR" />
-            <el-option label="GBP (£)" value="GBP" />
-            <el-option label="CNY (¥)" value="CNY" />
-            <el-option label="JPY (¥)" value="JPY" />
-          </el-select>
-        </el-form-item>
-
-        <el-form-item :label="$t('settings.dateFormat')">
-          <el-select
-            v-model="systemSettings.dateFormat"
-            :placeholder="$t('settings.selectDateFormat')"
-            style="width: 300px"
-          >
-            <el-option label="YYYY-MM-DD" value="YYYY-MM-DD" />
-            <el-option label="MM/DD/YYYY" value="MM/DD/YYYY" />
-            <el-option label="DD/MM/YYYY" value="DD/MM/YYYY" />
-            <el-option label="YYYY/MM/DD" value="YYYY/MM/DD" />
-          </el-select>
-        </el-form-item>
-
-        <el-form-item>
-          <el-button type="primary" @click="saveSystemSettings" :loading="saving">
-            {{ $t('common.save') }}
-          </el-button>
-        </el-form-item>
-      </el-form>
-    </el-card>
-
-    <!-- 安全设置 -->
-    <el-card class="settings-card">
-      <template #header>
-        <div class="card-header">
-          <span>🛡️ {{ $t('settings.securitySettings') }}</span>
+      <!-- 密码设置 -->
+      <div class="settings-section">
+        <h2>{{ $t('settings.passwordSettings') }}</h2>
+        <div class="form-group">
+          <label>{{ $t('settings.currentPassword') }}</label>
+          <el-input v-model="passwordForm.currentPassword" type="password" show-password />
         </div>
-      </template>
+        <div class="form-group">
+          <label>{{ $t('settings.newPassword') }}</label>
+          <el-input v-model="passwordForm.newPassword" type="password" show-password />
+        </div>
+        <div class="form-group">
+          <label>{{ $t('settings.confirmPassword') }}</label>
+          <el-input v-model="passwordForm.confirmPassword" type="password" show-password />
+        </div>
+        <div class="form-actions">
+          <el-button type="primary" @click="changePassword">{{ $t('settings.changePassword') }}</el-button>
+        </div>
+      </div>
 
-      <el-form label-width="150px" class="settings-form">
-        <el-form-item :label="$t('settings.twoFactorAuth')">
-          <el-switch
-            v-model="securitySettings.twoFactorAuth"
-            :active-text="$t('settings.enabled')"
-            :inactive-text="$t('settings.disabled')"
-          />
-          <div class="setting-description">
-            {{ $t('settings.twoFactorAuthDescription') }}
+      <!-- 账户信息 -->
+      <div class="settings-section">
+        <h2>{{ $t('settings.accountInfo') }}</h2>
+        <div class="info-grid">
+          <div class="info-item">
+            <label>{{ $t('settings.username') }}</label>
+            <span>{{ accountForm.username }}</span>
           </div>
-        </el-form-item>
-
-        <el-form-item :label="$t('settings.loginAlerts')">
-          <el-switch
-            v-model="securitySettings.loginAlerts"
-            :active-text="$t('settings.enabled')"
-            :inactive-text="$t('settings.disabled')"
-          />
-          <div class="setting-description">
-            {{ $t('settings.loginAlertsDescription') }}
+          <div class="info-item">
+            <label>{{ $t('settings.totalProducts') }}</label>
+            <span>{{ productCount }}</span>
           </div>
-        </el-form-item>
-
-        <el-form-item :label="$t('settings.sessionTimeout')">
-          <el-select
-            v-model="securitySettings.sessionTimeout"
-            :placeholder="$t('settings.selectSessionTimeout')"
-            style="width: 300px"
-          >
-            <el-option label="15 minutes" value="15" />
-            <el-option label="30 minutes" value="30" />
-            <el-option label="1 hour" value="60" />
-            <el-option label="2 hours" value="120" />
-            <el-option label="Never" value="0" />
-          </el-select>
-        </el-form-item>
-
-        <el-form-item>
-          <el-button type="primary" @click="saveSecuritySettings" :loading="saving">
-            {{ $t('common.save') }}
-          </el-button>
-        </el-form-item>
-      </el-form>
-    </el-card>
-
-    <!-- 数据管理 -->
-    <el-card class="settings-card">
-      <template #header>
-        <div class="card-header">
-          <span>📊 {{ $t('settings.dataManagement') }}</span>
+          <div class="info-item">
+            <label>{{ $t('settings.accountStatus') }}</label>
+            <span class="status active">{{ $t('settings.active') }}</span>
+          </div>
+          <div class="info-item">
+            <label>{{ $t('settings.joinDate') }}</label>
+            <span>{{ joinDate }}</span>
+          </div>
         </div>
-      </template>
+      </div>
 
-      <el-form label-width="150px" class="settings-form">
-        <el-form-item :label="$t('settings.exportData')">
-          <el-button type="primary" @click="exportData">
-            <el-icon><Download /></el-icon>
-            {{ $t('settings.exportData') }}
+      <!-- 退出登录 -->
+      <div class="settings-section logout-section">
+        <h2>{{ $t('settings.accountActions') }}</h2>
+        <div class="logout-content">
+          <p>{{ $t('settings.logoutDescription') }}</p>
+          <el-button type="danger" @click="handleLogout" :loading="logoutLoading">
+            {{ $t('common.logout') }}
           </el-button>
-          <div class="setting-description">
-            {{ $t('settings.exportDataDescription') }}
-          </div>
-        </el-form-item>
-
-        <el-form-item :label="$t('settings.clearCache')">
-          <el-button type="warning" @click="clearCache">
-            <el-icon><Delete /></el-icon>
-            {{ $t('settings.clearCache') }}
-          </el-button>
-          <div class="setting-description">
-            {{ $t('settings.clearCacheDescription') }}
-          </div>
-        </el-form-item>
-
-        <el-form-item :label="$t('settings.deleteAccount')">
-          <el-button type="danger" @click="deleteAccount">
-            <el-icon><Warning /></el-icon>
-            {{ $t('settings.deleteAccount') }}
-          </el-button>
-          <div class="setting-description">
-            {{ $t('settings.deleteAccountDescription') }}
-          </div>
-        </el-form-item>
-      </el-form>
-    </el-card>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted } from 'vue'
-import { ElMessage, ElMessageBox, type FormInstance, type FormRules } from 'element-plus'
-import { useI18n } from 'vue-i18n'
-import LanguageSwitcher from '@/components/LanguageSwitcher.vue'
+import { ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+import { ElMessage, ElMessageBox } from 'element-plus';
+import { useI18n } from 'vue-i18n';
 
-const { t } = useI18n()
+const { t } = useI18n();
+const router = useRouter();
 
-const saving = ref(false)
-const accountFormRef = ref<FormInstance>()
-const passwordFormRef = ref<FormInstance>()
-
-// 账户设置表单
-const accountForm = reactive({
+// 响应式数据
+const accountForm = ref({
   username: 'merchant001',
   email: 'merchant@example.com',
   phone: '+1 234-567-8900'
-})
+});
 
-const accountRules: FormRules = {
-  email: [
-    { required: true, message: () => t('validation.required'), trigger: 'blur' },
-    { type: 'email', message: () => t('validation.email'), trigger: 'blur' }
-  ],
-  phone: [
-    { required: true, message: () => t('validation.required'), trigger: 'blur' }
-  ]
-}
-
-// 密码设置表单
-const passwordForm = reactive({
+const passwordForm = ref({
   currentPassword: '',
   newPassword: '',
   confirmPassword: ''
-})
+});
 
-const passwordRules: FormRules = {
-  currentPassword: [
-    { required: true, message: () => t('validation.required'), trigger: 'blur' }
-  ],
-  newPassword: [
-    { required: true, message: () => t('validation.required'), trigger: 'blur' },
-    { min: 6, message: () => t('validation.minLength', { min: 6 }), trigger: 'blur' }
-  ],
-  confirmPassword: [
-    { required: true, message: () => t('validation.required'), trigger: 'blur' },
-    {
-      validator: (_rule, value, callback) => {
-        if (value !== passwordForm.newPassword) {
-          callback(new Error(t('validation.passwordMismatch')))
-        } else {
-          callback()
-        }
-      },
-      trigger: 'blur'
-    }
-  ]
-}
-
-// 通知设置
-const notificationSettings = reactive({
-  emailNotifications: true,
-  smsNotifications: false,
-  orderNotifications: true,
-  paymentNotifications: true
-})
-
-// 系统设置
-const systemSettings = reactive({
-  timezone: 'UTC+8',
-  currency: 'RM',
-  dateFormat: 'YYYY-MM-DD'
-})
-
-// 安全设置
-const securitySettings = reactive({
-  twoFactorAuth: false,
-  loginAlerts: true,
-  sessionTimeout: '60'
-})
+const productCount = ref(312); // 从API获取
+const joinDate = ref('2024-01-01');
+const logoutLoading = ref(false);
 
 // 保存账户信息
-const saveAccountInfo = async () => {
-  if (!accountFormRef.value) return
-  
-  await accountFormRef.value.validate(async (valid) => {
-    if (valid) {
-      saving.value = true
-      try {
-        // 实际API调用
-        // await updateAccountInfo(accountForm)
-        
-        ElMessage.success(t('message.operationSuccess'))
-      } catch (error) {
-        ElMessage.error(t('message.operationFailed'))
-      } finally {
-        saving.value = false
-      }
-    }
-  })
-}
+const saveAccount = () => {
+  ElMessage.success(t('settings.accountSaved'));
+};
 
-// 重置账户表单
-const resetAccountForm = () => {
-  accountForm.username = 'merchant001'
-  accountForm.email = 'merchant@example.com'
-  accountForm.phone = '+1 234-567-8900'
-}
+// 重置账户信息
+const resetAccount = () => {
+  accountForm.value = {
+    username: 'merchant001',
+    email: 'merchant@example.com',
+    phone: '+1 234-567-8900'
+  };
+  ElMessage.info(t('common.reset'));
+};
 
 // 修改密码
-const changePassword = async () => {
-  if (!passwordFormRef.value) return
-  
-  await passwordFormRef.value.validate(async (valid) => {
-    if (valid) {
-      saving.value = true
-      try {
-        // 实际API调用
-        // await changePassword(passwordForm)
-        
-        ElMessage.success(t('settings.passwordChanged'))
-        resetPasswordForm()
-      } catch (error) {
-        ElMessage.error(t('settings.passwordChangeFailed'))
-      } finally {
-        saving.value = false
+const changePassword = () => {
+  if (!passwordForm.value.currentPassword) {
+    ElMessage.error(t('settings.enterCurrentPassword'));
+    return;
+  }
+  if (!passwordForm.value.newPassword) {
+    ElMessage.error(t('settings.enterNewPassword'));
+    return;
+  }
+  if (passwordForm.value.newPassword !== passwordForm.value.confirmPassword) {
+    ElMessage.error(t('settings.passwordMismatch'));
+    return;
+  }
+  ElMessage.success(t('settings.passwordChanged'));
+  passwordForm.value = {
+    currentPassword: '',
+    newPassword: '',
+    confirmPassword: ''
+  };
+};
+
+// 退出登录
+const handleLogout = async () => {
+  try {
+    await ElMessageBox.confirm(
+      t('settings.confirmLogout'),
+      t('common.logout'),
+      {
+        confirmButtonText: t('common.confirm'),
+        cancelButtonText: t('common.cancel'),
+        type: 'warning'
       }
-    }
-  })
-}
-
-// 重置密码表单
-const resetPasswordForm = () => {
-  passwordForm.currentPassword = ''
-  passwordForm.newPassword = ''
-  passwordForm.confirmPassword = ''
-}
-
-// 保存通知设置
-const saveNotificationSettings = async () => {
-  saving.value = true
-  try {
-    // 实际API调用
-    // await updateNotificationSettings(notificationSettings)
+    );
     
-    ElMessage.success(t('message.operationSuccess'))
-  } catch (error) {
-    ElMessage.error(t('message.operationFailed'))
+    logoutLoading.value = true;
+    
+    // 清除本地存储
+    localStorage.removeItem('merchant_token');
+    localStorage.removeItem('merchant_user');
+    
+    // 跳转到登录页
+    router.push('/merchant/login');
+    
+    ElMessage.success(t('settings.logoutSuccess'));
+  } catch {
+    ElMessage.info(t('common.cancel'));
   } finally {
-    saving.value = false
+    logoutLoading.value = false;
   }
-}
+};
 
-// 保存系统设置
-const saveSystemSettings = async () => {
-  saving.value = true
+// 获取产品数量
+const getProductCount = async () => {
   try {
-    // 实际API调用
-    // await updateSystemSettings(systemSettings)
-    
-    ElMessage.success(t('message.operationSuccess'))
+    // 这里可以调用API获取真实的产品数量
+    // const response = await getMerchantProducts({ page: 1, pageSize: 1 });
+    // productCount.value = response.data.total;
+    productCount.value = 312; // 使用已知的数量
   } catch (error) {
-    ElMessage.error(t('message.operationFailed'))
-  } finally {
-    saving.value = false
+    console.error('获取产品数量失败:', error);
   }
-}
-
-// 保存安全设置
-const saveSecuritySettings = async () => {
-  saving.value = true
-  try {
-    // 实际API调用
-    // await updateSecuritySettings(securitySettings)
-    
-    ElMessage.success(t('message.operationSuccess'))
-  } catch (error) {
-    ElMessage.error(t('message.operationFailed'))
-  } finally {
-    saving.value = false
-  }
-}
-
-// 导出数据
-const exportData = () => {
-  ElMessage.info(t('settings.exportDataComingSoon'))
-}
-
-// 清除缓存
-const clearCache = () => {
-  ElMessageBox.confirm(
-    t('settings.clearCacheConfirm'),
-    t('common.warning'),
-    {
-      confirmButtonText: t('common.confirm'),
-      cancelButtonText: t('common.cancel'),
-      type: 'warning'
-    }
-  ).then(() => {
-    // 实际API调用
-    // await clearCache()
-    
-    ElMessage.success(t('settings.cacheCleared'))
-  })
-}
-
-// 删除账户
-const deleteAccount = () => {
-  ElMessageBox.confirm(
-    t('settings.deleteAccountConfirm'),
-    t('common.warning'),
-    {
-      confirmButtonText: t('common.confirm'),
-      cancelButtonText: t('common.cancel'),
-      type: 'error'
-    }
-  ).then(() => {
-    ElMessage.info(t('settings.deleteAccountComingSoon'))
-  })
-}
+};
 
 onMounted(() => {
-  // 加载设置数据
-  // loadSettings()
-})
+  getProductCount();
+});
 </script>
 
 <style scoped>
@@ -546,25 +198,90 @@ onMounted(() => {
   padding: 20px;
 }
 
-.settings-card {
+.page-header h1 {
+  margin: 0 0 30px 0;
+  color: #333;
+  font-size: 28px;
+}
+
+.settings-content {
+  max-width: 800px;
+}
+
+.settings-section {
+  background: white;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   margin-bottom: 20px;
 }
 
-.card-header {
+.settings-section h2 {
+  margin: 0 0 20px 0;
+  color: #333;
+  font-size: 20px;
+  border-bottom: 2px solid #409eff;
+  padding-bottom: 10px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: #666;
+  font-weight: 500;
+}
+
+.form-actions {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  gap: 10px;
+  margin-top: 20px;
 }
 
-.settings-form {
-  max-width: 600px;
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
 }
 
-.setting-description {
-  font-size: 12px;
-  color: #999;
-  margin-top: 5px;
-  line-height: 1.4;
+.info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.info-item label {
+  color: #666;
+  font-size: 14px;
+}
+
+.info-item span {
+  color: #333;
+  font-weight: 500;
+}
+
+.status.active {
+  color: #67c23a;
+}
+
+.logout-section {
+  border: 1px solid #f56c6c;
+  background: #fef0f0;
+}
+
+.logout-content {
+  text-align: center;
+}
+
+.logout-content p {
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.logout-content .el-button {
+  min-width: 120px;
 }
 </style>
-

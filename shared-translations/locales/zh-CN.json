@@ -1,0 +1,318 @@
+{
+  "header": {
+    "getApp": "获取应用",
+    "login": "登录"
+  },
+  "sidebar": {
+    "sell": "分类",
+    "more": "客服",
+    "login": "登录",
+    "startShopping": "开始购物",
+    "makeMoney": "与我们赚钱",
+    "companyInfo": "公司信息",
+    "customerSupport": "客户支持",
+    "policyLegal": "政策法律"
+  },
+  "breadcrumb": {
+    "home": "TikTok Shop"
+  },
+  "product": {
+    "addToCart": "加入购物车",
+    "buyNow": "立即购买",
+    "previousImage": "上一张图片",
+    "nextImage": "下一张图片",
+    "color": "颜色",
+    "size": "尺寸",
+    "material": "材质",
+    "option": "选项"
+  },
+  "common": {
+    "loading": "加载中...",
+    "error": "出错了",
+    "success": "操作成功",
+    "confirm": "确认",
+    "cancel": "取消",
+    "save": "保存",
+    "edit": "编辑",
+    "delete": "删除",
+    "search": "搜索",
+    "filter": "筛选",
+    "defaultShop": "优品小店",
+    "sort": "排序",
+    "price": "价格",
+    "quantity": "数量",
+    "total": "总计",
+    "subtotal": "小计",
+    "shipping": "运费",
+    "tax": "税费",
+    "discount": "折扣",
+    "free": "免费",
+    "more": "更多",
+    "less": "收起",
+    "viewAll": "查看全部",
+    "back": "返回",
+    "next": "下一步",
+    "previous": "上一步",
+    "close": "关闭",
+    "open": "打开",
+    "yes": "是",
+    "no": "否",
+    "ok": "确定",
+    "retry": "重试",
+    "refresh": "刷新",
+    "reset": "重置",
+    "submit": "提交",
+    "upload": "上传",
+    "download": "下载",
+    "print": "打印",
+    "share": "分享",
+    "copy": "复制",
+    "paste": "粘贴",
+    "cut": "剪切",
+    "undo": "撤销",
+    "redo": "重做",
+    "selectAll": "全选",
+    "deselectAll": "取消全选",
+    "status": {
+      "active": "上架",
+      "inactive": "下架",
+      "pending": "待处理",
+      "shipped": "已发货",
+      "completed": "已完成",
+      "cancelled": "已取消",
+      "processing": "处理中",
+      "approved": "已批准",
+      "rejected": "已拒绝",
+      "draft": "草稿",
+      "published": "已发布",
+      "archived": "已归档"
+    }
+  },
+  "admin": {
+    "dashboard": {
+      "title": "仪表盘",
+      "totalUsers": "总用户数",
+      "totalMerchants": "总商家数",
+      "totalProducts": "总商品数",
+      "totalOrders": "总订单数",
+      "recentOrders": "最近订单",
+      "topProducts": "热门商品",
+      "systemStats": "系统统计"
+    },
+    "products": {
+      "title": "商品管理",
+      "addProduct": "添加商品",
+      "editProduct": "编辑商品",
+      "deleteProduct": "删除商品",
+      "productName": "商品名称",
+      "productPrice": "商品价格",
+      "productCategory": "商品分类",
+      "productStatus": "商品状态",
+      "productStock": "商品库存",
+      "productSales": "商品销量"
+    },
+    "merchants": {
+      "title": "商家管理",
+      "addMerchant": "添加商家",
+      "editMerchant": "编辑商家",
+      "deleteMerchant": "删除商家",
+      "merchantName": "商家名称",
+      "merchantEmail": "商家邮箱",
+      "merchantPhone": "商家电话",
+      "merchantStatus": "商家状态",
+      "merchantBalance": "商家余额"
+    },
+    "orders": {
+      "title": "订单管理",
+      "orderId": "订单ID",
+      "orderStatus": "订单状态",
+      "orderAmount": "订单金额",
+      "orderDate": "订单日期",
+      "customerName": "客户姓名",
+      "customerEmail": "客户邮箱",
+      "shippingAddress": "收货地址",
+      "orderItems": "订单商品",
+      "orderTotal": "订单总额",
+      "shippingFee": "运费",
+      "taxFee": "税费",
+      "discountAmount": "优惠金额"
+    },
+    "users": {
+      "title": "用户管理",
+      "addUser": "添加用户",
+      "editUser": "编辑用户",
+      "deleteUser": "删除用户",
+      "userName": "用户名",
+      "userEmail": "用户邮箱",
+      "userPhone": "用户电话",
+      "userStatus": "用户状态",
+      "userRole": "用户角色",
+      "lastLogin": "最后登录"
+    },
+    "settings": {
+      "title": "系统设置",
+      "general": "常规设置",
+      "payment": "支付设置",
+      "shipping": "配送设置",
+      "notification": "通知设置",
+      "security": "安全设置",
+      "backup": "备份设置"
+    }
+  },
+  "merchant": {
+    "dashboard": {
+      "title": "商家仪表盘",
+      "totalSales": "总销售额",
+      "totalOrders": "总订单数",
+      "totalProducts": "总商品数",
+      "totalCustomers": "总客户数",
+      "recentOrders": "最近订单",
+      "topProducts": "热门商品",
+      "salesChart": "销售图表"
+    },
+    "products": {
+      "title": "我的商品",
+      "addProduct": "添加商品",
+      "editProduct": "编辑商品",
+      "deleteProduct": "删除商品",
+      "selectProducts": "选择商品",
+      "productName": "商品名称",
+      "productPrice": "商品价格",
+      "productCategory": "商品分类",
+      "productStatus": "商品状态",
+      "productStock": "商品库存",
+      "productSales": "商品销量"
+    },
+    "orders": {
+      "title": "订单管理",
+      "orderId": "订单ID",
+      "orderStatus": "订单状态",
+      "orderAmount": "订单金额",
+      "orderDate": "订单日期",
+      "customerName": "客户姓名",
+      "customerEmail": "客户邮箱",
+      "shippingAddress": "收货地址",
+      "orderItems": "订单商品",
+      "orderTotal": "订单总额"
+    },
+    "withdrawal": {
+      "title": "提现管理",
+      "withdrawalAmount": "提现金额",
+      "withdrawalStatus": "提现状态",
+      "withdrawalDate": "提现日期",
+      "bankAccount": "银行账户",
+      "withdrawalFee": "提现手续费"
+    },
+    "creditRating": {
+      "title": "信用评级",
+      "currentRating": "当前评级",
+      "ratingHistory": "评级历史",
+      "ratingFactors": "评级因素",
+      "improvementSuggestions": "改进建议"
+    }
+  },
+  "user": {
+    "profile": {
+      "title": "个人资料",
+      "editProfile": "编辑资料",
+      "changePassword": "修改密码",
+      "personalInfo": "个人信息",
+      "shippingAddress": "收货地址",
+      "paymentMethods": "支付方式",
+      "preferences": "偏好设置"
+    },
+    "orders": {
+      "title": "我的订单",
+      "orderHistory": "订单历史",
+      "orderDetails": "订单详情",
+      "orderStatus": "订单状态",
+      "trackOrder": "跟踪订单",
+      "cancelOrder": "取消订单",
+      "returnOrder": "退货",
+      "reviewOrder": "评价订单"
+    },
+    "cart": {
+      "title": "购物车",
+      "addToCart": "加入购物车",
+      "removeFromCart": "从购物车移除",
+      "updateQuantity": "更新数量",
+      "checkout": "结算",
+      "emptyCart": "购物车为空",
+      "continueShopping": "继续购物"
+    },
+    "favorites": {
+      "title": "我的收藏",
+      "addToFavorites": "加入收藏",
+      "removeFromFavorites": "取消收藏",
+      "emptyFavorites": "收藏夹为空"
+    }
+  },
+  "errors": {
+    "networkError": "网络错误",
+    "serverError": "服务器错误",
+    "notFound": "页面不存在",
+    "unauthorized": "未授权访问",
+    "forbidden": "禁止访问",
+    "validationError": "验证错误",
+    "timeout": "请求超时",
+    "unknownError": "未知错误",
+    "productNotFound": "商品不存在",
+    "categoryNotFound": "分类不存在",
+    "userNotFound": "用户不存在",
+    "merchantNotFound": "商家不存在",
+    "orderNotFound": "订单不存在",
+    "invalidCredentials": "用户名或密码错误",
+    "emailAlreadyExists": "邮箱已存在",
+    "phoneAlreadyExists": "手机号已存在",
+    "insufficientBalance": "余额不足",
+    "stockInsufficient": "库存不足",
+    "paymentFailed": "支付失败",
+    "shippingFailed": "配送失败"
+  },
+  "messages": {
+    "success": {
+      "productAdded": "商品添加成功",
+      "productUpdated": "商品更新成功",
+      "productDeleted": "商品删除成功",
+      "orderPlaced": "订单提交成功",
+      "orderCancelled": "订单取消成功",
+      "paymentSuccess": "支付成功",
+      "profileUpdated": "资料更新成功",
+      "passwordChanged": "密码修改成功",
+      "loginSuccess": "登录成功",
+      "logoutSuccess": "退出成功",
+      "registrationSuccess": "注册成功"
+    },
+    "info": {
+      "noData": "暂无数据",
+      "loading": "加载中...",
+      "processing": "处理中...",
+      "saving": "保存中...",
+      "uploading": "上传中...",
+      "downloading": "下载中..."
+    },
+    "warning": {
+      "unsavedChanges": "有未保存的更改",
+      "lowStock": "库存不足",
+      "expiredSession": "会话已过期",
+      "invalidInput": "输入无效"
+    }
+  },
+  "validation": {
+    "required": "此字段为必填项",
+    "email": "请输入有效的邮箱地址",
+    "phone": "请输入有效的手机号码",
+    "password": "密码长度至少8位",
+    "confirmPassword": "两次输入的密码不一致",
+    "minLength": "长度不能少于{min}位",
+    "maxLength": "长度不能超过{max}位",
+    "minValue": "值不能小于{min}",
+    "maxValue": "值不能大于{max}",
+    "numeric": "请输入数字",
+    "positive": "请输入正数",
+    "url": "请输入有效的URL",
+    "date": "请输入有效的日期"
+  }
+}
+
+

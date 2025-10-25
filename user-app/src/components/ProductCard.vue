@@ -48,6 +48,8 @@ interface Product {
   badge?: string
   rating?: number
   sales?: number
+  merchantId?: string | number
+  merchantName?: string
 }
 
 const props = defineProps<{
@@ -72,7 +74,7 @@ const goToShop = () => {
 
 // 格式化评分显示
 const formatRating = (rating: number) => {
-  return `${rating} ★`
+  return `${rating.toFixed(1)} ★`
 }
 
   // 格式化销量显示

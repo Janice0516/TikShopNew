@@ -28,13 +28,37 @@ service.interceptors.request.use(
   }
 )
 
+// 将可能的数组/对象错误消息安全转字符串
+function normalizeErrorMessage(message: any): string {
+  if (typeof message === 'string') return message
+  try {
+    if (Array.isArray(message)) {
+      return message.map(m => (typeof m === 'string' ? m : JSON.stringify(m))).join('; ')
+    }
+    if (message && typeof message === 'object') {
+      // 常见 NestJS ValidationPipe 错误结构
+      if (message.message && Array.isArray(message.message)) {
+        return message.message.join('; ')
+      }
+      if (message.error) {
+        return String(message.error)
+      }
+      return JSON.stringify(message)
+    }
+    return '请求失败'
+  } catch {
+    return '请求失败'
+  }
+}
+
 // 响应拦截器
 service.interceptors.response.use(
   (response) => {
     const data = response.data
+    // 检查响应体中的code字段，而不是HTTP状态码
     if (data.code && data.code !== 200) {
-      ElMessage.error(data.message || '请求失败')
-      return Promise.reject(new Error(data.message || '请求失败'))
+      ElMessage.error(normalizeErrorMessage(data.message) || '请求失败')
+      return Promise.reject(new Error(normalizeErrorMessage(data.message) || '请求失败'))
     }
     return response
   },
@@ -60,7 +84,7 @@ service.interceptors.response.use(
           ElMessage.error('服务器错误')
           break
         default:
-          ElMessage.error(data?.message || '请求失败')
+          ElMessage.error(normalizeErrorMessage(data?.message) || '请求失败')
       }
     } else if (error.code === 'ECONNABORTED') {
       ElMessage.error('请求超时，请检查网络连接或稍后重试')

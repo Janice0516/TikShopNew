@@ -40,7 +40,7 @@
         <el-input v-model="registerForm.shopName" />
       </el-form-item>
 
-      <el-form-item :label="$t('register.inviteCode')" prop="inviteCode">
+      <el-form-item :label="$t('register.inviteCode')" prop="inviteCode" required>
         <el-input 
           v-model="registerForm.inviteCode" 
           :placeholder="$t('register.inviteCodePlaceholder')"
@@ -101,6 +101,10 @@ const registerRules: FormRules = {
   contactPhone: [
     { required: true, message: () => t('validation.required'), trigger: 'blur' },
     { pattern: /^(\+?6?01)[0-46-9]-*[0-9]{7,8}$/, message: () => t('validation.phone'), trigger: 'blur' }
+  ],
+  inviteCode: [
+    { required: true, message: () => t('validation.required'), trigger: 'blur' },
+    { min: 6, message: () => t('validation.minLength', { min: 6 }), trigger: 'blur' }
   ]
 }
 

@@ -16,6 +16,110 @@ const router = createRouter({
       component: () => import('@/views/MobileHome.vue'),
       meta: { title: 'TikTok Shop Mobile' }
     },
+    // 地址管理路由
+    {
+      path: '/address/list',
+      name: 'AddressList',
+      component: () => import('@/views/AddressList.vue'),
+      meta: { title: '地址管理', requiresAuth: true }
+    },
+    {
+      path: '/address/add',
+      name: 'AddressAdd',
+      component: () => import('@/views/AddressForm.vue'),
+      meta: { title: '添加地址', requiresAuth: true }
+    },
+    {
+      path: '/address/edit/:id',
+      name: 'AddressEdit',
+      component: () => import('@/views/AddressForm.vue'),
+      meta: { title: '编辑地址', requiresAuth: true }
+    },
+    // 移动端专用路由
+    {
+      path: '/mobile/login',
+      name: 'MobileLogin',
+      component: () => import('@/views/MobileLogin.vue'),
+      meta: { title: '登录', hideForAuth: true }
+    },
+    {
+      path: '/mobile/register',
+      name: 'MobileRegister',
+      component: () => import('@/views/MobileRegister.vue'),
+      meta: { title: '注册', hideForAuth: true }
+    },
+    {
+      path: '/mobile/cart',
+      name: 'MobileCart',
+      component: () => import('@/views/MobileCart.vue'),
+      meta: { title: '购物车', requiresAuth: true }
+    },
+    {
+      path: '/mobile/profile',
+      name: 'MobileProfile',
+      component: () => import('@/views/MobileProfile.vue'),
+      meta: { title: '个人中心', requiresAuth: true }
+    },
+    {
+      path: '/mobile/orders',
+      name: 'MobileOrders',
+      component: () => import('@/views/MobileOrders.vue'),
+      meta: { title: '我的订单', requiresAuth: true }
+    },
+    {
+      path: '/mobile/search',
+      name: 'MobileSearch',
+      component: () => import('@/views/MobileSearch.vue'),
+      meta: { title: '搜索' }
+    },
+    {
+      path: '/mobile/order/review/:orderId',
+      name: 'MobileOrderReview',
+      component: () => import('@/views/MobileOrderReview.vue'),
+      meta: { title: '订单评价', requiresAuth: true }
+    },
+    {
+      path: '/mobile/help',
+      name: 'MobileHelp',
+      component: () => import('@/views/MobileHelp.vue'),
+      meta: { title: '帮助中心' }
+    },
+    {
+      path: '/mobile/favorites',
+      name: 'MobileFavorites',
+      component: () => import('@/views/MobileFavorites.vue'),
+      meta: { title: '我的收藏', requiresAuth: true }
+    },
+    {
+      path: '/mobile/profile/edit',
+      name: 'MobileProfileEdit',
+      component: () => import('@/views/MobileProfileEdit.vue'),
+      meta: { title: '编辑资料', requiresAuth: true }
+    },
+    {
+      path: '/mobile/shop/:id',
+      name: 'MobileShopDetail',
+      component: () => import('@/views/MobileShopDetail.vue'),
+      meta: { title: '商家店铺' }
+    },
+    {
+      path: '/mobile/categories',
+      name: 'MobileCategories',
+      component: () => import('@/views/Categories.vue'),
+      meta: { title: '所有分类' }
+    },
+    {
+      path: '/mobile/category/:id',
+      name: 'MobileCategoryDetail',
+      component: () => import('@/views/CategoryDetail.vue'),
+      meta: { title: '分类详情' }
+    },
+    {
+      path: '/mobile/product/:id',
+      name: 'MobileProductDetail',
+      component: () => import('@/views/MobileProductDetail.vue'),
+      meta: { title: '商品详情' }
+    },
     {
       path: '/home-original',
       name: 'HomeOriginal',
@@ -83,10 +187,16 @@ const router = createRouter({
       meta: { title: '商家店铺' }
     },
     {
+      path: '/categories',
+      name: 'Categories',
+      component: () => import('@/views/Categories.vue'),
+      meta: { title: '所有分类' }
+    },
+    {
       path: '/category/:id',
-      name: 'Category',
-      component: () => import('@/views/Category.vue'),
-      meta: { title: '商品分类' }
+      name: 'CategoryDetail',
+      component: () => import('@/views/CategoryDetail.vue'),
+      meta: { title: '分类详情' }
     },
     {
       path: '/search',
@@ -127,6 +237,11 @@ const router = createRouter({
   ]
 })
 
+// 检测是否为移动设备
+const isMobile = () => {
+  return window.innerWidth <= 768 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+}
+
 // 路由守卫
 router.beforeEach(async (to, from, next) => {
   const userStore = useUserStore()
@@ -134,15 +249,40 @@ router.beforeEach(async (to, from, next) => {
   // 设置页面标题
   document.title = to.meta.title as string || 'TikTok Shop'
   
+  // 移动端自动跳转逻辑
+  if (isMobile()) {
+    // 如果是桌面端路由且是移动设备，跳转到移动端
+    if (!to.path.startsWith('/mobile') && to.path !== '/mobile') {
+      // 特殊处理：根路径直接跳转到移动端首页
+      if (to.path === '/') {
+        next('/mobile')
+        return
+      }
+      // 其他桌面端路由跳转到对应的移动端路由
+      const mobilePath = `/mobile${to.path}`
+      next(mobilePath)
+      return
+    }
+  } else {
+    // 如果是移动端路由且是桌面设备，跳转到桌面端
+    if (to.path.startsWith('/mobile')) {
+      const desktopPath = to.path.replace('/mobile', '') || '/'
+      next(desktopPath)
+      return
+    }
+  }
+  
   // 检查是否需要登录
   if (to.meta.requiresAuth && !userStore.isLoggedIn) {
-    next('/login')
+    const loginPath = isMobile() ? '/mobile/login' : '/login'
+    next(loginPath)
     return
   }
   
   // 检查是否已登录用户访问登录/注册页面
   if (to.meta.hideForAuth && userStore.isLoggedIn) {
-    next('/')
+    const homePath = isMobile() ? '/mobile' : '/'
+    next(homePath)
     return
   }
   

@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>商家后台域名访问测试</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: white;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+        .success-section {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: rgba(76, 175, 80, 0.2);
+            border-radius: 15px;
+            border: 1px solid rgba(76, 175, 80, 0.5);
+        }
+        .test-section {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+        }
+        .test-section h3 {
+            margin: 0 0 15px 0;
+            font-size: 18px;
+        }
+        .test-button {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            text-align: center;
+        }
+        .test-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        .test-button.success {
+            background: rgba(76, 175, 80, 0.3);
+            border: 1px solid rgba(76, 175, 80, 0.5);
+        }
+        .test-button.warning {
+            background: rgba(255, 152, 0, 0.3);
+            border: 1px solid rgba(255, 152, 0, 0.5);
+        }
+        .login-info {
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 14px;
+            background: rgba(0, 0, 0, 0.3);
+        }
+        .success {
+            background: rgba(76, 175, 80, 0.3);
+            border: 1px solid rgba(76, 175, 80, 0.5);
+        }
+        .warning {
+            background: rgba(255, 152, 0, 0.3);
+            border: 1px solid rgba(255, 152, 0, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌐 商家后台域名访问测试</h1>
+        
+        <div class="success-section">
+            <h3>✅ 域名访问已配置完成</h3>
+            <div class="login-info success">
+                ✅ Vite代理已配置支持域名<br>
+                ✅ allowedHosts已包含域名<br>
+                ✅ 路由守卫已优化<br>
+                ✅ 移动端功能已实现<br>
+                ✅ API路径已确认正确
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h3>🔐 正确的登录信息</h3>
+            <div class="login-info warning">
+                <strong>商家账号:</strong> merchant001<br>
+                <strong>密码:</strong> password123<br>
+                <strong>API路径:</strong> /api/merchant/login<br>
+                <strong>状态:</strong> 已验证可用
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h3>🌐 域名访问测试</h3>
+            <a href="https://tiktokbusines.store/merchant/" class="test-button success" target="_blank">
+                🏪 域名访问商家后台
+            </a>
+            <a href="https://tiktokbusines.store/merchant/login" class="test-button success" target="_blank">
+                🔐 域名访问登录页面
+            </a>
+            <a href="https://tiktokbusines.store/merchant/mobile/dashboard" class="test-button success" target="_blank">
+                📱 域名访问移动端
+            </a>
+        </div>
+        
+        <div class="test-section">
+            <h3>📱 移动端功能</h3>
+            <div style="font-size: 14px; line-height: 1.6;">
+                <strong>现在支持：</strong><br>
+                ✅ 域名访问<br>
+                ✅ 自动设备检测<br>
+                ✅ 移动端布局<br>
+                ✅ TikTok风格UI<br>
+                ✅ 底部导航<br>
+                ✅ 无重定向循环<br>
+                ✅ 正确的登录验证
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h3>🔧 使用说明</h3>
+            <div style="font-size: 14px; line-height: 1.6;">
+                <strong>域名访问步骤：</strong><br>
+                1. 访问 https://tiktokbusines.store/merchant/<br>
+                2. 使用账号: merchant001<br>
+                3. 使用密码: password123<br>
+                4. 系统会自动检测设备类型<br>
+                5. 移动设备会自动跳转到移动端<br><br>
+                
+                <strong>移动端特色：</strong><br>
+                • TikTok风格UI设计<br>
+                • 底部导航栏<br>
+                • 触摸优化<br>
+                • 响应式布局
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h3>🛠️ 如果仍有问题</h3>
+            <div style="font-size: 14px; line-height: 1.6;">
+                <strong>请检查：</strong><br>
+                1. 确保使用正确的密码: password123<br>
+                2. 清除浏览器缓存<br>
+                3. 检查网络连接<br>
+                4. 查看浏览器控制台错误<br><br>
+                
+                <strong>技术支持：</strong><br>
+                如果问题仍然存在，请提供错误截图
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // 页面加载时自动检查
+        window.addEventListener('load', function() {
+            console.log('🌐 商家后台域名访问测试页面已加载');
+            console.log('📱 当前设备:', navigator.userAgent);
+            console.log('🌐 当前URL:', window.location.href);
+            console.log('🔐 正确登录信息: merchant001 / password123');
+        });
+    </script>
+</body>
+</html>

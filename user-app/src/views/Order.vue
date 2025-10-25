@@ -280,7 +280,7 @@ const confirmAddress = () => {
 
 // 添加地址
 const addAddress = () => {
-  ElMessage.info('添加地址功能待开发')
+  router.push('/address/add')
 }
 
 // 删除地址

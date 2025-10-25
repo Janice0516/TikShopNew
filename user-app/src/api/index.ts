@@ -1,134 +1,222 @@
-import api from './request'
+import axios from 'axios'
 
-// 用户相关API
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://tiktokbusines.store/api'
+
+const request = axios.create({
+  baseURL: API_BASE_URL,
+  timeout: 10000,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+})
+
+// 请求拦截器
+request.interceptors.request.use(
+  (config) => {
+    // 可以在这里添加token等认证信息
+    return config
+  },
+  (error) => {
+    return Promise.reject(error)
+  }
+)
+
+// 响应拦截器
+request.interceptors.response.use(
+  (response) => {
+    return response.data
+  },
+  (error) => {
+    console.error('API请求错误:', error)
+    return Promise.reject(error)
+  }
+)
+
+// 用户API
 export const userApi = {
   // 用户登录
-  login: (data: { phone: string; password: string }) => {
-    return api.post('/auth/login', data)
+  login: (data: any) => {
+    return request.post('/user/login', data)
   },
   
   // 用户注册
-  register: (data: { phone: string; password: string; verifyCode: string }) => {
-    return api.post('/auth/register', data)
+  register: (data: any) => {
+    return request.post('/user/register', data)
   },
   
   // 获取用户信息
   getUserInfo: () => {
-    return api.get('/user/profile')
+    return request.get('/user/profile')
   },
   
   // 更新用户信息
   updateUserInfo: (data: any) => {
-    return api.put('/user/profile', data)
+    return request.put('/user/profile', data)
   }
 }
 
-// 商品相关API
+// 商品API
 export const productApi = {
-  // 获取商品列表
-  getProducts: (params?: any) => {
-    return api.get('/products', { params })
-  },
-  
   // 获取商品详情
   getProductDetail: (id: string) => {
-    return api.get(`/products/${id}`)
+    return request.get(`/products/shop/${id}`)
   },
   
-  // 搜索商品
-  searchProducts: (keyword: string, params?: any) => {
-    return api.get('/products/search', { 
-      params: { keyword, ...params } 
-    })
-  }
-}
-
-// 分类相关API
-export const categoryApi = {
-  // 获取分类列表
-  getCategories: () => {
-    return api.get('/shop/categories')
+  // 获取商品列表
+  getProductList: (params: any) => {
+    return request.get('/products', { params })
   },
   
   // 获取分类商品
-  getCategoryProducts: (categoryId: string, params?: any) => {
-    return api.get(`/shop/categories/${categoryId}/products`, { params })
+  getCategoryProducts: (categoryId: string, params: any) => {
+    return request.get(`/products/category/${categoryId}`, { params })
   }
 }
 
-// 购物车相关API
+// 分类API
+export const categoryApi = {
+  // 获取分类列表
+  getCategories: () => {
+    return request.get('/categories')
+  },
+  
+  // 获取分类详情
+  getCategoryDetail: (id: string) => {
+    return request.get(`/categories/${id}`)
+  }
+}
+
+// 购物车API
 export const cartApi = {
   // 获取购物车
   getCart: () => {
-    return api.get('/cart')
+    return request.get('/cart')
   },
   
   // 添加商品到购物车
-  addToCart: (data: { productId: string; quantity: number }) => {
-    return api.post('/cart/add', data)
+  addToCart: (data: any) => {
+    return request.post('/cart/add', data)
   },
   
   // 更新购物车商品数量
-  updateCartItem: (itemId: string, quantity: number) => {
-    return api.put(`/cart/items/${itemId}`, { quantity })
+  updateCartItem: (id: string, data: any) => {
+    return request.put(`/cart/${id}`, data)
   },
   
   // 删除购物车商品
-  removeCartItem: (itemId: string) => {
-    return api.delete(`/cart/items/${itemId}`)
+  removeCartItem: (id: string) => {
+    return request.delete(`/cart/${id}`)
   },
   
   // 清空购物车
   clearCart: () => {
-    return api.delete('/cart/clear')
+    return request.delete('/cart/clear')
   }
 }
 
-// 订单相关API
+// 订单API
 export const orderApi = {
   // 创建订单
   createOrder: (data: any) => {
-    return api.post('/orders', data)
+    return request.post('/orders', data)
   },
   
   // 获取订单列表
-  getOrders: (params?: any) => {
-    return api.get('/orders', { params })
+  getOrderList: (params: any) => {
+    return request.get('/orders', { params })
   },
   
   // 获取订单详情
-  getOrderDetail: (orderId: string) => {
-    return api.get(`/orders/${orderId}`)
+  getOrderDetail: (id: string) => {
+    return request.get(`/orders/${id}`)
   },
   
   // 取消订单
-  cancelOrder: (orderId: string) => {
-    return api.put(`/orders/${orderId}/cancel`)
+  cancelOrder: (id: string) => {
+    return request.put(`/orders/${id}/cancel`)
   }
 }
 
-// 轮播图相关API
-export const bannerApi = {
-  // 获取轮播图
-  getBanners: () => {
-    return api.get('/banners')
+// 地址API
+export const addressApi = {
+  // 获取地址列表
+  getAddressList: () => {
+    return request.get('/addresses')
+  },
+  
+  // 创建地址
+  createAddress: (data: any) => {
+    return request.post('/addresses', data)
+  },
+  
+  // 更新地址
+  updateAddress: (id: string, data: any) => {
+    return request.put(`/addresses/${id}`, data)
+  },
+  
+  // 删除地址
+  deleteAddress: (id: string) => {
+    return request.delete(`/addresses/${id}`)
+  },
+  
+  // 设置默认地址
+  setDefaultAddress: (id: string) => {
+    return request.put(`/addresses/${id}/default`)
   }
 }
 
-// 商家店铺相关API
+// 商家API
 export const shopApi = {
   // 获取商家店铺信息
-  getMerchantShop: (merchantId: string) => {
-    return api.get(`/shop/merchant/${merchantId}`)
+  getMerchantShop: (id: string) => {
+    return request.get(`/merchant/shop/${id}`)
+  }
+}
+
+export default request
+
+// 评价API
+export const reviewApi = {
+  // 获取商品评价
+  getProductReviews: (productId: string, params: any) => {
+    return request.get(`/reviews/product/${productId}`, { params })
   },
   
-  // 获取商家商品列表
-  getMerchantProducts: (merchantId: string, params?: any) => {
-    return api.get(`/shop/merchant/${merchantId}/products`, { params })
+  // 创建评价
+  createReview: (data: any) => {
+    return request.post('/reviews', data)
   },
   
-  // 获取商家统计信息
-  getMerchantStats: (merchantId: string) => {
-    return api.get(`/shop/merchant/${merchantId}/stats`)
+  // 更新评价
+  updateReview: (id: string, data: any) => {
+    return request.put(`/reviews/${id}`, data)
+  },
+  
+  // 删除评价
+  deleteReview: (id: string) => {
+    return request.delete(`/reviews/${id}`)
+  }
+}
+
+// 收藏API
+export const favoritesApi = {
+  // 获取收藏列表
+  getFavorites: () => {
+    return request.get('/favorites')
+  },
+  
+  // 添加收藏
+  addToFavorites: (productId: string) => {
+    return request.post('/favorites', { productId })
+  },
+  
+  // 移除收藏
+  removeFromFavorites: (productId: string) => {
+    return request.delete(`/favorites/${productId}`)
+  },
+  
+  // 检查是否已收藏
+  checkFavorite: (productId: string) => {
+    return request.get(`/favorites/check/${productId}`)
   }
 }

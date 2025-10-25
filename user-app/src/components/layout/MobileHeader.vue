@@ -1,184 +1,145 @@
 <template>
   <header class="mobile-header">
     <div class="header-content">
-      <!-- Logo -->
       <div class="logo-section">
         <img src="/logo.png" alt="TikTok Shop" class="logo-image" />
       </div>
       
-      <!-- Search Bar -->
       <div class="search-section">
-        <div class="search-bar">
-          <el-icon class="search-icon"><Search /></el-icon>
-          <input 
-            type="text" 
-            placeholder="Search" 
-            class="search-input"
-            v-model="searchQuery"
-            @keyup.enter="handleSearch"
-          />
+        <div class="search-container" @click="handleSearchClick">
+          <span class="search-icon">🔍</span>
+          <span class="search-placeholder">{{ $t('home.searchPlaceholder') }}</span>
         </div>
       </div>
       
-      <!-- User Profile -->
-      <div class="profile-section">
-        <el-icon class="profile-icon"><User /></el-icon>
-      </div>
-    </div>
-    
-    <!-- Navigation Tabs -->
-    <div class="nav-tabs">
-      <div 
-        v-for="tab in navTabs" 
-        :key="tab.id"
-        class="nav-tab"
-        :class="{ active: activeTab === tab.id }"
-        @click="handleTabClick(tab.id)"
-      >
-        {{ tab.name }}
+      <div class="user-section">
+        <div class="user-icon" @click="handleUserClick">👤</div>
       </div>
     </div>
   </header>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import { Search, User } from '@element-plus/icons-vue'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 
 const router = useRouter()
-const searchQuery = ref('')
-const activeTab = ref('all')
+const { t } = useI18n()
 
-const navTabs = ref([
-  { id: 'all', name: 'All' },
-  { id: 'womenswear', name: 'Womenswear & Underwear' },
-  { id: 'electronics', name: 'Phones & Electronics' },
-  { id: 'accessories', name: 'Fashion Accessories' },
-  { id: 'menswear', name: 'Menswear & Underwear' }
-])
-
-const handleSearch = () => {
-  if (searchQuery.value.trim()) {
-    router.push(`/search?q=${encodeURIComponent(searchQuery.value)}`)
-  }
+const handleSearchClick = () => {
+  router.push('/search')
 }
 
-const handleTabClick = (tabId: string) => {
-  activeTab.value = tabId
-  // 可以根据 tabId 筛选商品
-  emit('tab-change', tabId)
+const handleUserClick = () => {
+  router.push('/login')
 }
-
-const emit = defineEmits<{
-  tabChange: [tabId: string]
-}>()
 </script>
 
 <style scoped lang="scss">
 .mobile-header {
-  background: #000;
-  color: #fff;
-  padding: 12px 16px 0;
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background: #000;
   z-index: 1000;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-}
-
-.header-content {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 12px;
-}
-
-.logo-section {
-  flex-shrink: 0;
+  padding: 0 12px;
   
-  .logo-image {
-    height: 32px;
-    width: auto;
-    max-width: 120px;
-  }
-}
-
-.search-section {
-  flex: 1;
-  
-  .search-bar {
-    position: relative;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid #ff0050;
-    border-radius: 20px;
-    padding: 8px 16px;
+  .header-content {
     display: flex;
     align-items: center;
+    height: 100%;
     gap: 8px;
+    max-width: 100%;
+  }
+  
+  .logo-section {
+    flex-shrink: 0;
     
-    .search-icon {
-      color: #ff0050;
-      font-size: 16px;
+    .logo-image {
+      height: 28px;
+      width: auto;
     }
+  }
+  
+  .search-section {
+    flex: 1;
+    min-width: 0; // 防止flex项目溢出
     
-    .search-input {
-      background: transparent;
-      border: none;
-      outline: none;
-      color: #fff;
-      flex: 1;
-      font-size: 14px;
+      .search-container {
+        display: flex;
+        align-items: center;
+        background: #1a1a1a;
+        border-radius: 16px;
+        padding: 6px 12px;
+        gap: 6px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        max-width: 100%;
+        
+        /* 触屏优化 */
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+        min-height: 44px;
+        
+        &:hover {
+          background: #333;
+        }
+        
+        &:active {
+          transform: scale(0.98);
+          transition: transform 0.1s ease;
+        }
       
-      &::placeholder {
-        color: rgba(255, 255, 255, 0.6);
+      .search-icon {
+        color: #666;
+        font-size: 14px;
+        flex-shrink: 0;
+      }
+      
+      .search-placeholder {
+        color: #666;
+        font-size: 12px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        flex: 1;
+        min-width: 0;
       }
     }
   }
-}
-
-.profile-section {
-  flex-shrink: 0;
   
-  .profile-icon {
-    font-size: 24px;
-    color: #fff;
-    cursor: pointer;
+  .user-section {
+    flex-shrink: 0;
     
-    &:hover {
-      color: #ff0050;
-    }
-  }
-}
-
-.nav-tabs {
-  display: flex;
-  gap: 0;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-  
-  &::-webkit-scrollbar {
-    display: none;
-  }
-  
-  .nav-tab {
-    padding: 12px 16px;
-    font-size: 14px;
-    font-weight: 500;
-    color: rgba(255, 255, 255, 0.7);
-    cursor: pointer;
-    white-space: nowrap;
-    border-bottom: 2px solid transparent;
-    transition: all 0.3s ease;
-    
-    &:hover {
+    .user-icon {
+      width: 28px;
+      height: 28px;
+      background: #333;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       color: #fff;
-    }
-    
-    &.active {
-      color: #fff;
-      border-bottom-color: #ff0050;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      
+      /* 触屏优化 */
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+      min-height: 44px;
+      min-width: 44px;
+      
+      &:hover {
+        background: #555;
+      }
+      
+      &:active {
+        transform: scale(0.95);
+        transition: transform 0.1s ease;
+      }
     }
   }
 }
@@ -186,33 +147,35 @@ const emit = defineEmits<{
 // 响应式设计
 @media (max-width: 480px) {
   .mobile-header {
-    padding: 10px 12px 0;
-  }
-  
-  .header-content {
-    gap: 8px;
-  }
-  
-  .logo-section .logo-image {
-    height: 28px;
-    max-width: 100px;
-  }
-  
-  .search-section .search-bar {
-    padding: 6px 12px;
+    padding: 0 8px;
     
-    .search-input {
-      font-size: 13px;
+    .header-content {
+      gap: 6px;
+    }
+    
+    .logo-section .logo-image {
+      height: 24px;
+    }
+    
+    .search-section .search-container {
+      padding: 5px 10px;
+      
+      .search-placeholder {
+        font-size: 11px;
+      }
+    }
+    
+    .user-section .user-icon {
+      width: 24px;
+      height: 24px;
+      font-size: 12px;
     }
   }
-  
-  .profile-section .profile-icon {
-    font-size: 20px;
-  }
-  
-  .nav-tabs .nav-tab {
-    padding: 10px 12px;
-    font-size: 13px;
+}
+
+@media (min-width: 769px) {
+  .mobile-header {
+    display: none;
   }
 }
 </style>

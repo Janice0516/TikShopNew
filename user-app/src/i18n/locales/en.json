@@ -1,0 +1,28 @@
+{
+  "common": {
+    "noName": "Product Name",
+    "noDescription": "No description",
+    "defaultShop": "Default Shop"
+  },
+  "product": {
+    "name": "Product Name",
+    "price": "Price",
+    "description": "Product Description",
+    "addToCart": "Add to Cart",
+    "buyNow": "Buy Now",
+    "share": "Share",
+    "color": "Color",
+    "size": "Size",
+    "material": "Material",
+    "option": "Option"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "products": "Products",
+    "orders": "Orders",
+    "finance": "Finance",
+    "shop": "Shop",
+    "creditRating": "Credit Rating",
+    "settings": "Settings"
+  }
+}

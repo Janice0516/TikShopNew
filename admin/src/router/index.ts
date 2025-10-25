@@ -39,6 +39,12 @@ const routes: RouteRecordRaw[] = [
         meta: { title: '添加商品', titleKey: 'addProduct', hidden: true }
       },
       {
+        path: '/products/edit/:id',
+        name: 'ProductEdit',
+        component: () => import('@/views/products/add.vue'),
+        meta: { title: '编辑商品', titleKey: 'editProduct', hidden: true }
+      },
+      {
         path: '/categories',
         name: 'Categories',
         component: () => import('@/views/categories/index.vue'),
@@ -144,8 +150,9 @@ router.beforeEach(async (to, from, next) => {
     return
   }
   
-  // 检查是否已登录
-  if (!userStore.token) {
+  // 使用本地存储中的token判断是否已登录，避免Ref未解包问题
+  const token = localStorage.getItem('token')
+  if (!token) {
     next('/login')
     return
   }

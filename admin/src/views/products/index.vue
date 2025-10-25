@@ -13,22 +13,22 @@
         <el-form-item label="状态">
           <el-select v-model="queryForm.status" placeholder="请选择" clearable>
             <el-option label="全部" :value="undefined" />
-            <el-option label="上架" :value="1" />
-            <el-option label="下架" :value="0" />
+            <el-option :label="$t('common.status.active')" :value="1" />
+            <el-option :label="$t('common.status.inactive')" :value="0" />
           </el-select>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="handleQuery" :icon="Search">
-            搜索
+            {{ $t('common.search') }}
           </el-button>
-          <el-button @click="handleReset">重置</el-button>
+          <el-button @click="handleReset">{{ $t('common.reset') }}</el-button>
         </el-form-item>
       </el-form>
 
       <!-- 操作栏 -->
       <div class="toolbar">
         <el-button type="primary" @click="handleAdd" :icon="Plus">
-          添加商品
+          {{ $t('nav.addProduct') }}
         </el-button>
       </div>
 
@@ -56,7 +56,7 @@
         <el-table-column prop="status" label="状态" width="100">
           <template #default="{ row }">
             <el-tag :type="row.status === 1 ? 'success' : 'danger'">
-              {{ row.status === 1 ? '上架' : '下架' }}
+              {{ row.status === 1 ? $t('common.status.active') : $t('common.status.inactive') }}
             </el-tag>
           </template>
         </el-table-column>
@@ -67,21 +67,21 @@
               link
               @click="handleEdit(row)"
             >
-              编辑
+              {{ $t('common.edit') }}
             </el-button>
             <el-button
               :type="row.status === 1 ? 'warning' : 'success'"
               link
               @click="handleToggleStatus(row)"
             >
-              {{ row.status === 1 ? '下架' : '上架' }}
+              {{ row.status === 1 ? $t('common.status.inactive') : $t('common.status.active') }}
             </el-button>
             <el-button
               type="danger"
               link
               @click="handleDelete(row)"
             >
-              删除
+              {{ $t('common.delete') }}
             </el-button>
           </template>
         </el-table-column>
@@ -159,7 +159,7 @@ const handleAdd = () => {
 
 // 编辑商品
 const handleEdit = (row: any) => {
-  router.push(`/products/add?id=${row.id}`)
+  router.push(`/products/edit/${row.id}`)
 }
 
 // 切换状态

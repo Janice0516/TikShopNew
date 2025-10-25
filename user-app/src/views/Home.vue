@@ -1,936 +1,626 @@
 <template>
-  <div class="tiktok-shop">
-    <!-- 顶部导航栏 -->
-    <header class="top-header">
-      <div class="header-content">
-        <div class="header-left">
-          <div class="logo">
-            <img src="/logo.png" alt="TikTok Shop" class="logo-image" />
+  <div class="home">
+    <!-- 轮播图 -->
+    <div class="banner-section">
+      <el-carousel height="400px" indicator-position="outside">
+        <el-carousel-item v-for="(banner, index) in banners" :key="index">
+          <div class="banner-item" :style="{ backgroundImage: `url(${banner.image})` }">
+            <div class="banner-content">
+              <h2>{{ banner.title }}</h2>
+              <p>{{ banner.description }}</p>
+              <el-button type="primary" size="large">{{ banner.buttonText }}</el-button>
+            </div>
           </div>
-        </div>
-        
-        <div class="header-right">
-          <LanguageSwitcher />
-          <a class="get-app-btn" href="https://www.tiktok.com/download" target="_blank" rel="noopener" title="Download TikTok">{{ $t('home.getApp') }}</a>
-          <button class="login-btn">{{ $t('navigation.login') }}</button>
+        </el-carousel-item>
+      </el-carousel>
+    </div>
+
+    <!-- 分类导航 -->
+    <div class="category-section">
+      <div class="section-title">
+        <h2>{{ $t('home.categories') }}</h2>
+        <p>{{ $t('home.categoryDescription') }}</p>
+      </div>
+      <div class="category-grid">
+        <div 
+          v-for="category in categories" 
+          :key="category.id" 
+          class="category-item"
+          @click="goToCategory(category.id)"
+        >
+          <div class="category-image">
+            <img :src="getCategoryImage(category)" :alt="category.name" />
+          </div>
+          <div class="category-name">{{ category.name }}</div>
         </div>
       </div>
-    </header>
+    </div>
 
-    <div class="main-layout">
-      <!-- 左侧边栏 -->
-      <aside class="sidebar">
-        <div class="sidebar-content">
-          <div class="sidebar-logo">
-            <img src="/logo.png" alt="TikTok Shop" class="logo-image" />
+    <!-- 热门商品 -->
+    <div class="products-section">
+      <div class="section-title">
+        <h2>{{ $t('home.hotProducts') }}</h2>
+        <p>{{ $t('home.hotProductsDescription') }}</p>
+      </div>
+      <div class="products-grid">
+        <div 
+          v-for="product in hotProducts" 
+          :key="product.id" 
+          class="product-card"
+          @click="goToProduct(product.id)"
+        >
+          <div class="product-image">
+            <img :src="product.mainImage" :alt="product.name" />
+            <div class="product-badge" v-if="product.isHot">HOT</div>
           </div>
-          
-          <nav class="sidebar-nav">
-            <div class="nav-item">
-              <span class="nav-icon">🛍️</span>
-              <span class="nav-text">{{ $t('navigation.products') }}</span>
+          <div class="product-info">
+            <h3 class="product-name">{{ product.name }}</h3>
+            <div class="product-price">
+              <span class="current-price">RM{{ product.suggestPrice }}</span>
+              <span class="original-price" v-if="product.costPrice !== product.suggestPrice">RM{{ product.costPrice }}</span>
             </div>
-            <div class="nav-item" @click="handleCustomerServiceClick">
-              <span class="nav-icon">💬</span>
-              <span class="nav-text">{{ $t('common.customerService') }}</span>
+            <div class="product-rating">
+              <el-rate v-model="product.rating" disabled show-score />
             </div>
-          </nav>
-          
-          <div class="sidebar-login">
-            <button class="login-btn-large">{{ $t('navigation.login') }}</button>
-          </div>
-          
-          <div class="sidebar-footer">
-            <a href="#" class="footer-link">{{ $t('home.startShopping') }}</a>
-            <a href="#" class="footer-link">{{ $t('footer.company') }}</a>
-            <a href="#" class="footer-link">{{ $t('footer.help') }}</a>
-            <a href="#" class="footer-link">{{ $t('footer.contact') }}</a>
-            <a href="#" class="footer-link">{{ $t('footer.legal') }}</a>
           </div>
         </div>
-      </aside>
+      </div>
+    </div>
 
-      <!-- 主内容区域 -->
-      <main class="main-content">
-        <!-- 分类区域 -->
-        <section class="categories-section">
-          <h2 class="section-title">{{ $t('home.categories') }}</h2>
-          <div class="categories-container">
-            <div class="categories-scroll">
-              <div 
-                v-for="category in categories" 
-                :key="category.id"
-                class="category-item"
-                @click="goToCategory(category)"
-              >
-                <div class="category-icon">
-                  <img :src="category.icon" :alt="category.name" />
-                </div>
-                <span class="category-name">{{ category.name }}</span>
-              </div>
-            </div>
-            <button class="scroll-arrow">→</button>
+    <!-- 特价商品 -->
+    <div class="sale-section">
+      <div class="section-title">
+        <h2>{{ $t('home.saleProducts') }}</h2>
+        <p>{{ $t('home.saleProductsDescription') }}</p>
+      </div>
+      <div class="products-grid">
+        <div 
+          v-for="product in saleProducts" 
+          :key="product.id" 
+          class="product-card sale-card"
+          @click="goToProduct(product.id)"
+        >
+          <div class="product-image">
+            <img :src="product.mainImage" :alt="product.name" />
+            <div class="sale-badge">SALE</div>
           </div>
-        </section>
-
-        <!-- 优惠商品区域 -->
-        <section class="savings-section">
-          <h2 class="section-title">Savings for you</h2>
-          <div class="products-container">
-            <div class="products-grid">
-              <div 
-                v-for="product in products" 
-                :key="product.id"
-                class="product-card"
-                @click="goToProduct(product)"
-              >
-                <!-- 商品图片 -->
-                <div class="product-image-container">
-                  <img :src="product.image" :alt="product.name" class="product-image" />
-                  
-                  <!-- 库存状态 -->
-                  <div v-if="product.stock === 0" class="product-out-of-stock">
-                    Out of Stock
-                  </div>
-                </div>
-                
-                <!-- 商品信息 -->
-                <div class="product-info">
-                  <h3 class="product-name">{{ product.name }}</h3>
-                  
-                  <!-- 品牌信息 -->
-                  <div v-if="product.brand" class="product-brand">
-                    {{ product.brand }}
-                  </div>
-                  
-                  <!-- 评分和销量 -->
-                  <div class="product-stats">
-                    <div class="product-rating">
-                      <span class="rating-stars">★</span>
-                      <span class="rating-score">{{ product.rating.toFixed(1) }}</span>
-                    </div>
-                    <div class="product-sales">
-                      {{ formatSales(product.sales) }} sold
-                    </div>
-                  </div>
-                  
-                  <!-- 价格 -->
-                  <div class="product-pricing">
-                    <div class="current-price">RM{{ product.price.toFixed(2) }}</div>
-                    <div v-if="product.originalPrice" class="original-price">RM{{ product.originalPrice.toFixed(2) }}</div>
-                  </div>
-                  
-                  <!-- 库存信息 -->
-                  <div class="product-stock">
-                    Stock: {{ product.stock }}
-                  </div>
-                </div>
-              </div>
+          <div class="product-info">
+            <h3 class="product-name">{{ product.name }}</h3>
+            <div class="product-price">
+              <span class="current-price">RM{{ product.suggestPrice }}</span>
+              <span class="original-price">RM{{ product.costPrice }}</span>
             </div>
-            
-            <!-- 分页组件 -->
-            <div v-if="pagination.totalPages > 1" class="pagination-container">
-              <el-pagination
-                v-model:current-page="pagination.current"
-                :page-size="pagination.pageSize"
-                :total="pagination.total"
-                :page-count="pagination.totalPages"
-                layout="prev, pager, next, total"
-                @current-change="handlePageChange"
-                background
-              />
+            <div class="discount-info">
+              <span class="discount-percent">{{ getDiscountPercent(product.costPrice, product.suggestPrice) }}% OFF</span>
             </div>
           </div>
-        </section>
-      </main>
+        </div>
+      </div>
+    </div>
+
+    <!-- 品牌推荐 -->
+    <div class="brand-section">
+      <div class="section-title">
+        <h2>{{ $t('home.brands') }}</h2>
+        <p>{{ $t('home.brandsDescription') }}</p>
+      </div>
+      <div class="brand-grid">
+        <div 
+          v-for="brand in brands" 
+          :key="brand.id" 
+          class="brand-item"
+          @click="goToBrand(brand.id)"
+        >
+          <img :src="brand.logo" :alt="brand.name" />
+          <div class="brand-name">{{ brand.name }}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 优惠信息 -->
+    <div class="savings-section">
+      <div class="savings-content">
+        <div class="savings-text">
+          <h2>{{ $t('home.savingsTitle') }}</h2>
+          <p>{{ $t('home.savingsDescription') }}</p>
+        </div>
+        <div class="savings-actions">
+          <el-button type="primary" size="large">{{ $t('home.shopNow') }}</el-button>
+          <el-button size="large">{{ $t('home.learnMore') }}</el-button>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
-import { productApi, categoryApi } from '@/api'
-import { ElMessage } from 'element-plus'
-import LanguageSwitcher from '@/components/LanguageSwitcher.vue'
+import { ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+import { useI18n } from 'vue-i18n';
+import { getCategories } from '@/api/category';
+import { getProducts } from '@/api/product';
 
-const router = useRouter()
+const { t } = useI18n();
+const router = useRouter();
 
-// 数据状态
-const categories = ref<any[]>([])
-const products = ref<any[]>([])
-const loading = ref(false)
-const pagination = ref({
-  current: 1,
-  pageSize: 10,
-  total: 0,
-  totalPages: 0
-})
-
-// 分类数据
-const loadCategories = async () => {
-  try {
-    const response = await categoryApi.getCategories()
-    const apiCategories = response.list || []
-    
-    // 为分类添加图标
-    const categoryIcons = {
-      // 英文分类名称（API实际返回的）
-      'Home & Living': 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=120&h=120&fit=crop&crop=center&auto=format&q=80',
-              'Beauty & Personal Care': 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=120&h=120&fit=crop&crop=center&auto=format&q=80',
-      'Bags & Luggage': 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=120&h=120&fit=crop&crop=center&auto=format&q=80',
-              'Food & Fresh': 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=120&h=120&fit=crop&crop=center&auto=format&q=80',
-      'Sports Shoes': 'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=120&h=120&fit=crop&crop=center&auto=format&q=80',
-      'Home Appliances': 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=120&h=120&fit=crop&crop=center&auto=format&q=80',
-              'Beverages': 'https://images.unsplash.com/photo-1544145945-f90425340c7e?w=120&h=120&fit=crop&crop=center&auto=format&q=80',
-      'Electronics & Appliances': 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=120&h=120&fit=crop&crop=center&auto=format&q=80',
-      'Women\'s Clothing': 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=120&h=120&fit=crop&crop=center&auto=format&q=80',
-              'Computers': 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=120&h=120&fit=crop&crop=center&auto=format&q=80',
-              'Fruits': 'https://images.unsplash.com/photo-1610832958506-aa56368176cf?w=120&h=120&fit=crop&crop=center&auto=format&q=80',
-              'Cosmetics': 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=120&h=120&fit=crop&crop=center&auto=format&q=80',
-              'Kitchenware': 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=120&h=120&fit=crop&crop=center&auto=format&q=80',
-              'Fashion & Bags': 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=120&h=120&fit=crop&crop=center&auto=format&q=80',
-      'Men\'s Clothing': 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&h=120&fit=crop&crop=center&auto=format&q=80',
-      'Mobile Phones': 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=120&h=120&fit=crop&crop=center&auto=format&q=80',
-              'Snacks': 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=120&h=120&fit=crop&crop=center&auto=format&q=80',
-              'Skincare': 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=120&h=120&fit=crop&crop=center&auto=format&q=80',
-      'Home Textiles': 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=120&h=120&fit=crop&crop=center&auto=format&q=80',
-      
-      // 中文分类名称（备用）
-      '服装鞋包': 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=120&h=120&fit=crop&crop=center&auto=format&q=80',
-      '数码家电': 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=120&h=120&fit=crop&crop=center&auto=format&q=80',
-      '食品生鲜': 'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=120&h=120&fit=crop&crop=center&auto=format&q=80',
-      '美妆个护': 'https://images.unsplash.com/photo-1596462502278-27b2c045efd7?w=120&h=120&fit=crop&crop=center&auto=format&q=80',
-      '家居生活': 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=120&h=120&fit=crop&crop=center&auto=format&q=80',
-      '运动户外': 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=120&h=120&fit=crop&crop=center&auto=format&q=80',
-      '图书文具': 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=120&h=120&fit=crop&crop=center&auto=format&q=80',
-      '母婴用品': 'https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=120&h=120&fit=crop&crop=center&auto=format&q=80',
-      '汽车用品': 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=120&h=120&fit=crop&crop=center&auto=format&q=80',
-      '宠物用品': 'https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=120&h=120&fit=crop&crop=center&auto=format&q=80'
-    }
-    
-    categories.value = apiCategories.map((category: any) => ({
-      ...category,
-      icon: categoryIcons[category.name] || 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=120&h=120&fit=crop&crop=center&auto=format&q=80'
-    }))
-  } catch (error) {
-    console.error('加载分类失败:', error)
-    // 分类API需要认证，使用基础分类数据
-    categories.value = [
-      { 
-        id: '1', 
-        name: 'Fashion & Bags', 
-        icon: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=120&h=120&fit=crop&crop=center&auto=format&q=80' 
-      },
-      { 
-        id: '2', 
-        name: 'Electronics & Appliances', 
-        icon: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=120&h=120&fit=crop&crop=center&auto=format&q=80' 
-      },
-      { 
-        id: '3', 
-        name: 'Food & Fresh', 
-        icon: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=120&h=120&fit=crop&crop=center&auto=format&q=80' 
-      },
-      { 
-        id: '4', 
-        name: 'Beauty & Personal Care', 
-        icon: 'https://images.unsplash.com/photo-1596462502278-27b2c045efd7?w=120&h=120&fit=crop&crop=center&auto=format&q=80' 
-      },
-      { 
-        id: '5', 
-        name: 'Home & Living', 
-        icon: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=120&h=120&fit=crop&crop=center&auto=format&q=80' 
-      },
-      { 
-        id: '6', 
-        name: 'Sports Shoes', 
-        icon: 'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=120&h=120&fit=crop&crop=center&auto=format&q=80' 
-      },
-      { 
-        id: '7', 
-        name: 'Computers', 
-        icon: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=120&h=120&fit=crop&crop=center&auto=format&q=80' 
-      },
-      { 
-        id: '8', 
-        name: 'Mobile Phones', 
-        icon: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=120&h=120&fit=crop&crop=center&auto=format&q=80' 
-      },
-      { 
-        id: '9', 
-        name: 'Beverages', 
-        icon: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=120&h=120&fit=crop&crop=center&auto=format&q=80' 
-      }
-    ]
+// 响应式数据
+const banners = ref([
+  {
+    image: '/images/banner1.jpg',
+    title: t('home.banner1Title'),
+    description: t('home.banner1Description'),
+    buttonText: t('home.shopNow')
+  },
+  {
+    image: '/images/banner2.jpg',
+    title: t('home.banner2Title'),
+    description: t('home.banner2Description'),
+    buttonText: t('home.shopNow')
   }
-}
+]);
 
-// 商品数据
-const loadProducts = async (page = 1) => {
-  loading.value = true
-  console.log('开始加载商品数据...', { page })
-  try {
-    // 使用商城API获取商家上架的商品
-    const response = await fetch(`/api/shop/products?page=${page}&pageSize=${pagination.value.pageSize}`)
-    const data = await response.json()
-    console.log('API响应:', data)
-    
-    // 更新分页信息
-    if (data) {
-      pagination.value.total = data.total || data.list?.length || 0
-      pagination.value.totalPages = data.totalPages || Math.ceil(pagination.value.total / pagination.value.pageSize)
-      pagination.value.current = data.page || page
-    }
-    
-    const apiProducts = data?.list || []
-    console.log('API商品数据:', apiProducts)
-    
-    // 使用商家上架的商品数据
-    products.value = apiProducts.map((product: any) => {
-      const salePrice = parseFloat(product.salePrice) || 0
-      const costPrice = parseFloat(product.costPrice) || 0
-      
-      // 商家商品价格逻辑：
-      // - costPrice 是平台成本价（进货价）
-      // - salePrice 是商家设定的售价（零售价）
-      // - 当前价格应该是商家售价
-      // - 只有当商家售价低于成本价时才显示"折扣"（这种情况很少见）
-      const currentPrice = salePrice || costPrice
-      const originalPrice = salePrice && costPrice && salePrice < costPrice ? costPrice : null
-      
-      // 如果商家售价和成本价相同，也不显示原价
-      const shouldShowOriginalPrice = originalPrice && originalPrice !== currentPrice
-      
-      return {
-        id: product.id,
-        productId: product.productId,
-        name: product.name,
-        description: product.description,
-        price: currentPrice,
-        originalPrice: shouldShowOriginalPrice ? originalPrice : null,
-        image: product.mainImage || `https://via.placeholder.com/300x300/409EFF/ffffff?text=${encodeURIComponent(product.name)}`,
-        // 使用完全真实的数据
-        rating: 4.0, // 固定评分
-        sales: product.sales || 0, // 真实销量
-        stock: product.stock || 0, // 真实库存
-        brand: product.brand || '', // 真实品牌
-        categoryId: product.categoryId || '',
-        categoryName: product.categoryName || '',
-        merchantId: product.merchantId,
-        merchantName: product.merchantName || '',
-        // 完全移除虚拟促销信息
-        banner: null,
-        timer: null,
-        badge: null
-      }
-    })
-    console.log('转换后的商品数据:', products.value)
-  } catch (error) {
-    console.error('加载商品失败:', error)
-    ElMessage.error('加载商品失败！')
-    
-    // 如果API失败，显示空状态
-    products.value = []
-    pagination.value.total = 0
-    pagination.value.totalPages = 0
-  } finally {
-    loading.value = false
-    console.log('商品加载完成，数量:', products.value.length)
-  }
-}
+const categories = ref([]);
+const hotProducts = ref([]);
+const saleProducts = ref([]);
+const brands = ref([]);
 
-// 格式化销量
-const formatSales = (sales: number) => {
-  if (sales >= 1000) {
-    return `${(sales / 1000).toFixed(1)}K`
+// 获取分类图片 - 使用API数据
+const getCategoryImage = (category: any) => {
+  console.log('分类数据:', category); // 调试日志
+  
+  // 优先使用API返回的imageUrl
+  if (category.imageUrl) {
+    console.log('使用API图片:', category.imageUrl);
+    return category.imageUrl;
   }
-  return sales.toString()
-}
+  
+  // 如果没有imageUrl，使用映射
+  const imageMap = {
+    // 英文名称
+    'Electronics & Gadgets': '/images/categories/electronics.jpg',
+    'Personal Care': '/images/categories/beauty.jpg',
+    'Cleaning Supplies': '/images/categories/home.jpg',
+    'Womenswear & Underwear': '/images/categories/fashion.jpg',
+    'Phones & Electronics': '/images/categories/electronics.jpg',
+    'Fashion Accessories': '/images/categories/fashion.jpg',
+    'Menswear & Underwear': '/images/categories/fashion.jpg',
+    'Home Supplies': '/images/categories/home.jpg',
+    'Beauty & Personal Care': '/images/categories/beauty.jpg',
+    'Shoes': '/images/categories/shoes.jpg',
+    'Sports & Outdoor': '/images/categories/sports.jpg',
+    'Luggage & Bags': '/images/categories/luggage.jpg',
+    'Toys & Hobbies': '/images/categories/toys.jpg',
+    'Automotive & Motorcycle': '/images/categories/automotive.jpg',
+    'Kids Fashion': '/images/categories/kids-fashion.jpg',
+    'Kitchenware': '/images/categories/kitchen.jpg',
+    'Computers & Office Equipment': '/images/categories/office.jpg',
+    'Baby & Maternity': '/images/categories/baby.jpg',
+    'Tools & Hardware': '/images/categories/tools.jpg',
+    'Textiles & Soft Furnishings': '/images/categories/textiles.jpg',
+    'Pet Supplies': '/images/categories/pets.jpg',
+    'Home Improvement': '/images/categories/home.jpg',
+    'Food & Beverages': '/images/categories/food.jpg',
+    'Muslim Fashion': '/images/categories/fashion.jpg',
+    'Books, Magazines & Audio': '/images/categories/books.jpg',
+    'Household Appliances': '/images/categories/appliances.jpg',
+    'Health': '/images/categories/health.jpg',
+    'Furniture': '/images/categories/furniture.jpg',
+    'Jewelry Accessories & Derivatives': '/images/categories/jewelry.jpg',
+    'Collectibles': '/images/categories/collectibles.jpg',
+    'Pre-Owned': '/images/categories/preowned.jpg',
+    
+    // 中文名称
+    '收藏品': '/images/categories/collectibles.jpg',
+    '二手商品': '/images/categories/preowned.jpg',
+    '工具五金': '/images/categories/tools.jpg',
+    '摩托车用品': '/images/categories/motorcycle.jpg',
+    '玩具': '/images/categories/toys.jpg',
+    '电子产品': '/images/categories/electronics.jpg',
+    '服装': '/images/categories/fashion.jpg',
+    '家居': '/images/categories/home.jpg',
+    '运动': '/images/categories/sports.jpg',
+    '美妆': '/images/categories/beauty.jpg',
+    '食品': '/images/categories/food.jpg',
+    '图书': '/images/categories/books.jpg',
+    '汽车': '/images/categories/automotive.jpg',
+    '宠物': '/images/categories/pets.jpg',
+    '珠宝': '/images/categories/jewelry.jpg',
+    '乐器': '/images/categories/music.jpg',
+    '园艺': '/images/categories/garden.jpg',
+    '办公': '/images/categories/office.jpg',
+    '旅行': '/images/categories/travel.jpg',
+    '健康': '/images/categories/health.jpg'
+  };
+  
+  const imagePath = imageMap[category.name] || '/images/categories/default.jpg';
+  console.log('使用映射图片:', imagePath);
+  return imagePath;
+};
+
+// 计算折扣百分比
+const getDiscountPercent = (originalPrice: number, salePrice: number) => {
+  return Math.round(((originalPrice - salePrice) / originalPrice) * 100);
+};
 
 // 跳转到分类页面
-const goToCategory = (category: any) => {
-  router.push(`/category/${category.id}`)
-}
+const goToCategory = (categoryId: string) => {
+  router.push(`/category/${categoryId}`);
+};
 
-// 跳转到商品详情页
-const goToProduct = (product: any) => {
-  router.push(`/product/${product.id}`)
-}
+// 跳转到商品详情
+const goToProduct = (productId: string) => {
+  router.push(`/product/${productId}`);
+};
 
-// 分页处理
-const handlePageChange = (page: number) => {
-  loadProducts(page)
-}
+// 跳转到品牌页面
+const goToBrand = (brandId: string) => {
+  router.push(`/brand/${brandId}`);
+};
 
-// 客服点击处理
-const handleCustomerServiceClick = () => {
-  window.open('https://direct.lc.chat/19346006/', '_blank', 'noopener,noreferrer')
-}
+// 加载数据
+const loadData = async () => {
+  try {
+    console.log('开始加载分类数据...'); // 调试日志
+    
+    // 加载分类
+    const categoriesResponse = await getCategories();
+    console.log('分类API响应:', categoriesResponse); // 调试日志
+    
+    categories.value = categoriesResponse.data || categoriesResponse || [];
+    console.log('处理后的分类数据:', categories.value); // 调试日志
+    
+    // 加载热门商品
+    const hotProductsResponse = await getProducts({ 
+      page: 1, 
+      pageSize: 8, 
+      sort: 'sales',
+      order: 'desc'
+    });
+    hotProducts.value = hotProductsResponse.data?.list || [];
+    
+    // 加载特价商品
+    const saleProductsResponse = await getProducts({ 
+      page: 1, 
+      pageSize: 8, 
+      sort: 'discount',
+      order: 'desc'
+    });
+    saleProducts.value = saleProductsResponse.data?.list || [];
+    
+  } catch (error) {
+    console.error('加载数据失败:', error);
+    
+    // 如果API失败，使用默认分类数据
+    categories.value = [
+      { id: 1, name: 'Electronics & Gadgets', imageUrl: '/images/categories/electronics.jpg' },
+      { id: 2, name: 'Fashion & Accessories', imageUrl: '/images/categories/fashion.jpg' },
+      { id: 3, name: 'Home & Living', imageUrl: '/images/categories/home.jpg' },
+      { id: 4, name: 'Beauty & Personal Care', imageUrl: '/images/categories/beauty.jpg' },
+      { id: 5, name: 'Sports & Outdoor', imageUrl: '/images/categories/sports.jpg' },
+      { id: 6, name: 'Food & Beverages', imageUrl: '/images/categories/food.jpg' },
+      { id: 7, name: 'Books & Media', imageUrl: '/images/categories/books.jpg' },
+      { id: 8, name: 'Automotive', imageUrl: '/images/categories/automotive.jpg' }
+    ];
+  }
+};
 
-// 页面加载时获取数据
-onMounted(async () => {
-  await Promise.all([
-    loadCategories(),
-    loadProducts(1)
-  ])
-})
+onMounted(() => {
+  loadData();
+});
 </script>
 
-<style scoped lang="scss">
-.tiktok-shop {
+<style scoped>
+.home {
   min-height: 100vh;
-  background: #fff;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 }
 
-// 顶部导航栏
-.top-header {
-  position: fixed;
+.banner-section {
+  margin-bottom: 40px;
+}
+
+.banner-item {
+  height: 400px;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.banner-item::before {
+  content: '';
+  position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  height: 60px;
-  background: #fff;
-  border-bottom: 1px solid #e5e5e5;
-  z-index: 1000;
-  
-  .header-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    height: 100%;
-    padding: 0 20px;
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-  
-  .header-left {
-    .logo {
-      display: flex;
-      align-items: center;
-      
-      .logo-image {
-        height: 70px;
-        width: auto;
-        max-width: 350px;
-      }
-    }
-  }
-  
-  .header-right {
-    display: flex;
-    gap: 12px;
-    
-    .get-app-btn {
-      padding: 8px 16px;
-      border: 1px solid #000;
-      background: #fff;
-      color: #000;
-      border-radius: 4px;
-      font-size: 14px;
-      cursor: pointer;
-      
-      &:hover {
-        background: #f5f5f5;
-      }
-    }
-    
-    .login-btn {
-      padding: 8px 16px;
-      background: #ff0050;
-      color: #fff;
-      border: none;
-      border-radius: 4px;
-      font-size: 14px;
-      cursor: pointer;
-      
-      &:hover {
-        background: #e6004a;
-      }
-    }
-  }
-}
-
-// 主布局
-.main-layout {
-  display: flex;
-  margin-top: 60px;
-  min-height: calc(100vh - 60px);
-}
-
-// 左侧边栏
-.sidebar {
-  width: 240px;
-  background: #fff;
-  border-right: 1px solid #e5e5e5;
-  position: fixed;
-  left: 0;
-  top: 60px;
   bottom: 0;
-  overflow-y: auto;
-  
-  .sidebar-content {
-    padding: 20px;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .sidebar-logo {
-    display: flex;
-    align-items: center;
-    margin-bottom: 30px;
-    
-    .logo-image {
-      height: 70px;
-      width: auto;
-      max-width: 350px;
-    }
-  }
-  
-  .sidebar-nav {
-    margin-bottom: 30px;
-    
-    .nav-item {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 12px 0;
-      cursor: pointer;
-      
-      .nav-icon {
-        font-size: 18px;
-      }
-      
-      .nav-text {
-        font-size: 16px;
-        color: #000;
-      }
-      
-      &:hover {
-        background: #f5f5f5;
-        border-radius: 4px;
-        padding-left: 8px;
-      }
-    }
-  }
-  
-  .sidebar-login {
-    margin-bottom: 30px;
-    
-    .login-btn-large {
-      width: 100%;
-      padding: 12px;
-      background: #ff0050;
-      color: #fff;
-      border: none;
-      border-radius: 4px;
-      font-size: 16px;
-      cursor: pointer;
-      
-      &:hover {
-        background: #e6004a;
-      }
-    }
-  }
-  
-  .sidebar-footer {
-    margin-top: auto;
-    
-    .footer-link {
-      display: block;
-      padding: 8px 0;
-      color: #666;
-      text-decoration: none;
-      font-size: 14px;
-      
-      &:hover {
-        color: #000;
-      }
-    }
-  }
+  background: rgba(0, 0, 0, 0.3);
 }
 
-// 主内容区域
-.main-content {
-  flex: 1;
-  margin-left: 240px;
-  padding: 20px;
-  background: #fff;
+.banner-content {
+  text-align: center;
+  color: white;
+  z-index: 1;
+  position: relative;
 }
 
-// 分类区域
-.categories-section {
+.banner-content h2 {
+  font-size: 48px;
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+.banner-content p {
+  font-size: 18px;
+  margin-bottom: 30px;
+}
+
+.section-title {
+  text-align: center;
   margin-bottom: 40px;
-  
-  .section-title {
-    font-size: 24px;
-    font-weight: bold;
-    color: #000;
-    margin-bottom: 20px;
-  }
-  
-  .categories-container {
-    position: relative;
-    
-    .categories-scroll {
-      display: flex;
-      gap: 20px;
-      overflow-x: auto;
-      padding-bottom: 10px;
-      
-      &::-webkit-scrollbar {
-        height: 4px;
-      }
-      
-      &::-webkit-scrollbar-track {
-        background: #f1f1f1;
-        border-radius: 2px;
-      }
-      
-      &::-webkit-scrollbar-thumb {
-        background: #c1c1c1;
-        border-radius: 2px;
-      }
-    }
-    
-    .scroll-arrow {
-      position: absolute;
-      right: 0;
-      top: 50%;
-      transform: translateY(-50%);
-      background: #fff;
-      border: 1px solid #e5e5e5;
-      border-radius: 50%;
-      width: 40px;
-      height: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-      
-      &:hover {
-        background: #f5f5f5;
-      }
-    }
-  }
-  
-  .category-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-width: 80px;
-    cursor: pointer;
-    
-    .category-icon {
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      overflow: hidden;
-      margin-bottom: 8px;
-      
-      img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-      }
-    }
-    
-    .category-name {
-      font-size: 12px;
-      color: #000;
-      text-align: center;
-      line-height: 1.2;
-    }
-    
-    &:hover {
-      .category-icon {
-        transform: scale(1.05);
-      }
-    }
-  }
 }
 
-// 调试信息样式
-.debug-info {
-  background: #f0f0f0;
-  padding: 10px;
-  margin-bottom: 15px;
-  border-radius: 4px;
-  font-size: 14px;
+.section-title h2 {
+  font-size: 32px;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.section-title p {
+  font-size: 16px;
   color: #666;
-  
-  p {
-    margin: 5px 0;
-  }
 }
 
-// 优惠商品区域
-.savings-section {
-  .section-title {
-    font-size: 24px;
-    font-weight: bold;
-    color: #000;
-    margin-bottom: 20px;
-  }
-  
-  .products-container {
-    position: relative;
-    
-    .products-grid {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-      padding: 0;
-      overflow-x: hidden;
-      overflow-y: visible;
-    }
-  }
+.category-section {
+  padding: 60px 0;
+  background: #f8f9fa;
 }
 
-// 商品卡片
-.product-card {
-  width: 100%;
-  background: #fff;
-  border-radius: 8px;
-  overflow: hidden;
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.category-item {
+  text-align: center;
   cursor: pointer;
   transition: transform 0.3s ease;
-  display: flex;
-  flex-direction: column;
-  
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  }
-  
-  .product-banner {
-    background: #ff0050;
-    color: #fff;
-    padding: 8px 12px;
-    font-size: 12px;
-    font-weight: bold;
-    text-align: center;
-  }
-  
-  .product-image-container {
-    position: relative;
-    width: 100%;
-    height: 200px;
-    overflow: hidden;
-    
-    .product-image {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-    
-    .product-badge {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      background: #ff0050;
-      color: #fff;
-      border-radius: 4px;
-      padding: 4px 8px;
-      font-size: 10px;
-      
-      .badge-content {
-        text-align: center;
-        
-        .badge-title {
-          font-weight: bold;
-        }
-        
-        .badge-price {
-          text-decoration: line-through;
-        }
-        
-        .badge-discount {
-          font-weight: bold;
-        }
-      }
-    }
-    
-    .product-timer {
-      position: absolute;
-      bottom: 10px;
-      left: 10px;
-      background: rgba(0, 0, 0, 0.7);
-      color: #fff;
-      padding: 4px 8px;
-      border-radius: 4px;
-      font-size: 10px;
-    }
-  }
-  
-  .product-info {
-    padding: 12px;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    
-    .product-name {
-      font-size: 14px;
-      font-weight: 500;
-      color: #000;
-      margin-bottom: 8px;
-      line-height: 1.3;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-      min-height: 36px;
-    }
-    
-    .product-stats {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 8px;
-      
-      .product-rating {
-        display: flex;
-        align-items: center;
-        gap: 4px;
-        
-        .rating-stars {
-          color: #ffa500;
-          font-size: 12px;
-        }
-        
-        .rating-score {
-          font-size: 12px;
-          color: #666;
-        }
-      }
-      
-      .product-sales {
-        font-size: 12px;
-        color: #666;
-      }
-    }
-    
-    .product-pricing {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-top: auto;
-      
-      .current-price {
-        font-size: 16px;
-        font-weight: bold;
-        color: #ff0050;
-      }
-      
-      .original-price {
-        font-size: 12px;
-        color: #999;
-        text-decoration: line-through;
-      }
-    }
-  }
 }
 
-// 响应式设计
+.category-item:hover {
+  transform: translateY(-5px);
+}
+
+.category-image {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin: 0 auto 15px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.category-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.category-name {
+  font-size: 14px;
+  color: #333;
+  font-weight: 500;
+}
+
+.products-section,
+.sale-section {
+  padding: 60px 0;
+}
+
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.product-card {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+}
+
+.product-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.product-image {
+  position: relative;
+  height: 200px;
+  overflow: hidden;
+}
+
+.product-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.product-badge,
+.sale-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #ff4757;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.sale-badge {
+  background: #2ed573;
+}
+
+.product-info {
+  padding: 20px;
+}
+
+.product-name {
+  font-size: 16px;
+  color: #333;
+  margin-bottom: 10px;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.product-price {
+  margin-bottom: 10px;
+}
+
+.current-price {
+  font-size: 18px;
+  color: #ff4757;
+  font-weight: bold;
+}
+
+.original-price {
+  font-size: 14px;
+  color: #999;
+  text-decoration: line-through;
+  margin-left: 8px;
+}
+
+.product-rating {
+  margin-bottom: 10px;
+}
+
+.discount-info {
+  margin-top: 10px;
+}
+
+.discount-percent {
+  background: #ff4757;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.brand-section {
+  padding: 60px 0;
+  background: #f8f9fa;
+}
+
+.brand-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.brand-item {
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.brand-item:hover {
+  transform: translateY(-5px);
+}
+
+.brand-item img {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  margin-bottom: 15px;
+}
+
+.brand-name {
+  font-size: 14px;
+  color: #333;
+  font-weight: 500;
+}
+
+.savings-section {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 80px 0;
+}
+
+.savings-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  text-align: center;
+}
+
+.savings-text h2 {
+  font-size: 36px;
+  margin-bottom: 20px;
+}
+
+.savings-text p {
+  font-size: 18px;
+  margin-bottom: 40px;
+  opacity: 0.9;
+}
+
+.savings-actions {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+}
+
+.savings-actions .el-button {
+  min-width: 150px;
+}
+
+/* 响应式设计 */
 @media (max-width: 768px) {
-  .sidebar {
-    display: none;
+  .banner-content h2 {
+    font-size: 32px;
   }
   
-  .main-content {
-    margin-left: 0;
-    padding: 15px;
+  .banner-content p {
+    font-size: 16px;
   }
   
-  .top-header {
-    .header-content {
-      padding: 0 15px;
-    }
+  .section-title h2 {
+    font-size: 24px;
   }
   
-  .product-card {
-    min-width: 250px;
+  .category-grid {
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 20px;
   }
   
-  .category-item {
-    min-width: 70px;
-    
-    .category-icon {
-      width: 50px;
-      height: 50px;
-    }
+  .products-grid {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
   }
   
-  // 分页样式
-  .pagination-container {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
-    padding: 20px 0;
-    
-    :deep(.el-pagination) {
-      .el-pager li {
-        background: #fff;
-        border: 1px solid #e4e7ed;
-        color: #606266;
-        
-        &.is-active {
-          background: #409eff;
-          color: #fff;
-          border-color: #409eff;
-        }
-        
-        &:hover {
-          color: #409eff;
-        }
-      }
-      
-      .btn-prev,
-      .btn-next {
-        background: #fff;
-        border: 1px solid #e4e7ed;
-        color: #606266;
-        
-        &:hover {
-          color: #409eff;
-        }
-        
-        &:disabled {
-          color: #c0c4cc;
-          background: #f5f7fa;
-        }
-      }
-    }
-  }
-  
-  // 品牌和库存样式
-  .product-brand {
-    font-size: 12px;
-    color: #999;
-    margin-bottom: 4px;
-  }
-  
-  .product-stock {
-    font-size: 12px;
-    color: #666;
-    margin-top: 4px;
-  }
-  
-  .product-out-of-stock {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: rgba(0, 0, 0, 0.7);
-    color: #fff;
-    padding: 8px 16px;
-    border-radius: 4px;
-    font-size: 14px;
-    font-weight: 500;
+  .savings-actions {
+    flex-direction: column;
+    align-items: center;
   }
 }
 </style>

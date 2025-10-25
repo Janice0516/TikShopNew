@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>商家后台重定向测试</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: white;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+        .test-section {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+        }
+        .test-section h3 {
+            margin: 0 0 15px 0;
+            font-size: 18px;
+        }
+        .test-button {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            text-align: center;
+        }
+        .test-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        .test-button.success {
+            background: rgba(76, 175, 80, 0.3);
+            border: 1px solid rgba(76, 175, 80, 0.5);
+        }
+        .test-button.warning {
+            background: rgba(255, 152, 0, 0.3);
+            border: 1px solid rgba(255, 152, 0, 0.5);
+        }
+        .status {
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 14px;
+            background: rgba(0, 0, 0, 0.3);
+        }
+        .success {
+            background: rgba(76, 175, 80, 0.3);
+            border: 1px solid rgba(76, 175, 80, 0.5);
+        }
+        .error {
+            background: rgba(244, 67, 54, 0.3);
+            border: 1px solid rgba(244, 67, 54, 0.5);
+        }
+        .info {
+            background: rgba(33, 150, 243, 0.3);
+            border: 1px solid rgba(33, 150, 243, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 商家后台重定向测试</h1>
+        
+        <div class="test-section">
+            <h3>✅ 修复完成</h3>
+            <div class="status success">
+                ✅ Vite代理配置已修复<br>
+                ✅ 路由守卫逻辑已优化<br>
+                ✅ 重定向循环检测已添加<br>
+                ✅ 服务已重启并应用新配置
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h3>🧪 测试访问</h3>
+            <a href="http://localhost:5174/merchant/" class="test-button success" target="_blank">
+                🏪 商家后台主页
+            </a>
+            <a href="http://localhost:5174/merchant/login" class="test-button success" target="_blank">
+                🔐 登录页面
+            </a>
+            <a href="http://localhost:5174/merchant/mobile/dashboard" class="test-button success" target="_blank">
+                📱 移动端仪表板
+            </a>
+            <a href="http://localhost:5174/merchant/mobile/test" class="test-button success" target="_blank">
+                🧪 移动端测试页面
+            </a>
+        </div>
+        
+        <div class="test-section">
+            <h3>🔍 重定向测试</h3>
+            <button class="test-button warning" onclick="testRedirects()">
+                🔄 测试重定向次数
+            </button>
+            <div id="redirectResult" class="status info" style="display: none;">
+                正在测试重定向...
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h3>📱 移动端功能</h3>
+            <div style="font-size: 14px; line-height: 1.6;">
+                <strong>现在支持：</strong><br>
+                ✅ 自动设备检测<br>
+                ✅ 移动端布局<br>
+                ✅ TikTok风格UI<br>
+                ✅ 底部导航<br>
+                ✅ 无重定向循环<br>
+                ✅ 流畅的页面切换
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h3>🛠️ 如果仍有问题</h3>
+            <div style="font-size: 14px; line-height: 1.6;">
+                <strong>请尝试：</strong><br>
+                1. 清除浏览器缓存 (Ctrl+Shift+Delete)<br>
+                2. 强制刷新页面 (Ctrl+F5)<br>
+                3. 使用无痕模式测试<br>
+                4. 检查浏览器控制台是否有错误<br><br>
+                
+                <strong>重要提示：</strong><br>
+                请使用 localhost 地址访问，避免使用 tiktokbusines.store 域名
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        async function testRedirects() {
+            const resultDiv = document.getElementById('redirectResult');
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = '正在测试重定向...';
+            
+            const tests = [
+                { name: '根路径', url: 'http://localhost:5174/merchant/' },
+                { name: '移动端', url: 'http://localhost:5174/merchant/mobile/dashboard' },
+                { name: '桌面端', url: 'http://localhost:5174/merchant/dashboard' },
+                { name: '登录页', url: 'http://localhost:5174/merchant/login' }
+            ];
+            
+            let results = [];
+            
+            for (const test of tests) {
+                try {
+                    const response = await fetch(test.url, { 
+                        method: 'HEAD',
+                        redirect: 'follow'
+                    });
+                    
+                    // 检查是否有重定向
+                    const redirectCount = response.url !== test.url ? '有重定向' : '无重定向';
+                    results.push(`${test.name}: ${response.ok ? '✅' : '❌'} (${redirectCount})`);
+                } catch (error) {
+                    results.push(`${test.name}: ❌ (${error.message})`);
+                }
+            }
+            
+            resultDiv.innerHTML = results.join('<br>');
+            resultDiv.className = 'status success';
+        }
+        
+        // 页面加载时自动测试
+        window.addEventListener('load', function() {
+            console.log('🔍 商家后台重定向测试页面已加载');
+            console.log('📱 当前设备:', navigator.userAgent);
+            console.log('🌐 当前URL:', window.location.href);
+        });
+    </script>
+</body>
+</html>

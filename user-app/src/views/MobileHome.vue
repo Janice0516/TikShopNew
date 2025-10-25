@@ -27,16 +27,40 @@
     
     <!-- Bottom Banner -->
     <MobileBottomBanner />
+    
+    <!-- Bottom Navigation -->
+    <MobileBottomNav />
+    
+    <!-- Loading State -->
+    <MobileLoading 
+      :loading="isLoading"
+      type="spinner"
+      message="加载中..."
+    />
+    
+    <!-- Error State -->
+    <MobileError 
+      :show="hasError"
+      type="network"
+      title="网络错误"
+      message="无法连接到服务器，请检查网络连接"
+      @retry="handleRetry"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { ElMessage } from 'element-plus'
 import MobileHeader from '@/components/layout/MobileHeader.vue'
 import MobileCategories from '@/components/sections/MobileCategories.vue'
 import MobileProductGrid from '@/components/products/MobileProductGrid.vue'
 import MobileBottomBanner from '@/components/layout/MobileBottomBanner.vue'
+import MobileBottomNav from '@/components/layout/MobileBottomNav.vue'
+import MobileLoading from '@/components/common/MobileLoading.vue'
+import MobileError from '@/components/common/MobileError.vue'
+import { categoryApi, productApi } from '@/api'
 import { useCategories } from '@/composables/useCategories'
 import { useTopDeals } from '@/composables/useTopDeals'
 import { usePopularItems } from '@/composables/usePopularItems'
@@ -46,10 +70,14 @@ import type { PopularItem } from '@/composables/usePopularItems'
 
 const router = useRouter()
 
+// 状态管理
+const isLoading = ref(false)
+const hasError = ref(false)
+
 // 使用 composables
-const { categories } = useCategories()
-const { topDeals, loading: topDealsLoading } = useTopDeals()
-const { popularItems, loading: popularItemsLoading } = usePopularItems()
+const { categories, loadCategories } = useCategories()
+const { topDeals, loading: topDealsLoading, loadTopDeals } = useTopDeals()
+const { popularItems, loading: popularItemsLoading, loadPopularItems } = usePopularItems()
 
 // 事件处理
 const handleTabChange = (tabId: string) => {
@@ -59,17 +87,48 @@ const handleTabChange = (tabId: string) => {
 
 const handleCategoryClick = (category: Category) => {
   console.log('Category clicked:', category)
-  router.push(`/category/${category.id}`)
+  router.push(`/mobile/category/${category.id}`)
 }
 
 const handleProductClick = (product: TopDealProduct | PopularItem) => {
   console.log('Product clicked:', product)
-  router.push(`/product/${product.id}`)
+  router.push(`/mobile/product/${product.id}`)
+}
+
+const handleRetry = () => {
+  hasError.value = false
+  loadData()
+}
+
+const loadData = async () => {
+  try {
+    isLoading.value = true
+    hasError.value = false
+    
+    // 使用 composables 加载数据
+    await Promise.all([
+      loadCategories(),
+      loadTopDeals(),
+      loadPopularItems()
+    ])
+    
+    console.log('移动端首页数据加载完成:', {
+      categories: categories.value.length,
+      topDeals: topDeals.value.length,
+      popularItems: popularItems.value.length
+    })
+  } catch (error: any) {
+    console.error('数据加载失败:', error)
+    hasError.value = true
+    ElMessage.error('数据加载失败')
+  } finally {
+    isLoading.value = false
+  }
 }
 
 onMounted(() => {
-  // 页面加载完成后的初始化逻辑
   console.log('Mobile home page mounted')
+  loadData()
 })
 </script>
 
@@ -78,7 +137,7 @@ onMounted(() => {
   min-height: 100vh;
   background: #000;
   color: #fff;
-  padding-bottom: 80px; // 为底部横幅留出空间
+  padding-bottom: 160px; // 为底部横幅和导航栏留出空间
 }
 
 // 全局移动端样式

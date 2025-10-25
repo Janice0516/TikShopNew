@@ -12,7 +12,7 @@ export function getProductList(params: any) {
 // 获取商品详情
 export function getProductDetail(id: number) {
   return request({
-    url: `/products/${id}`,
+    url: `/products/admin/${id}`,
     method: 'get'
   })
 }

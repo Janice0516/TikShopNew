@@ -1,0 +1,28 @@
+{
+  "common": {
+    "noName": "商品名称",
+    "noDescription": "暂无描述",
+    "defaultShop": "默认店铺"
+  },
+  "product": {
+    "name": "商品名称",
+    "price": "价格",
+    "description": "商品描述",
+    "addToCart": "加入购物车",
+    "buyNow": "立即购买",
+    "share": "分享",
+    "color": "颜色",
+    "size": "尺寸",
+    "material": "材质",
+    "option": "选项"
+  },
+  "nav": {
+    "dashboard": "仪表板",
+    "products": "商品",
+    "orders": "订单",
+    "finance": "财务",
+    "shop": "店铺",
+    "creditRating": "信用评级",
+    "settings": "设置"
+  }
+}

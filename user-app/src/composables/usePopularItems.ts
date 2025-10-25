@@ -35,16 +35,22 @@ export function usePopularItems() {
       // 格式化 Popular Items 商品
       popularItems.value = apiProducts.map((product: any) => {
         const salePrice = parseFloat(product.salePrice) || 0
-        const costPrice = parseFloat(product.costPrice) || 0
-        const currentPrice = salePrice || costPrice
-        const originalPrice = salePrice && costPrice && salePrice < costPrice ? costPrice : null
+        const discountPrice = parseFloat(product.discountPrice) || 0
+        const isDiscountActive = product.isDiscountActive && 
+          product.discountStartTime && product.discountEndTime &&
+          new Date() >= new Date(product.discountStartTime) &&
+          new Date() <= new Date(product.discountEndTime)
+        
+        // 如果折扣有效，显示折扣价；否则显示售价
+        const currentPrice = isDiscountActive && discountPrice > 0 ? discountPrice : salePrice
+        const originalPrice = isDiscountActive && discountPrice > 0 ? salePrice : null
         
         return {
           id: product.id,
           name: product.name,
           description: product.description,
-          price: currentPrice,
-          originalPrice: originalPrice,
+          price: currentPrice, // 当前价格（折扣价或售价）
+          originalPrice: originalPrice, // 原价（仅在有折扣时显示）
           image: product.mainImage || `https://via.placeholder.com/200x200/409EFF/ffffff?text=${encodeURIComponent(product.name)}`,
           rating: 4.0 + Math.random() * 1,
           sales: product.sales || 0,

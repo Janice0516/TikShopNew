@@ -1,23 +1,23 @@
 import request from '@/utils/request'
 
-// 获取分类列表
+// 获取分类列表（对齐后端 /products/categories）
 export function getCategoryList(params?: any) {
   return request({
-    url: '/category',
+    url: '/products/categories',
     method: 'get',
     params
   })
 }
 
-// 获取分类树形结构
+// 获取分类树形结构（同上返回树形）
 export function getCategoryTree() {
   return request({
-    url: '/category/tree',
+    url: '/products/categories',
     method: 'get'
   })
 }
 
-// 获取分类详情
+// 获取分类详情（后端未提供对应详情端点，暂保留为分类ID查询商品分类详情不可用）
 export function getCategoryDetail(id: number) {
   return request({
     url: `/category/${id}`,
@@ -25,7 +25,7 @@ export function getCategoryDetail(id: number) {
   })
 }
 
-// 创建分类
+// 创建分类（后端未开放 /products/categories 的写操作，保留原管理端分类写操作路径）
 export function createCategory(data: any) {
   return request({
     url: '/category',

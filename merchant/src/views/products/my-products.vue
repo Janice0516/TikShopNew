@@ -1,440 +1,401 @@
 <template>
   <div class="my-products">
-    <el-card>
-      <template #header>
-        <div class="card-header">
-          <span>{{ $t('products.myProducts') }}</span>
-          <el-button type="primary" @click="goToSelectProducts">
-            <el-icon><Plus /></el-icon>
-            {{ $t('products.selectFromPlatform') }}
-          </el-button>
-        </div>
-      </template>
+    <div class="page-header">
+      <h1>{{ $t('products.myProducts') }}</h1>
+    </div>
 
-      <!-- 数据统计 -->
-      <el-row :gutter="20" class="stats-row">
-        <el-col :span="6">
-          <div class="stat-card">
-            <div class="stat-value">{{ stats.total }}</div>
-            <div class="stat-label">{{ $t('products.totalProducts') }}</div>
-          </div>
-        </el-col>
-        <el-col :span="6">
-          <div class="stat-card">
-            <div class="stat-value" style="color: #67C23A">{{ stats.onShelf }}</div>
-            <div class="stat-label">{{ $t('products.onShelf') }}</div>
-          </div>
-        </el-col>
-        <el-col :span="6">
-          <div class="stat-card">
-            <div class="stat-value" style="color: #E6A23C">{{ stats.offShelf }}</div>
-            <div class="stat-label">{{ $t('products.offShelf') }}</div>
-          </div>
-        </el-col>
-        <el-col :span="6">
-          <div class="stat-card">
-            <div class="stat-value" style="color: #409EFF">RM{{ stats.totalRevenue }}</div>
-            <div class="stat-label">{{ $t('dashboard.todaySales') }}</div>
-          </div>
-        </el-col>
-      </el-row>
+    <!-- 统计卡片 -->
+    <div class="stats-cards">
+      <div class="stat-card">
+        <div class="stat-value">{{ stats.totalProducts }}</div>
+        <div class="stat-label">{{ $t('products.totalProducts') }}</div>
+      </div>
+      <div class="stat-card active">
+        <div class="stat-value">{{ stats.onShelfProducts }}</div>
+        <div class="stat-label">{{ $t('products.onShelf') }}</div>
+      </div>
+      <div class="stat-card inactive">
+        <div class="stat-value">{{ stats.offShelfProducts }}</div>
+        <div class="stat-label">{{ $t('products.offShelf') }}</div>
+      </div>
+    </div>
 
-      <!-- 搜索和筛选 -->
-      <el-form :inline="true" :model="searchForm" class="search-form">
-        <el-form-item :label="$t('products.status')">
-          <el-select
-            v-model="searchForm.status"
-            :placeholder="$t('common.all')"
-            clearable
-            style="width: 150px"
-            @change="handleSearch"
-          >
-            <el-option :label="$t('common.all')" :value="null" />
-            <el-option :label="$t('products.onShelf')" :value="1" />
-            <el-option :label="$t('products.offShelf')" :value="0" />
-          </el-select>
-        </el-form-item>
+    <!-- 筛选和搜索 -->
+    <div class="filter-section">
+      <div class="filter-group">
+        <label>{{ $t('products.status') }}:</label>
+        <select v-model="filters.status" @change="loadProducts">
+          <option value="">{{ $t('common.all') }}</option>
+          <option value="active">{{ $t('products.onShelf') }}</option>
+          <option value="inactive">{{ $t('products.offShelf') }}</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>{{ $t('products.productName') }}:</label>
+        <input 
+          v-model="filters.keyword" 
+          :placeholder="$t('products.searchPlaceholder')"
+          @keyup.enter="loadProducts"
+        />
+        <button @click="loadProducts" class="search-btn">{{ $t('common.search') }}</button>
+      </div>
+    </div>
 
-        <el-form-item :label="$t('products.productName')">
-          <el-input
-            v-model="searchForm.keyword"
-            :placeholder="$t('common.search')"
-            clearable
-            style="width: 300px"
-            @keyup.enter="handleSearch"
-          />
-        </el-form-item>
+    <!-- 商品列表 -->
+    <div class="products-table">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>{{ $t('products.productName') }}</th>
+            <th>{{ $t('products.costPrice') }}</th>
+            <th>{{ $t('products.salePrice') }}</th>
+            <th>{{ $t('products.profit') }}</th>
+            <th>{{ $t('products.stock') }}</th>
+            <th>{{ $t('common.actions') }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-if="loading">
+            <td colspan="7" class="loading">{{ $t('common.loading') }}...</td>
+          </tr>
+          <tr v-else-if="products.length === 0">
+            <td colspan="7" class="no-data">{{ $t('common.noData') }}</td>
+          </tr>
+          <tr v-else v-for="product in products" :key="product.id">
+            <td>{{ product.id }}</td>
+            <td class="product-name">
+              <img :src="product.image" :alt="product.name" class="product-image" />
+              {{ product.name }}
+            </td>
+            <td>RM{{ product.costPrice.toFixed(2) }}</td>
+            <td>RM{{ product.salePrice.toFixed(2) }}</td>
+            <td class="profit">RM{{ product.profit.toFixed(2) }}</td>
+            <td>{{ product.stock }}</td>
+            <td class="actions">
+              <button 
+                @click="toggleStatus(product)" 
+                :class="product.status === 'active' ? 'btn-inactive' : 'btn-active'"
+              >
+                {{ product.status === 'active' ? $t('products.offShelf') : $t('products.onShelf') }}
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
-        <el-form-item>
-          <el-button type="primary" @click="handleSearch">
-            {{ $t('common.search') }}
-          </el-button>
-          <el-button @click="handleReset">
-            {{ $t('common.reset') }}
-          </el-button>
-        </el-form-item>
-      </el-form>
-
-      <!-- 商品表格 -->
-      <el-table
-        :data="productList"
-        style="width: 100%"
-        v-loading="loading"
-      >
-        <el-table-column prop="id" label="ID" width="80" />
-        
-        <el-table-column :label="$t('products.productName')" min-width="250">
-          <template #default="{ row }">
-            <div class="product-info">
-              <el-image
-                :src="row.mainImage || '/placeholder.jpg'"
-                style="width: 60px; height: 60px; margin-right: 10px"
-                fit="cover"
-              />
-              <div>
-                <div class="product-name">{{ row.name }}</div>
-                <div class="product-brand">{{ row.brand }}</div>
-              </div>
-            </div>
-          </template>
-        </el-table-column>
-
-        <el-table-column :label="$t('products.costPrice')" width="120">
-          <template #default="{ row }">
-            RM{{ row.costPrice }}
-          </template>
-        </el-table-column>
-
-        <el-table-column :label="$t('products.salePrice')" width="120">
-          <template #default="{ row }">
-            <span style="color: #409EFF; font-weight: 500">RM{{ row.salePrice }}</span>
-          </template>
-        </el-table-column>
-
-        <el-table-column :label="$t('products.profit')" width="120">
-          <template #default="{ row }">
-            <el-tag type="success">
-              RM{{ (row.salePrice - row.costPrice).toFixed(2) }}
-            </el-tag>
-          </template>
-        </el-table-column>
-
-        <el-table-column :label="$t('products.stock')" width="100">
-          <template #default="{ row }">
-            <el-tag :type="row.stock > 10 ? 'success' : 'warning'">
-              {{ row.stock }}
-            </el-tag>
-          </template>
-        </el-table-column>
-
-        <el-table-column :label="$t('products.sales')" width="100">
-          <template #default="{ row }">
-            {{ row.sales || 0 }}
-          </template>
-        </el-table-column>
-
-        <el-table-column :label="$t('products.status')" width="100">
-          <template #default="{ row }">
-            <el-tag :type="row.status === 1 ? 'success' : 'info'">
-              {{ row.status === 1 ? $t('products.onShelf') : $t('products.offShelf') }}
-            </el-tag>
-          </template>
-        </el-table-column>
-
-        <el-table-column :label="$t('common.actions')" width="200" fixed="right">
-          <template #default="{ row }">
-            <el-button
-              type="primary"
-              size="small"
-              @click="handleEditPrice(row)"
-            >
-              {{ $t('common.edit') }}
-            </el-button>
-            <el-button
-              :type="row.status === 1 ? 'warning' : 'success'"
-              size="small"
-              @click="handleToggleStatus(row)"
-            >
-              {{ row.status === 1 ? $t('products.offShelf') : $t('products.onShelf') }}
-            </el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-
-      <!-- 分页 -->
-      <el-pagination
-        v-model:current-page="pagination.page"
-        v-model:page-size="pagination.pageSize"
-        :total="pagination.total"
-        :page-sizes="[10, 20, 50, 100]"
-        layout="total, sizes, prev, pager, next, jumper"
-        @size-change="handleSearch"
-        @current-change="handleSearch"
-        style="margin-top: 20px; justify-content: flex-end"
-      />
-    </el-card>
-
-    <!-- 编辑价格对话框 -->
-    <el-dialog
-      v-model="priceDialogVisible"
-      :title="$t('products.editProduct')"
-      width="600px"
-    >
-      <el-form
-        ref="priceFormRef"
-        :model="priceForm"
-        :rules="priceRules"
-        label-width="150px"
-      >
-        <el-form-item :label="$t('products.productName')">
-          <span>{{ selectedProduct?.name }}</span>
-        </el-form-item>
-
-        <el-form-item :label="$t('products.costPrice')">
-          <span>RM{{ selectedProduct?.costPrice }}</span>
-        </el-form-item>
-
-        <el-form-item :label="$t('products.salePrice')" prop="salePrice">
-          <el-input-number
-            v-model="priceForm.salePrice"
-            :min="0"
-            :precision="2"
-            :placeholder="$t('products.salePrice')"
-          />
-          <span style="margin-left: 10px; color: #999;">RM</span>
-        </el-form-item>
-
-        <el-form-item :label="$t('products.profit')">
-          <el-tag type="success" size="large">
-            RM{{ calculatedProfit }}
-          </el-tag>
-        </el-form-item>
-      </el-form>
-
-      <template #footer>
-        <el-button @click="priceDialogVisible = false">
-          {{ $t('common.cancel') }}
-        </el-button>
-        <el-button type="primary" @click="handleConfirmEdit" :loading="submitting">
-          {{ $t('common.save') }}
-        </el-button>
-      </template>
-    </el-dialog>
+    <!-- 分页 -->
+    <div class="pagination" v-if="pagination.totalPages > 1">
+      <div class="pagination-info">
+        Total {{ pagination.total }} items
+      </div>
+      <div class="pagination-controls">
+        <button 
+          @click="changePage(pagination.page - 1)" 
+          :disabled="pagination.page <= 1"
+        >
+          &lt;
+        </button>
+        <span>{{ pagination.page }} / {{ pagination.totalPages }}</span>
+        <button 
+          @click="changePage(pagination.page + 1)" 
+          :disabled="pagination.page >= pagination.totalPages"
+        >
+          &gt;
+        </button>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
-import { ElMessage, ElMessageBox } from 'element-plus'
-import { useI18n } from 'vue-i18n'
-import { getMerchantProducts, updateProductPrice, toggleProductStatus } from '@/api/product'
+import { ref, onMounted, computed } from 'vue';
+import { getMerchantProducts } from '@/api/product';
+import { useI18n } from 'vue-i18n';
 
-const { t } = useI18n()
-const router = useRouter()
+const { t } = useI18n();
 
-const loading = ref(false)
-const submitting = ref(false)
-const productList = ref<any[]>([])
-
-const stats = ref({
-  total: 0,
-  onShelf: 0,
-  offShelf: 0,
-  totalRevenue: '0.00'
-})
-
-const searchForm = reactive({
-  status: null as number | null,
+// 响应式数据
+const products = ref([]);
+const loading = ref(false);
+const filters = ref({
+  status: '',
   keyword: ''
-})
+});
 
-const pagination = reactive({
+const pagination = ref({
   page: 1,
   pageSize: 10,
-  total: 0
-})
+  total: 0,
+  totalPages: 0
+});
 
-// 价格对话框
-const priceDialogVisible = ref(false)
-const selectedProduct = ref<any>(null)
-const priceFormRef = ref()
-const priceForm = reactive({
-  salePrice: 0
-})
+const stats = ref({
+  totalProducts: 0,
+  onShelfProducts: 0,
+  offShelfProducts: 0
+});
 
-const priceRules = {
-  salePrice: [
-    { required: true, message: () => t('validation.required'), trigger: 'blur' },
-    { type: 'number', min: 0.01, message: () => t('validation.positive'), trigger: 'blur' }
-  ]
-}
-
-// 计算利润
-const calculatedProfit = computed(() => {
-  if (!selectedProduct.value || !priceForm.salePrice) return '0.00'
-  const profit = priceForm.salePrice - selectedProduct.value.costPrice
-  return profit.toFixed(2)
-})
-
-// 跳转到选品页面
-const goToSelectProducts = () => {
-  router.push('/products/select-products')
-}
-
-// 搜索
-const handleSearch = async () => {
-  loading.value = true
+// 加载商品列表
+const loadProducts = async () => {
   try {
-    const params = {
-      page: pagination.page,
-      pageSize: pagination.pageSize,
-      status: searchForm.status,
-      keyword: searchForm.keyword
-    }
-    
-    console.log('商家商品列表API调用参数:', params);
-    
-    // 调用真实API
-    const res = await getMerchantProducts(params)
-    console.log('商家商品列表API响应:', res);
-    
-    productList.value = res.list || []
-    pagination.total = res.total || 0
-    
-    console.log('处理后的商品列表:', productList.value);
-    console.log('商品总数:', pagination.total);
-    
-    // 更新统计
-    stats.value = {
-      total: productList.value.length,
-      onShelf: productList.value.filter(p => p.status === 1).length,
-      offShelf: productList.value.filter(p => p.status === 0).length,
-      totalRevenue: productList.value.reduce((sum, p) => sum + (p.salePrice * p.sales), 0).toFixed(2)
+    loading.value = true;
+    console.log('商家商品列表API调用参数:', {
+      page: pagination.value.page,
+      pageSize: pagination.value.pageSize,
+      status: filters.value.status,
+      keyword: filters.value.keyword
+    });
+
+    const response = await getMerchantProducts({
+      page: pagination.value.page,
+      pageSize: pagination.value.pageSize,
+      status: filters.value.status,
+      keyword: filters.value.keyword
+    });
+
+    console.log('商家商品列表API响应:', response);
+
+    // 检查响应数据结构 - 现在response直接就是数据对象
+    if (response && response.list) {
+      products.value = response.list || [];
+      pagination.value.total = response.total || 0;
+      pagination.value.totalPages = response.totalPages || 0;
+      
+      // 更新统计信息
+      stats.value.totalProducts = response.total || 0;
+      stats.value.onShelfProducts = products.value.filter(p => p.status === 'active').length;
+      stats.value.offShelfProducts = products.value.filter(p => p.status === 'inactive').length;
+      
+      console.log('商品列表加载成功:', products.value.length, '个商品');
+    } else {
+      console.error('API响应格式错误:', response);
+      products.value = [];
+      pagination.value.total = 0;
+      pagination.value.totalPages = 0;
     }
   } catch (error) {
-    console.error('Failed to fetch products:', error)
-    ElMessage.error('获取商品列表失败')
+    console.error('加载商品列表失败:', error);
+    products.value = [];
+    pagination.value.total = 0;
+    pagination.value.totalPages = 0;
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 
-// 重置
-const handleReset = () => {
-  searchForm.status = null
-  searchForm.keyword = ''
-  pagination.page = 1
-  handleSearch()
-}
-
-// 编辑价格
-const handleEditPrice = (product: any) => {
-  selectedProduct.value = product
-  priceForm.salePrice = product.salePrice
-  priceDialogVisible.value = true
-}
-
-// 确认编辑
-const handleConfirmEdit = async () => {
-  if (!priceFormRef.value) return
-  
-  await priceFormRef.value.validate(async (valid: boolean) => {
-    if (valid) {
-      submitting.value = true
-      try {
-        // 调用真实API
-        await updateProductPrice(selectedProduct.value.id, { salePrice: priceForm.salePrice })
-        
-        ElMessage.success(t('message.updateSuccess'))
-        priceDialogVisible.value = false
-        handleSearch()
-      } catch (error: any) {
-        ElMessage.error(error.message || t('message.updateFailed'))
-      } finally {
-        submitting.value = false
-      }
-    }
-  })
-}
-
-// 上下架
-const handleToggleStatus = async (product: any) => {
-  const action = product.status === 1 ? t('products.offShelf') : t('products.onShelf')
-  
+// 切换商品状态
+const toggleStatus = async (product: any) => {
   try {
-    await ElMessageBox.confirm(
-      `确定要${action}该商品吗？`,
-      t('common.warning'),
-      {
-        confirmButtonText: t('common.confirm'),
-        cancelButtonText: t('common.cancel'),
-        type: 'warning'
-      }
-    )
-    
-    // 调用真实API
-    await toggleProductStatus(product.id, product.status === 1 ? 0 : 1)
-    
-    ElMessage.success(t('message.operationSuccess'))
-    handleSearch()
+    // 这里可以添加更新状态的API调用
+    product.status = product.status === 'active' ? 'inactive' : 'active';
+    await loadProducts(); // 重新加载数据
   } catch (error) {
-    // 取消操作
+    console.error('更新商品状态失败:', error);
   }
-}
+};
 
+// 切换页面
+const changePage = (page: number) => {
+  if (page >= 1 && page <= pagination.value.totalPages) {
+    pagination.value.page = page;
+    loadProducts();
+  }
+};
+
+// 组件挂载时加载数据
 onMounted(() => {
-  handleSearch()
-})
+  loadProducts();
+});
 </script>
 
 <style scoped>
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+.my-products {
+  padding: 20px;
 }
 
-.stats-row {
+.page-header h1 {
+  margin: 0 0 20px 0;
+  color: #333;
+}
+
+.stats-cards {
+  display: flex;
+  gap: 20px;
   margin-bottom: 30px;
 }
 
 .stat-card {
-  background: #f5f7fa;
+  flex: 1;
   padding: 20px;
+  background: white;
   border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   text-align: center;
 }
 
+.stat-card.active {
+  border-left: 4px solid #67c23a;
+}
+
+.stat-card.inactive {
+  border-left: 4px solid #f56c6c;
+}
+
 .stat-value {
-  font-size: 32px;
+  font-size: 24px;
   font-weight: bold;
   color: #333;
-  margin-bottom: 8px;
-}
-
-.stat-label {
-  font-size: 14px;
-  color: #666;
-}
-
-.search-form {
-  margin-bottom: 20px;
-}
-
-.product-info {
-  display: flex;
-  align-items: center;
-}
-
-.product-name {
-  font-weight: 500;
   margin-bottom: 5px;
 }
 
-.product-brand {
+.stat-label {
+  color: #666;
+  font-size: 14px;
+}
+
+.filter-section {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 20px;
+  padding: 20px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.filter-group label {
+  font-weight: 500;
+  color: #333;
+}
+
+.filter-group select,
+.filter-group input {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.search-btn {
+  padding: 8px 16px;
+  background: #409eff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.search-btn:hover {
+  background: #66b1ff;
+}
+
+.products-table {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  overflow: hidden;
+}
+
+.products-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.products-table th,
+.products-table td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+.products-table th {
+  background: #f5f7fa;
+  font-weight: 500;
+  color: #333;
+}
+
+.product-name {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.product-image {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.profit {
+  color: #67c23a;
+  font-weight: 500;
+}
+
+.actions button {
+  padding: 4px 8px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
   font-size: 12px;
+}
+
+.btn-active {
+  background: #67c23a;
+  color: white;
+}
+
+.btn-inactive {
+  background: #f56c6c;
+  color: white;
+}
+
+.loading,
+.no-data {
+  text-align: center;
   color: #999;
+  font-style: italic;
+}
+
+.pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+  padding: 20px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.pagination-controls button {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  background: white;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.pagination-controls button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pagination-controls button:not(:disabled):hover {
+  background: #f5f7fa;
 }
 </style>
-

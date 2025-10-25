@@ -113,10 +113,10 @@ const handleLogin = async () => {
       try {
         await merchantStore.login(loginForm)
         ElMessage.success(t('login.loginSuccess'))
-        // 登录后跳转到首页
-        router.replace('/')
+        // 登录后跳转到仪表盘
+        router.push('/dashboard')
       } catch (error: any) {
-        ElMessage.error(t('login.loginFailed'))
+        ElMessage.error(error.message || t('login.loginFailed'))
       } finally {
         loading.value = false
       }
@@ -160,19 +160,19 @@ const handleLogin = async () => {
   position: relative;
   margin-bottom: 40px;
   text-align: center;
+}
 
-  .title {
-    font-size: 28px;
-    color: #333;
-    margin: 0 0 10px;
-    font-weight: bold;
-  }
+.title-container .title {
+  font-size: 28px;
+  color: #333;
+  margin: 0 0 10px;
+  font-weight: bold;
+}
 
-  .subtitle {
-    color: #999;
-    font-size: 14px;
-    margin: 0;
-  }
+.title-container .subtitle {
+  color: #999;
+  font-size: 14px;
+  margin: 0;
 }
 
 .remember-forgot {
@@ -218,4 +218,3 @@ const handleLogin = async () => {
   color: #454545;
 }
 </style>
-

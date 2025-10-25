@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>商家后台诊断页面</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: white;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 24px;
+        }
+        .diagnostic-section {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+        }
+        .diagnostic-section h3 {
+            margin: 0 0 15px 0;
+            font-size: 18px;
+        }
+        .test-button {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            text-align: center;
+        }
+        .test-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 14px;
+        }
+        .success {
+            background: rgba(76, 175, 80, 0.3);
+            border: 1px solid rgba(76, 175, 80, 0.5);
+        }
+        .error {
+            background: rgba(244, 67, 54, 0.3);
+            border: 1px solid rgba(244, 67, 54, 0.5);
+        }
+        .warning {
+            background: rgba(255, 152, 0, 0.3);
+            border: 1px solid rgba(255, 152, 0, 0.5);
+        }
+        .info {
+            background: rgba(33, 150, 243, 0.3);
+            border: 1px solid rgba(33, 150, 243, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 商家后台诊断工具</h1>
+        
+        <div class="diagnostic-section">
+            <h3>📊 服务状态检查</h3>
+            <div id="serviceStatus" class="status info">正在检查服务状态...</div>
+            <button class="test-button" onclick="checkServices()">🔄 重新检查服务</button>
+        </div>
+        
+        <div class="diagnostic-section">
+            <h3>🌐 网络连接测试</h3>
+            <div id="networkStatus" class="status info">正在测试网络连接...</div>
+            <button class="test-button" onclick="testNetwork()">🔄 重新测试网络</button>
+        </div>
+        
+        <div class="diagnostic-section">
+            <h3>📱 页面访问测试</h3>
+            <a href="http://localhost:5174/merchant/" class="test-button" target="_blank">
+                🏪 商家后台主页
+            </a>
+            <a href="http://localhost:5174/merchant/mobile/dashboard" class="test-button" target="_blank">
+                📱 移动端仪表板
+            </a>
+            <a href="http://localhost:5174/merchant/mobile/test" class="test-button" target="_blank">
+                🧪 移动端测试页面
+            </a>
+        </div>
+        
+        <div class="diagnostic-section">
+            <h3>🔧 开发者工具</h3>
+            <div style="font-size: 14px; line-height: 1.6;">
+                <strong>如果页面黑屏，请检查：</strong><br>
+                1. 打开浏览器开发者工具 (F12)<br>
+                2. 查看 Console 标签页是否有错误<br>
+                3. 查看 Network 标签页是否有失败的请求<br>
+                4. 查看 Elements 标签页是否有内容加载<br><br>
+                
+                <strong>常见问题：</strong><br>
+                • JavaScript 错误导致页面无法渲染<br>
+                • CSS 样式问题导致内容不可见<br>
+                • 网络请求失败<br>
+                • 浏览器缓存问题
+            </div>
+        </div>
+        
+        <div class="diagnostic-section">
+            <h3>🛠️ 解决方案</h3>
+            <button class="test-button" onclick="clearCache()">🗑️ 清除浏览器缓存</button>
+            <button class="test-button" onclick="hardRefresh()">🔄 强制刷新页面</button>
+            <button class="test-button" onclick="restartServices()">🔄 重启服务</button>
+        </div>
+    </div>
+    
+    <script>
+        // 检查服务状态
+        async function checkServices() {
+            const statusDiv = document.getElementById('serviceStatus');
+            statusDiv.innerHTML = '正在检查服务状态...';
+            
+            try {
+                const response = await fetch('http://localhost:5174/merchant/');
+                if (response.ok) {
+                    statusDiv.innerHTML = '✅ 商家端服务正常 (HTTP ' + response.status + ')';
+                    statusDiv.className = 'status success';
+                } else {
+                    statusDiv.innerHTML = '❌ 商家端服务异常 (HTTP ' + response.status + ')';
+                    statusDiv.className = 'status error';
+                }
+            } catch (error) {
+                statusDiv.innerHTML = '❌ 无法连接到商家端服务: ' + error.message;
+                statusDiv.className = 'status error';
+            }
+        }
+        
+        // 测试网络连接
+        async function testNetwork() {
+            const statusDiv = document.getElementById('networkStatus');
+            statusDiv.innerHTML = '正在测试网络连接...';
+            
+            const tests = [
+                { name: '商家端', url: 'http://localhost:5174/merchant/' },
+                { name: '管理端', url: 'http://localhost:5175/admin/' },
+                { name: '用户端', url: 'http://localhost:3001/' },
+                { name: 'API', url: 'http://localhost:3000/api/docs' }
+            ];
+            
+            let results = [];
+            
+            for (const test of tests) {
+                try {
+                    const response = await fetch(test.url);
+                    results.push(`${test.name}: ${response.ok ? '✅' : '❌'} (${response.status})`);
+                } catch (error) {
+                    results.push(`${test.name}: ❌ (连接失败)`);
+                }
+            }
+            
+            statusDiv.innerHTML = results.join('<br>');
+            statusDiv.className = 'status info';
+        }
+        
+        // 清除缓存
+        function clearCache() {
+            if ('caches' in window) {
+                caches.keys().then(function(names) {
+                    names.forEach(function(name) {
+                        caches.delete(name);
+                    });
+                });
+            }
+            alert('缓存已清除，请刷新页面');
+        }
+        
+        // 强制刷新
+        function hardRefresh() {
+            window.location.reload(true);
+        }
+        
+        // 重启服务
+        function restartServices() {
+            alert('请手动重启服务：\n1. 停止服务: pm2 stop all\n2. 启动服务: ./start-all.sh');
+        }
+        
+        // 页面加载时自动检查
+        window.addEventListener('load', function() {
+            checkServices();
+            testNetwork();
+        });
+    </script>
+</body>
+</html>

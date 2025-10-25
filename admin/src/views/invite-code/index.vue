@@ -264,8 +264,8 @@ const createRules: FormRules = {
 const loadStats = async () => {
   try {
     const response = await getInviteCodeStats()
-    if (response.code === 200) {
-      stats.value = response.data
+    if (response.data.code === 200) {
+      stats.value = response.data.data
     }
   } catch (error) {
     console.error('加载统计失败:', error)
@@ -280,10 +280,15 @@ const loadInviteCodes = async () => {
       limit: pagination.limit,
       ...searchForm
     }
+    console.log('加载邀请码列表参数:', params)
     const response = await getInviteCodeList(params)
-    if (response.code === 200) {
-      inviteCodes.value = response.data.items
-      pagination.total = response.data.total
+    console.log('邀请码列表响应:', response)
+    if (response.data.code === 200) {
+      inviteCodes.value = response.data.data.items
+      pagination.total = response.data.data.total
+      console.log('邀请码列表数据:', inviteCodes.value)
+    } else {
+      console.error('邀请码列表加载失败:', response)
     }
   } catch (error) {
     console.error('加载邀请码列表失败:', error)
@@ -341,14 +346,23 @@ const handleCreate = async () => {
     if (valid) {
       createLoading.value = true
       try {
-        const response = await createInviteCode(createForm)
-        if (response.code === 200) {
+        // 准备提交数据，确保日期格式正确
+        const submitData = {
+          ...createForm,
+          expireTime: createForm.expireTime ? new Date(createForm.expireTime).toISOString() : null
+        }
+        
+        const response = await createInviteCode(submitData)
+        console.log('邀请码创建响应:', response)
+        console.log('响应状态码:', response.status)
+        console.log('响应数据:', response.data)
+        if (response.data.code === 200) {
           ElMessage.success(t('inviteCode.createSuccess'))
           createDialogVisible.value = false
           loadInviteCodes()
           loadStats()
         } else {
-          ElMessage.error(response.message || t('inviteCode.createFailed'))
+          ElMessage.error(response.data.message || t('inviteCode.createFailed'))
         }
       } catch (error: any) {
         ElMessage.error(error.message || t('inviteCode.createFailed'))

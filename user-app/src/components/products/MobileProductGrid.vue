@@ -197,6 +197,10 @@ onUnmounted(() => {
   }
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */
+  
+  /* 触屏优化 */
+  touch-action: pan-x;
+  overscroll-behavior-x: contain;
 }
 
 .scroll-arrow {

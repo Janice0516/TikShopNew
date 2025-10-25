@@ -5,7 +5,7 @@
   >
     <!-- 商品图片 -->
     <div class="product-image-container">
-      <img :src="product.image" :alt="product.name" class="product-image" />
+      <img :src="product.image" :alt="translatedProduct.name" class="product-image" />
       
       <!-- 库存状态 -->
       <div v-if="product.stock === 0" class="product-out-of-stock">
@@ -20,7 +20,7 @@
     
     <!-- 商品信息 -->
     <div class="product-info">
-      <h3 class="product-name">{{ product.name }}</h3>
+      <h3 class="product-name">{{ translatedProduct.name }}</h3>
       
       <!-- 品牌信息 -->
       <div v-if="product.brand" class="product-brand">
@@ -30,20 +30,20 @@
       <!-- 评分和销量 -->
       <div class="product-rating">
         <div class="rating-stars">
-          <span class="stars">{{ formatStars(product.rating) }}</span>
-          <span class="rating-value">{{ product.rating }}</span>
+          <span class="stars">{{ formatStars(product.rating || 0) }}</span>
+          <span class="rating-value">{{ (product.rating || 0).toFixed(1) }}</span>
         </div>
         <div class="sales-count">
-          {{ formatSales(product.sales) }} sold
+          {{ formatSales(product.sales || 0) }} sold
         </div>
       </div>
       
       <!-- 价格信息 -->
       <div class="product-pricing">
         <div class="current-price">
-          RM{{ formatPrice(product.price) }}
+          RM{{ formatPrice(product.price || 0) }}
         </div>
-        <div v-if="product.originalPrice" class="original-price">
+        <div v-if="product.originalPrice && product.originalPrice > 0" class="original-price">
           RM{{ formatPrice(product.originalPrice) }}
         </div>
       </div>
@@ -57,6 +57,9 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
+import { useProductTranslations } from '@/utils/productTranslations'
+
 interface Product {
   id: string | number
   name: string
@@ -77,6 +80,10 @@ interface Props {
 }
 
 const props = defineProps<Props>()
+
+// 使用商品翻译功能
+const { getTranslatedProduct } = useProductTranslations()
+const translatedProduct = computed(() => getTranslatedProduct(props.product))
 
 const emit = defineEmits<{
   productClick: [product: Product]
