@@ -1,10 +1,10 @@
-import { ERROR_MESSAGES } from "../../shared-translations/constants/messages";
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Cart } from './entities/cart.entity';
 import { AddCartDto } from './dto/add-cart.dto';
 import { ProductService } from '../product/product.service';
+import { ERROR_MESSAGES } from '../shared-translations/constants/messages';
 
 @Injectable()
 export class CartService {
@@ -39,7 +39,7 @@ export class CartService {
       // 如果已存在，更新数量
       const newQuantity = existCart.quantity + quantity;
       if (newQuantity > product.stock) {
-        throw new HttpException(ERROR_MESSAGES.INSUFFICIENT_STOCK, HttpStatus.BAD_REQUEST);
+        throw new HttpException(ERROR_MESSAGES.STOCK_INSUFFICIENT, HttpStatus.BAD_REQUEST);
       }
       await this.cartRepository.update(existCart.id, {
         quantity: newQuantity,
@@ -48,7 +48,7 @@ export class CartService {
     } else {
       // 否则，新增购物车项
       if (quantity > product.stock) {
-        throw new HttpException(ERROR_MESSAGES.INSUFFICIENT_STOCK, HttpStatus.BAD_REQUEST);
+        throw new HttpException(ERROR_MESSAGES.STOCK_INSUFFICIENT, HttpStatus.BAD_REQUEST);
       }
 
       // TODO: 获取merchantId，暂时用商品ID

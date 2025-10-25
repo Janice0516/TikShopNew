@@ -51,6 +51,18 @@ export class MerchantProduct {
   @Column({ name: 'recommend_end_time', type: 'timestamp', nullable: true, comment: '推荐结束时间' })
   recommendEndTime: Date;
 
+  @Column({ name: 'discount_price', type: 'decimal', precision: 10, scale: 2, nullable: true, comment: '折扣价' })
+  discountPrice: number;
+
+  @Column({ name: 'discount_start_time', type: 'datetime', nullable: true, comment: '折扣开始时间' })
+  discountStartTime: Date;
+
+  @Column({ name: 'discount_end_time', type: 'datetime', nullable: true, comment: '折扣结束时间' })
+  discountEndTime: Date;
+
+  @Column({ name: 'is_discount_active', type: 'boolean', default: false, comment: '是否启用折扣' })
+  isDiscountActive: boolean;
+
   @CreateDateColumn({ name: 'create_time', type: 'timestamp' })
   createTime: Date;
 

@@ -117,6 +117,10 @@ export class MerchantProductService {
       costPrice: mp.product.costPrice,
       suggestPrice: mp.product.suggestPrice,
       salePrice: mp.salePrice,
+      discountPrice: mp.discountPrice,
+      discountStartTime: mp.discountStartTime,
+      discountEndTime: mp.discountEndTime,
+      isDiscountActive: mp.isDiscountActive,
       profitMargin: mp.profitMargin,
       stock: mp.product.stock,
       sales: mp.sales,
@@ -141,6 +145,20 @@ export class MerchantProductService {
     // 更新价格和利润率
     merchantProduct.salePrice = updateDto.salePrice;
     merchantProduct.profitMargin = (updateDto.salePrice - merchantProduct.product.costPrice) / updateDto.salePrice * 100;
+
+    // 更新折扣价相关字段
+    if (updateDto.discountPrice !== undefined) {
+      merchantProduct.discountPrice = updateDto.discountPrice;
+    }
+    if (updateDto.discountStartTime !== undefined) {
+      merchantProduct.discountStartTime = updateDto.discountStartTime ? new Date(updateDto.discountStartTime) : null;
+    }
+    if (updateDto.discountEndTime !== undefined) {
+      merchantProduct.discountEndTime = updateDto.discountEndTime ? new Date(updateDto.discountEndTime) : null;
+    }
+    if (updateDto.isDiscountActive !== undefined) {
+      merchantProduct.isDiscountActive = updateDto.isDiscountActive;
+    }
 
     return await this.merchantProductRepository.save(merchantProduct);
   }

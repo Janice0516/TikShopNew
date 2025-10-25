@@ -6,6 +6,7 @@ import { PublicProductController } from './public-product.controller';
 import { PublicShopController } from './public-shop.controller';
 import { PublicMerchantController } from './public-merchant.controller';
 import { PublicShopService } from './public-shop.service';
+import { ProductValidationService } from '../../services/product-validation.service';
 import { Product } from './entities/product.entity';
 import { Category } from '../category/entities/category.entity';
 import { MerchantProduct } from '../merchant/entities/merchant-product.entity';
@@ -14,7 +15,7 @@ import { Merchant } from '../merchant/entities/merchant.entity';
 @Module({
   imports: [TypeOrmModule.forFeature([Product, Category, MerchantProduct, Merchant])],
   controllers: [ProductController, PublicProductController, PublicShopController, PublicMerchantController],
-  providers: [ProductService, PublicShopService],
-  exports: [ProductService, PublicShopService],
+  providers: [ProductService, PublicShopService, ProductValidationService],
+  exports: [ProductService, PublicShopService, ProductValidationService],
 })
 export class ProductModule {}

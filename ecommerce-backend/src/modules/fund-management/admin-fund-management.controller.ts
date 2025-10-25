@@ -2,10 +2,12 @@ import { Controller, Get, Post, Body, Param, Query, UseGuards, Request } from '@
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { FundManagementService } from './fund-management.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '@/common/decorators/roles.decorator';
 
 @ApiTags('管理员资金管理')
 @Controller('admin/fund-management')
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 @ApiBearerAuth()
 export class AdminFundManagementController {
   constructor(private readonly fundManagementService: FundManagementService) {}
@@ -77,6 +79,7 @@ export class AdminFundManagementController {
    */
   @Post('freeze/:orderId')
   @ApiOperation({ summary: '手动冻结资金' })
+  @Roles('admin')
   async freezeFunds(@Param('orderId') orderId: string) {
     await this.fundManagementService.freezeFundsOnOrder(orderId);
     return { message: '资金冻结成功' };
@@ -87,6 +90,7 @@ export class AdminFundManagementController {
    */
   @Post('unfreeze/:orderId')
   @ApiOperation({ summary: '手动解冻资金' })
+  @Roles('admin')
   async unfreezeFunds(@Param('orderId') orderId: string) {
     await this.fundManagementService.unfreezeFundsOnCompletion(orderId);
     return { message: '资金解冻成功' };

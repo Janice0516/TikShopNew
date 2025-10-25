@@ -570,11 +570,12 @@ export class AdminService {
         .createQueryBuilder('m')
         .where('m.status = :status', { status: 1 }); // 只显示激活的商家
 
-      // 关键词搜索
+      // 关键词搜索（补充：支持商家名称、用户名、UID、推荐码、电话等）
       if (keyword) {
-        queryBuilder.andWhere('(m.shopName LIKE :keyword OR m.contactName LIKE :keyword)', {
-          keyword: `%${keyword}%`,
-        });
+        queryBuilder.andWhere(
+          '(m.shopName LIKE :keyword OR m.contactName LIKE :keyword OR m.merchantName LIKE :keyword OR m.username LIKE :keyword OR m.merchantUid LIKE :keyword OR m.inviteCode LIKE :keyword OR m.contactPhone LIKE :keyword)',
+          { keyword: `%${keyword}%` },
+        );
       }
 
       // 排序
@@ -582,11 +583,18 @@ export class AdminService {
 
       const [list, total] = await queryBuilder.skip(skip).take(Number(pageSize)).getManyAndCount();
 
+      // 补齐前端所需字段
       const formattedList = list.map((merchant) => ({
         id: merchant.id,
+        merchantUid: merchant.merchantUid,
+        username: merchant.username,
+        merchantName: merchant.merchantName,
         shopName: merchant.shopName,
         contactName: merchant.contactName,
         contactPhone: merchant.contactPhone,
+        inviteCode: merchant.inviteCode,
+        salespersonName: merchant.salespersonName,
+        salespersonPhone: merchant.salespersonPhone,
         status: merchant.status,
         createTime: merchant.createTime,
       }));

@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { Category } from './entities/category.entity';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
+import { UpdateCategoryImageDto } from './dto/update-category-image.dto';
 
 @Injectable()
 export class CategoryService {
@@ -21,7 +22,7 @@ export class CategoryService {
     // 验证父分类是否存在
     if (parentId > 0) {
       const parentCategory = await this.categoryRepository.findOne({
-        where: { id: String(parentId) },
+        where: { id: parentId },
       });
       if (!parentCategory) {
         throw new BadRequestException('父分类不存在');
@@ -30,14 +31,14 @@ export class CategoryService {
 
     // 检查同级分类名称是否重复
     const existingCategory = await this.categoryRepository.findOne({
-      where: { parentId: String(parentId), name },
+      where: { parentId: parentId || 0, name },
     });
     if (existingCategory) {
       throw new BadRequestException('同级分类名称已存在');
     }
 
     const category = this.categoryRepository.create({
-      parentId: String(parentId || 0),
+      parentId: parentId || 0,
       name,
       level: level || 1,
       sort: sort || 0,
@@ -60,11 +61,36 @@ export class CategoryService {
     try {
       console.log('分类服务 findAll 被调用，status:', status);
       
-      // 使用最简单的查询
-      const categories = await this.categoryRepository.find();
+      // 查询分类，包含图片信息
+      const queryBuilder = this.categoryRepository
+        .createQueryBuilder('category')
+        .select([
+          'category.id',
+          'category.parentId',
+          'category.name',
+          'category.level',
+          'category.sort',
+          'category.icon',
+          'category.imageUrl',
+          'category.iconClass',
+          'category.status',
+          'category.createTime',
+          'category.updateTime'
+        ])
+        .addSelect('category.imageUrl', 'imageUrl')
+        .addSelect('category.iconClass', 'iconClass');
+
+      // 只有当status是1时才添加WHERE条件（0表示显示所有分类）
+      if (status === 1) {
+        queryBuilder.where('category.status = :status', { status: 1 });
+      }
+
+      const categories = await queryBuilder
+        .orderBy('category.sort', 'ASC')
+        .addOrderBy('category.id', 'ASC')
+        .getMany();
       
       console.log('查询结果数量:', categories.length);
-      console.log('查询结果类型:', typeof categories);
       console.log('第一个分类:', categories[0]);
 
       return {
@@ -115,7 +141,7 @@ export class CategoryService {
    */
   async findOne(id: number) {
     const category = await this.categoryRepository.findOne({
-      where: { id: String(id) },
+      where: { id },
     });
 
     if (!category) {
@@ -133,8 +159,10 @@ export class CategoryService {
    * 更新分类
    */
   async update(id: number, updateCategoryDto: UpdateCategoryDto) {
+    console.log('更新分类请求:', { id, updateCategoryDto });
+    
     const category = await this.categoryRepository.findOne({
-      where: { id: String(id) },
+      where: { id },
     });
 
     if (!category) {
@@ -146,7 +174,7 @@ export class CategoryService {
     // 验证父分类是否存在
     if (parentId && parentId > 0) {
       const parentCategory = await this.categoryRepository.findOne({
-        where: { id: String(parentId) },
+        where: { id: parentId },
       });
       if (!parentCategory) {
         throw new BadRequestException('父分类不存在');
@@ -156,9 +184,9 @@ export class CategoryService {
     // 检查同级分类名称是否重复（排除自己）
     if (name) {
       const existingCategory = await this.categoryRepository.findOne({
-        where: { parentId: String(parentId || category.parentId), name },
+        where: { parentId: parentId || category.parentId, name },
       });
-      if (existingCategory && existingCategory.id !== String(id)) {
+      if (existingCategory && existingCategory.id !== id) {
         throw new BadRequestException('同级分类名称已存在');
       }
     }
@@ -186,7 +214,7 @@ export class CategoryService {
    */
   async remove(id: number) {
     const category = await this.categoryRepository.findOne({
-      where: { id: String(id) },
+      where: { id },
     });
 
     if (!category) {
@@ -195,7 +223,7 @@ export class CategoryService {
 
     // 检查是否有子分类
     const childCategories = await this.categoryRepository.find({
-      where: { parentId: String(id) },
+      where: { parentId: id },
     });
 
     if (childCategories.length > 0) {
@@ -214,7 +242,7 @@ export class CategoryService {
    */
   async updateStatus(id: number, status: number) {
     const category = await this.categoryRepository.findOne({
-      where: { id: String(id) },
+      where: { id },
     });
 
     if (!category) {
@@ -235,7 +263,7 @@ export class CategoryService {
    */
   async updateSort(id: number, sort: number) {
     const category = await this.categoryRepository.findOne({
-      where: { id: String(id) },
+      where: { id },
     });
 
     if (!category) {
@@ -260,7 +288,7 @@ export class CategoryService {
 
     // 创建分类映射
     categories.forEach(category => {
-      categoryMap.set(String(category.id), {
+      categoryMap.set(category.id, {
         ...category,
         children: [],
       });
@@ -268,7 +296,7 @@ export class CategoryService {
 
     // 构建树形结构
     categories.forEach(category => {
-      if (category.parentId === '0') {
+      if (category.parentId === 0) {
         tree.push(categoryMap.get(category.id));
       } else {
         const parent = categoryMap.get(category.parentId);
@@ -279,5 +307,68 @@ export class CategoryService {
     });
 
     return tree;
+  }
+
+  /**
+   * 更新分类图片
+   */
+  async updateImage(id: number, updateImageDto: UpdateCategoryImageDto) {
+    const category = await this.categoryRepository.findOne({
+      where: { id },
+    });
+
+    if (!category) {
+      throw new NotFoundException('分类不存在');
+    }
+
+    // 更新图片相关字段
+    if (updateImageDto.image_url !== undefined) {
+      category.imageUrl = updateImageDto.image_url;
+    }
+    if (updateImageDto.icon_class !== undefined) {
+      category.iconClass = updateImageDto.icon_class;
+    }
+    if (updateImageDto.name !== undefined) {
+      category.name = updateImageDto.name;
+    }
+
+    await this.categoryRepository.save(category);
+
+    return {
+      code: 200,
+      message: '分类图片更新成功',
+      data: {
+        id: category.id,
+        name: category.name,
+        imageUrl: category.imageUrl,
+        iconClass: category.iconClass,
+      },
+    };
+  }
+
+  /**
+   * 获取分类图片信息
+   */
+  async getImageInfo(id: number) {
+    const category = await this.categoryRepository.findOne({
+      where: { id },
+      select: ['id', 'name', 'imageUrl', 'iconClass', 'icon'],
+    });
+
+    if (!category) {
+      throw new NotFoundException('分类不存在');
+    }
+
+    return {
+      code: 200,
+      message: '获取成功',
+      data: {
+        id: category.id,
+        name: category.name,
+        imageUrl: category.imageUrl,
+        iconClass: category.iconClass,
+        icon: category.icon,
+      },
+    };
   }
 }

@@ -1,4 +1,3 @@
-import { ERROR_MESSAGES } from "../../shared-translations/constants/messages";
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource } from 'typeorm';
@@ -10,6 +9,7 @@ import { UpdateOrderRemarkDto, OrderLogisticsDto } from './dto/order-remark.dto'
 import { ProductService } from '../product/product.service';
 import { UserService } from '../user/user.service';
 import { FundManagementService } from '../fund-management/fund-management.service';
+import { ERROR_MESSAGES } from '../shared-translations/constants/messages';
 import { Merchant } from '../merchant/entities/merchant.entity';
 
 @Injectable()
@@ -64,7 +64,7 @@ export class OrderService {
 
       if (product.stock < item.quantity) {
         throw new HttpException(
-          ERROR_MESSAGES.INSUFFICIENT_STOCK,
+          ERROR_MESSAGES.STOCK_INSUFFICIENT,
           HttpStatus.BAD_REQUEST,
         );
       }

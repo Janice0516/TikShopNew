@@ -1,0 +1,80 @@
+{
+  "priceValidation": {
+    "rules": {
+      "costPrice": {
+        "min": 0.01,
+        "max": 100000,
+        "message": "成本价必须在0.01-100000之间"
+      },
+      "suggestPrice": {
+        "min": 0.01,
+        "max": 200000,
+        "message": "建议价必须在0.01-200000之间"
+      },
+      "salePrice": {
+        "min": 0.01,
+        "max": 300000,
+        "message": "售价必须在0.01-300000之间"
+      },
+      "profitMargin": {
+        "min": 5,
+        "max": 500,
+        "message": "利润率必须在5%-500%之间"
+      },
+      "relationships": {
+        "costLessThanSuggest": true,
+        "suggestLessThanSale": true,
+        "message": "成本价 < 建议价 < 售价"
+      }
+    },
+    "warnings": {
+      "lowProfitMargin": {
+        "threshold": 10,
+        "message": "利润率过低，建议至少10%"
+      },
+      "highProfitMargin": {
+        "threshold": 300,
+        "message": "利润率过高，建议不超过300%"
+      },
+      "salePriceTooHigh": {
+        "threshold": 1.5,
+        "message": "售价不应超过建议价的150%"
+      }
+    },
+    "suggestions": {
+      "defaultProfitMargin": 30,
+      "minProfitMargin": 5,
+      "maxProfitMargin": 500,
+      "recommendedProfitMargin": 30
+    }
+  },
+  "validation": {
+    "enableDatabaseConstraints": true,
+    "enableApiValidation": true,
+    "enableFrontendValidation": true,
+    "enableTriggers": true,
+    "showWarnings": true,
+    "showSuggestions": true
+  },
+  "messages": {
+    "errors": {
+      "costPriceRequired": "成本价必须大于0",
+      "suggestPriceRequired": "建议价必须大于0",
+      "salePriceRequired": "售价必须大于0",
+      "costPriceTooHigh": "成本价必须低于建议价",
+      "suggestPriceTooLow": "建议价必须高于成本价",
+      "salePriceTooLow": "售价不能低于成本价",
+      "profitMarginTooLow": "利润率过低，建议至少5%",
+      "profitMarginTooHigh": "利润率过高，建议不超过500%"
+    },
+    "warnings": {
+      "lowProfitMargin": "利润率较低，建议提高",
+      "highProfitMargin": "利润率较高，请确认",
+      "salePriceTooHigh": "售价过高，请确认"
+    },
+    "success": {
+      "priceValid": "价格设置正确",
+      "profitMarginGood": "利润率合理"
+    }
+  }
+}

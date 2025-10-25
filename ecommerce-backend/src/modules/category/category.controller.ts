@@ -13,6 +13,7 @@ import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { CategoryService } from './category.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
+import { UpdateCategoryImageDto } from './dto/update-category-image.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @ApiTags('分类管理')
@@ -61,6 +62,19 @@ export class CategoryController {
   @ApiOperation({ summary: '获取分类树形结构' })
   findTree() {
     return this.categoryService.findTree();
+  }
+
+  // 图片管理API - 必须在 :id 路由之前
+  @Put(':id/image')
+  @ApiOperation({ summary: '更新分类图片' })
+  updateImage(@Param('id') id: string, @Body() updateImageDto: UpdateCategoryImageDto) {
+    return this.categoryService.updateImage(+id, updateImageDto);
+  }
+
+  @Get(':id/image')
+  @ApiOperation({ summary: '获取分类图片信息' })
+  getImageInfo(@Param('id') id: string) {
+    return this.categoryService.getImageInfo(+id);
   }
 
   @Get(':id')

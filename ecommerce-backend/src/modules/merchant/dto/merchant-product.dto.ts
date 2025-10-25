@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsNotEmpty, Min, IsOptional, IsString } from 'class-validator';
+import { IsNumber, IsNotEmpty, Min, IsOptional, IsString, IsBoolean, IsDateString } from 'class-validator';
 
 export class SelectProductDto {
   @ApiProperty({ description: '商品ID', example: 1 })
@@ -25,6 +25,27 @@ export class UpdateProductPriceDto {
   @IsNotEmpty({ message: '销售价格不能为空' })
   @Min(0.01, { message: '销售价格必须大于0' })
   salePrice: number;
+
+  @ApiProperty({ description: '折扣价', example: 79.99, required: false })
+  @IsNumber()
+  @IsOptional()
+  @Min(0.01, { message: '折扣价必须大于0' })
+  discountPrice?: number;
+
+  @ApiProperty({ description: '折扣开始时间', example: '2024-01-01 00:00:00', required: false })
+  @IsDateString()
+  @IsOptional()
+  discountStartTime?: string;
+
+  @ApiProperty({ description: '折扣结束时间', example: '2024-01-31 23:59:59', required: false })
+  @IsDateString()
+  @IsOptional()
+  discountEndTime?: string;
+
+  @ApiProperty({ description: '是否启用折扣', example: true, required: false })
+  @IsBoolean()
+  @IsOptional()
+  isDiscountActive?: boolean;
 }
 
 export class UpdateProductStatusDto {

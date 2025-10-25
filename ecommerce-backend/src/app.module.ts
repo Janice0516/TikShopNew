@@ -11,6 +11,7 @@ import jwtConfig from './config/jwt.config';
 
 // 实体
 import { User } from './modules/user/entities/user.entity';
+import { UserAddress } from './modules/user/entities/user-address.entity';
 import { Admin } from './modules/admin/entities/admin.entity';
 import { Category } from './modules/category/entities/category.entity';
 import { Merchant } from './modules/merchant/entities/merchant.entity';
@@ -73,6 +74,7 @@ import { RolePermissionModule } from './modules/auth/modules/role-permission.mod
           database: configService.get('database.database'),
           entities: [
             User, 
+            UserAddress,
             Admin, 
             Category, 
             Merchant, 

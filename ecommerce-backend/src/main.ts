@@ -83,6 +83,20 @@ async function bootstrap() {
   })
   console.log('✅ Swagger文档已初始化，访问地址: /api/docs')
 
+  // 启动前打印关键路由诊断信息
+  try {
+    const pathKeys = Object.keys(document.paths || {})
+    const hasMerchantLogin = pathKeys.includes('/merchant/login')
+    const hasMerchantProfile = pathKeys.includes('/merchant/profile')
+    const hasRechargeMerchantPost = pathKeys.includes('/recharge/merchant')
+    const merchantCount = pathKeys.filter(k => k.startsWith('/merchant')).length
+    const rechargeCount = pathKeys.filter(k => k.startsWith('/recharge')).length
+    console.log(`🔎 路由诊断: merchant=${merchantCount}, recharge=${rechargeCount}`)
+    console.log(`   /merchant/login=${hasMerchantLogin}, /merchant/profile=${hasMerchantProfile}, /recharge/merchant=${hasRechargeMerchantPost}`)
+  } catch (e) {
+    console.warn('⚠️ 路由诊断失败:', e)
+  }
+
   const port = parseInt(process.env.PORT || '3000', 10)
   const host = process.env.HOST || '0.0.0.0'
   await app.listen(port, host)

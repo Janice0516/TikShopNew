@@ -32,6 +32,16 @@ export class FundManagementService {
     await queryRunner.startTransaction();
 
     try {
+      // 0. 幂等性：若已存在未解冻记录，则直接返回
+      const existingFreeze = await queryRunner.manager.query(
+        'SELECT id FROM fund_freeze_record WHERE order_id = $1 AND freeze_status = 1',
+        [orderId]
+      );
+      if (existingFreeze.length > 0) {
+        await queryRunner.rollbackTransaction();
+        return; // 已冻结则不重复扣款、不重复记录
+      }
+
       // 1. 获取订单信息
       const order = await queryRunner.manager.findOne(Order, {
         where: { id: orderId },
@@ -124,6 +134,17 @@ export class FundManagementService {
     await queryRunner.startTransaction();
 
     try {
+      // 0. 幂等性：若已解冻过，则直接返回
+      const freezeRecords = await queryRunner.manager.query(
+        'SELECT * FROM fund_freeze_record WHERE order_id = $1 AND freeze_status IN (1,2)',
+        [orderId]
+      );
+      const alreadyUnfrozen = freezeRecords.some((r: any) => r.freeze_status === 2);
+      if (alreadyUnfrozen) {
+        await queryRunner.rollbackTransaction();
+        return; // 已解冻，则不重复结算
+      }
+
       // 1. 获取订单信息
       const order = await queryRunner.manager.findOne(Order, {
         where: { id: orderId },
@@ -133,17 +154,17 @@ export class FundManagementService {
         throw new Error('订单不存在');
       }
 
-      // 2. 获取冻结记录
-      const freezeRecords = await queryRunner.manager.query(
+      // 2. 获取冻结记录（仍处于已冻结状态）
+      const activeFreeze = await queryRunner.manager.query(
         'SELECT * FROM fund_freeze_record WHERE order_id = $1 AND freeze_status = 1',
         [orderId]
       );
 
-      if (freezeRecords.length === 0) {
+      if (activeFreeze.length === 0) {
         throw new Error('未找到冻结记录');
       }
 
-      const freezeRecord = freezeRecords[0];
+      const freezeRecord = activeFreeze[0];
 
       // 3. 计算商家收益（无平台抽成）
       const totalAmount = parseFloat(order.totalAmount.toString());

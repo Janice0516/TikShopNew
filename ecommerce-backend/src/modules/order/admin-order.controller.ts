@@ -18,6 +18,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Order } from './entities/order.entity';
 import { OrderItem } from './entities/order-item.entity';
+import { Merchant } from '../merchant/entities/merchant.entity';
 
 @ApiTags('管理员订单管理')
 @Controller('admin/orders')
@@ -30,6 +31,8 @@ export class AdminOrderController {
     private orderRepository: Repository<Order>,
     @InjectRepository(OrderItem)
     private orderItemRepository: Repository<OrderItem>,
+    @InjectRepository(Merchant)
+    private merchantRepository: Repository<Merchant>,
   ) {}
 
   @Get()
@@ -214,17 +217,28 @@ export class AdminOrderController {
       });
 
       if (!order) {
-        return {
-          code: 404,
-          message: '订单不存在',
-          data: null,
-        };
+        return { code: 404, message: '订单不存在', data: null };
       }
 
       if (order.orderStatus !== 1) {
+        return { code: 400, message: '订单状态不允许发货', data: null };
+      }
+
+      // 新增：校验商户余额为负数禁止发货
+      const merchant = await this.merchantRepository.findOne({
+        where: { id: order.merchantId },
+      });
+      if (!merchant) {
+        return { code: 404, message: '商家不存在', data: null };
+      }
+      const balance =
+        typeof (merchant.balance as any) === 'string'
+          ? parseFloat(merchant.balance as any)
+          : merchant.balance || 0;
+      if (balance < 0) {
         return {
           code: 400,
-          message: '订单状态不允许发货',
+          message: '商户账户资金为负数，请先充值后再发货',
           data: null,
         };
       }
@@ -235,18 +249,10 @@ export class AdminOrderController {
         shipTime: new Date(),
       });
 
-      return {
-        code: 200,
-        message: '发货成功',
-        data: null,
-      };
+      return { code: 200, message: '发货成功', data: null };
     } catch (error) {
       console.error('发货失败:', error);
-      return {
-        code: 500,
-        message: '发货失败',
-        data: null,
-      };
+      return { code: 500, message: '发货失败', data: null };
     }
   }
 }

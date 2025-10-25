@@ -1,6 +1,8 @@
 import { Controller, Get, Post, Body, Param, Query, UseGuards, Request } from '@nestjs/common';
 import { FundManagementService } from './fund-management.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '@/common/decorators/roles.decorator';
 
 @Controller('fund-management')
 @UseGuards(JwtAuthGuard)
@@ -84,6 +86,8 @@ export class FundManagementController {
    * 手动冻结资金（管理员功能）
    */
   @Post('freeze/:orderId')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin')
   async freezeFunds(@Param('orderId') orderId: string) {
     await this.fundManagementService.freezeFundsOnOrder(orderId);
     return { message: '资金冻结成功' };
@@ -93,6 +97,8 @@ export class FundManagementController {
    * 手动解冻资金（管理员功能）
    */
   @Post('unfreeze/:orderId')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin')
   async unfreezeFunds(@Param('orderId') orderId: string) {
     await this.fundManagementService.unfreezeFundsOnCompletion(orderId);
     return { message: '资金解冻成功' };

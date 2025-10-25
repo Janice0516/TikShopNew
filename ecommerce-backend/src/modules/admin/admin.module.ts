@@ -16,11 +16,13 @@ import { RecommendProductService } from './recommend-product.service';
 import { AdminRechargeAuditController } from './admin-recharge-audit.controller';
 import { AdminAccountController } from './controllers/admin-account.controller';
 import { RolePermissionModule } from '../auth/modules/role-permission.module';
+import { InviteCodeModule } from '../invite-code/invite-code.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Admin, Product, Merchant, Order, User, MerchantProduct, Role, Permission]),
-    RolePermissionModule
+    RolePermissionModule,
+    InviteCodeModule
   ],
   controllers: [AdminController, TestAdminController, RecommendProductController, AdminRechargeAuditController, AdminAccountController],
   providers: [AdminService, RecommendProductService],

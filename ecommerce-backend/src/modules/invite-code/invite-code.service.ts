@@ -51,6 +51,7 @@ export class InviteCodeService {
     const inviteCodeEntity = this.inviteCodeRepository.create({
       inviteCode,
       ...createDto,
+      expireTime: createDto.expireTime ? new Date(createDto.expireTime) : null,
       status: 1, // 默认启用
     });
 

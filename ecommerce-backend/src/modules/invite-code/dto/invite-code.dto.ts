@@ -25,9 +25,9 @@ export class CreateInviteCodeDto {
   maxUsage?: number;
 
   @ApiProperty({ description: '过期时间', example: '2024-12-31T23:59:59Z', required: false })
-  @IsDateString()
+  @IsDateString({}, { message: '过期时间必须是有效的ISO 8601日期字符串' })
   @IsOptional()
-  expireTime?: Date;
+  expireTime?: string;
 
   @ApiProperty({ description: '备注', example: 'VIP客户专用', required: false })
   @IsString()
