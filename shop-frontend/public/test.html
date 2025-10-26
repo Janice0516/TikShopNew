@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Container Size</title>
+    <link rel="stylesheet" href="http://localhost:8084/build/assets/app-DlnbNoFL.css">
+    <style>
+        /* TikTok Shop CSS Variables */
+        :root {
+            --tux-v2-color-ui-text-1: #161823;
+            --tux-v2-color-ui-text-2: #8A8B93;
+            --tux-v2-color-ui-text-3: #B3B4BA;
+            --tux-v2-color-ui-text-4: #D7D8DB;
+            --tux-v2-color-ui-text-5: #F1F1F2;
+            --tux-v2-color-ui-text-6: #FFFFFF;
+            
+            --tux-v2-color-ui-shape-primary: #FE4166;
+            --tux-v2-color-ui-shape-neutral-1: #F1F1F2;
+            --tux-v2-color-ui-shape-neutral-2: #E7E8EA;
+            --tux-v2-color-ui-shape-neutral-3: #D7D8DB;
+            --tux-v2-color-ui-shape-neutral-4: #B3B4BA;
+            --tux-v2-color-ui-shape-text-1-on-primary: #FFFFFF;
+        }
+        
+        .text-color-UIShapeText1OnPrimary {
+            color: var(--tux-v2-color-ui-shape-text-1-on-primary);
+        }
+        
+        .background-color-UIShapePrimary {
+            background-color: var(--tux-v2-color-ui-shape-primary);
+        }
+        
+        .hover\:background-color-UIShapeNeutral4:hover {
+            background-color: var(--tux-v2-color-ui-shape-neutral-4);
+        }
+        
+        .P1-Regular {
+            font-size: 14px;
+        }
+        
+        .H4-Semibold {
+            font-size: 16px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div style="padding: 20px;">
+        <h1>Container Size Test</h1>
+        
+        <!-- Test Container -->
+        <div class="flex items-center flex-none rounded-full px-4 py-2" style="box-shadow:0px 2px 10px 0px rgba(0, 0, 0, 0.07); height: 128px; border: 2px solid red;">
+            <!-- Get app Button -->
+            <div style="height: 32px; background-color: transparent;">
+                <div class="rounded-full hover:background-color-UIShapeNeutral4 flex items-center P1-Regular" style="width: 84.51px; height: 32px; padding: 0px 7.255px; border: 1px solid blue;">
+                    <svg fill="currentColor" font-size="16px" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em">
+                        <path d="M20 9c0-1.1.9-2 2-2h4a2 2 0 1 1 0 4h-4a2 2 0 0 1-2-2ZM18 38.5c0-.83.67-1.5 1.5-1.5h9a1.5 1.5 0 0 1 0 3h-9a1.5 1.5 0 0 1-1.5-1.5Z"></path>
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M8 10.6c0-3.36 0-5.04.65-6.32a6 6 0 0 1 2.63-2.63C12.56 1 14.23 1 17.6 1h12.8c3.36 0 5.04 0 6.32.65a6 6 0 0 1 2.63 2.63C40 5.56 40 7.24 40 10.6v26.8c0 3.36 0 5.04-.65 6.32a6 6 0 0 1-2.63 2.63c-1.28.65-2.96.65-6.32.65H17.6c-3.36 0-5.04 0-6.32-.65a6 6 0 0 1-2.63-2.63C8 42.44 8 40.75 8 37.4V10.6ZM17.6 5h12.8c1.75 0 2.82 0 3.62.07.37.03.6.07.73.1.48.11.96.58 1.08 1.08.03.14.07.36.1.73.07.8.07 1.87.07 3.62v26.8c0 1.75 0 2.82-.07 3.62-.03.37-.07.6-.1.73-.11.48-.58.96-1.08 1.08-.14.03-.36.07-.73.1-.8.07-1.87.07-3.62.07H17.6c-1.75 0-2.82 0-3.62-.07-.37-.03-.6-.07-.73-.1-.5-.12-.97-.6-1.08-1.08a5.11 5.11 0 0 1-.1-.73c-.07-.8-.07-1.87-.07-3.62V10.6c0-1.75 0-2.82.07-3.62.03-.37.07-.6.1-.73.12-.5.6-.97 1.08-1.08.14-.03.36-.07.73-.1C14.78 5 15.85 5 17.6 5Z"></path>
+                    </svg>
+                    <div class="ml-4 font-medium whitespace-nowrap">Get app</div>
+                </div>
+            </div>
+            
+            <!-- Separator -->
+            <div class="w-4 h-20 border-none"></div>
+            
+            <!-- Log in Button -->
+            <div style="height: 32px; background-color: transparent;">
+                <div class="flex items-center rounded-full hover:bg-[#FE4166] text-color-UIShapeText1OnPrimary background-color-UIShapePrimary" style="width: 66.98px; height: 32px; padding: 0px 12px; font-size: 15px; font-weight: 600; border: 1px solid green;">Log in</div>
+            </div>
+        </div>
+        
+        <p style="margin-top: 20px;">
+            <strong>Expected:</strong> Container should be 128px high with red border<br>
+            <strong>Get app button:</strong> 84.51px wide, 32px high with blue border<br>
+            <strong>Log in button:</strong> 66.98px wide, 32px high with green border
+        </p>
+    </div>
+</body>
+</html>

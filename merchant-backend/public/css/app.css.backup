@@ -1,0 +1,21 @@
+:root{--brand:#5b8def;--brand-2:#7b6ef6;--accent:#19c37d;--danger:#ff6b6b;--warning:#ffb020;--muted:#6c757d}
+body{background:#f6f8fb}
+.navbar{box-shadow:0 2px 12px rgba(0,0,0,.06)}
+.nav-link.active{color:#fff!important}
+.nav-link{opacity:.9}
+.card{border:none;border-radius:14px;box-shadow:0 12px 24px rgba(0,0,0,.06)}
+.card .display-6{font-weight:700}
+.card-gradient-blue{background:linear-gradient(135deg,var(--brand),#4f79d6);color:#fff}
+.card-gradient-purple{background:linear-gradient(135deg,var(--brand-2),#9b8df6);color:#fff}
+.card-gradient-green{background:linear-gradient(135deg,var(--accent),#29d38d);color:#fff}
+.badge-status{padding:.35rem .6rem;border-radius:999px;font-weight:600}
+.badge-pending{background:#fff1c2;color:#7a5b00;border:1px solid #f2d98b}
+.badge-shipped{background:#dbf7e8;color:#0b6b3a;border:1px solid #b1e7ca}
+.badge-cancel{background:#ffe3e3;color:#811d1d;border:1px solid #f3b2b2}
+.table thead th{font-weight:700;color:#333}
+.table td,.table th{vertical-align:middle}
+.table-responsive{border-radius:12px;overflow:hidden;background:#fff;box-shadow:0 12px 24px rgba(0,0,0,.05)}
+.actions .btn{border-radius:10px}
+.empty-state{padding:2rem;border:2px dashed #dbe2ea;border-radius:16px;color:#6b7a90;background:#fff}
+.form-card{background:#fff;border-radius:14px;box-shadow:0 10px 20px rgba(0,0,0,.05);padding:1.5rem}
+.footer-muted{color:var(--muted);font-size:.9rem}
